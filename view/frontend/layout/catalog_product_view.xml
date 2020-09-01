@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright © Bazaarvoice, Inc. All rights reserved.
+  ~ See LICENSE.md for license details.
+-->
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+  <head>
+    <css src="Hunters_Bazaarvoice::css/bazaarvoice_custom.min.css"/>
+  </head>
+    <body>
+
+        <referenceContainer name="product.info.main">
+            <block class="Hunters\Bazaarvoice\Block\Rating" name="bazaarvoice.custom.rating.tab" after="product.info.price" template="Hunters_Bazaarvoice::rating/rating.phtml">
+                <arguments>
+                    <argument name="sort_order" xsi:type="string">140</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+
+        <referenceContainer name="content">
+
+            <block class="Hunters\Bazaarvoice\Block\Index" name="bazaarvoice.custom.reviews.tab" after="cart.wide.row" template="Hunters_Bazaarvoice::reviews/reviews.phtml">
+                 <arguments>
+                     <argument translate="true" name="title" xsi:type="string">Reviews</argument>
+                     <argument name="sort_order" xsi:type="string">100</argument>
+                 </arguments>
+             </block>
+
+            <block class="Hunters\Bazaarvoice\Block\Display" name="bazaarvoice.custom.questions.tab" after="bazaarvoice.custom.reviews.tab" template="Hunters_Bazaarvoice::questions/questions.phtml">
+            </block>
+            <!-- <block class="Hunters\Bazaarvoice\Block\Rating" name="bazaarvoice.custom.rating.tab" after="product.info.price" template="Hunters_Bazaarvoice::rating/rating.phtml">
+                <arguments>
+                    <argument name="sort_order" xsi:type="string">140</argument>
+                </arguments>
+            </block> -->
+
+
+           <!--  <block class="Hunters\Bazaarvoice\Block\Display" name="bazaarvoice.custom.test.tab" after="bazaarvoice.custom.reviews.tab" template="Hunters_Bazaarvoice::test.phtml">
+             </block>  -->
+
+        </referenceContainer>
+    </body>
+</page>
+

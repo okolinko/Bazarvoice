@@ -1,0 +1,222 @@
+<?php
+  if ($currentProduct = $this->getCurrentProduct()) {
+    $sku = $currentProduct->getSku();
+ }
+  $array_questions = $this->getMyCustomMethod2()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'questions')->getData();
+  $array_answers = $this->getMyCustomMethod2()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'answers')->getData();
+?>
+<script>
+  require(['jquery', 'jquery/ui'], function($){
+    $(document).ready( function() {
+
+      let array_questions = <?php echo json_encode($array_questions); ?>;
+      let array_answers = <?php echo json_encode($array_answers); ?>;
+
+      let items_quantity = 10;
+      let current_page = 1;
+
+      renderQuestion(array_questions, array_answers, items_quantity, current_page);
+
+      function renderQuestion(array_questions, array_answers, items_quantity, current_page) {
+        let questions = [];
+        let answers = [];
+        let item;
+        let current_year = new Date().getFullYear();
+        let current_month = new Date().getMonth();
+
+        $.each(array_questions, function(index, value) {
+
+          //console.log(value.data);
+
+          //Find all answers for current question
+          array_answers.filter(function(el){
+            if(value.id == el.id) {
+              item =
+                `<li class="bv-content-item bv-secondary-content-answer bv-secondary-content-item" itemprop="suggestedAnswer" itemscope="" itemtype="http://schema.org/Answer">
+                            <div class="bv-content-item-avatar-offset bv-content-item-avatar-offset-on">
+                                <div class="bv-content-container">
+                                    <div class="bv-content-core ">
+                                        <div class="bv-content-header">
+                                            <div class="bv-author-avatar"> <span title="Avatar image" class="bv-author-no-avatar bv-author-gender-Male" aria-hidden="true"> ♂ </span> </div>
+                                            <div class="bv-content-data-summary">
+                                                <div class="bv-content-header-meta">
+                                                    <div class="bv-content-meta-wrapper">
+                                                        <div class="bv-content-meta" role="presentation">
+                                                            <div class="bv-content-reference-data bv-content-author-name"> <span data-bv-v="avatar:11" class="bv-author">
+                                                                    <button id="bv-avatar-popup-target-questionContentList1-11" class="bv-avatar-popup-target bv-focusable" itemprop="author" aria-expanded="false">
+                                                                        <h4>${el.name}</h4>
+                                                                    </button>
+                                                                </span>
+                                                                <div class="bv-content-datetime" role="presentation">
+                                                                    <meta itemprop="dateCreated" content="2020-06-09">
+                                                                    <meta itemprop="datePublished" content="2020-06-09">
+                                                                    <span class="bv-content-datetime-dot" aria-hidden="true">·</span> <span class="bv-content-datetime-stamp">months ago &nbsp;
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="bv-content-title-container"> </div>
+                                            </div>
+                                        </div>
+                                        <div class="bv-content-details-offset-off">
+                                            <div class="bv-content-summary">
+                                                <div class="bv-content-summary-body" itemprop="text">
+                                                    <div class="bv-content-summary-body-text">
+                                                        <p>${el.text}</p>
+                                                    </div>
+                                                    <div class="bv-content-data">
+                                                        <div class="bv-content-product-questions"> </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>`;
+              answers.push(item);
+            }
+          });
+          answers.answers_quantity_title = (answers.length !== 1) ? 'answers' : 'answer';
+          item =
+            `<li class="bv-content-item bv-content-top-question bv-content-question" itemscope="" itemtype="http://schema.org/Question" data-content-id="Questions-${value.id}">
+                    <div class="bv-content-item-avatar-offset bv-content-item-avatar-offset-on">
+                        <div class="bv-content-container">
+                            <div class="bv-content-core bv-content-core-float">
+                                <div class="bv-content-header">
+                                    <div class="bv-author-avatar"> <span title="Avatar image" class="bv-author-no-avatar bv-author-gender-Male" aria-hidden="true"> ♂ </span> </div>
+                                    <div class="bv-content-data-summary">
+                                        <div class="bv-content-header-meta">
+                                            <div class="bv-content-meta-wrapper">
+                                                <div class="bv-content-meta" role="presentation">
+                                                    <div class="bv-content-reference-data bv-content-author-name"> <span class="bv-author">
+                                                        <button id="bv-avatar-popup-target-questionContentList1-13" class="bv-avatar-popup-target bv-focusable" itemprop="author" aria-expanded="false">
+                                                                <span>${value.name}</span>
+                                                            </button>
+                                                        </span>
+                                                        <div class="bv-content-datetime" role="presentation">
+                                                            <meta itemprop="dateCreated" content="2020-06-04">
+                                                            <meta itemprop="datePublished" content="2020-06-05"> <span class="bv-content-datetime-dot" aria-hidden="true">·</span> <span class="bv-content-datetime-stamp">ago &nbsp;</span> </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="bv-content-title-container">
+                                            <h3 class="bv-content-title" itemprop="headline">
+                                                <a class="bv-secondary-content-link bv-focusable" href="#" data-contentid="${value.id}">
+                                                    ${value.text}
+                                                </a>
+                                            </h3>
+                                        </div> <button type="button" class="bv-content-data-count bv-secondary-content-link bv-focusable" data-contentid="${value.id}"> <span class="bv-content-title">${answers.length}</span>
+                                            <span class="bv-content-data-label">
+                                                ${answers.answers_quantity_title}
+                                            </span>
+                                            <meta itemprop="interactionCount" > </button>
+                                    </div>
+                                </div>
+                                <div class="bv-content-details-offset-off">
+                                    <div class="bv-content-summary">
+                                        <div class="bv-content-summary-body" itemprop="text">
+                                            <div class="bv-content-data">
+                                                <div class="bv-content-product-questions"> </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bv-content-actions-container">
+                            <div class="bv-secondary-content-actions-container"> <button type="button" aria-label="Answer this question by ${value.name}." class="bv-content-btn bv-content-secondary-btn bv-focusable"> Answer this Question </button> </div>
+                        </div>
+
+                        <div class="bv-secondary-content-list">
+                            <ol class="bv-content-list bv-content-list-answers">
+                                ${answers}
+                            </ol>
+                        </div>
+                    </div>
+                </li>`;
+
+          if(
+            (index >= parseInt(items_quantity * (current_page - 1))) &&
+            (index < parseInt(current_page * items_quantity))
+          ) {
+            questions.push(item);
+          }
+          answers.length = 0;
+        });
+
+        $('.custom-list-questions').html(questions);
+        $('.bv-control-bar-count-from').html(parseInt(1 + items_quantity * (current_page - 1)));
+        $('.bv-control-bar-count-to').html(parseInt((current_page - 1) * items_quantity + questions.length));
+      }
+
+      $('.custom-link-prev').on('click', function(e){
+        e.preventDefault();
+        if(current_page > 1) {
+          current_page--;
+          renderQuestion(array_questions, array_answers, items_quantity, current_page);
+        }
+      });
+      $('.custom-link-next').on('click', function(e){
+        e.preventDefault();
+        if(items_quantity * current_page <= array_questions.length) {
+          current_page++;
+          renderQuestion(array_questions, array_answers, items_quantity, current_page);
+        }
+      });
+
+    });
+  });
+</script>
+
+<div style="width: 90%; margin: 0 auto;" data-bv-show="questions" data-bv-product-id="FHS4B" data-bv-ready="true">
+  <div id="BVQAContainer">
+    <div class="bv-cleanslate bv-cv2-cleanslate">
+      <div class="bv-shared bv-core-container-103">
+        <div class="bv-compat bv-scroll-spy">
+          <meta name="bvDateModified" content="2020-08-21">
+          <div class="bv-content-list-container">
+            <div class="bv-header">
+              <div class="bv-action-bar">
+                <h2 class="bv-action-bar-header bv-focusable" tabindex="-1">Questions</h2>
+              </div>
+            </div>
+            <ol class="bv-content-list bv-content-list-questions custom-list-questions">
+
+            </ol>
+
+            <div class="bv-content-pagination">
+              <div class="bv-content-pagination-container">
+                <div class="bv-control-bar-count">
+                  <div class="bv-content-pagination-pages-current bv-focusable" tabindex="-1">
+                    <span class="bv-control-bar-count-from"></span>–<span class="bv-control-bar-count-to"></span> of <span class="bv-control-bar-count-total">
+                                              <?php print_r(count($array_questions)); ?>
+                                          </span> Questions
+                  </div>
+                </div>
+                <ul class="bv-content-pagination-buttons" role="presentation">
+                  <li class="bv-content-pagination-buttons-item bv-content-pagination-buttons-item-previous" role="presentation">
+                    <a href="#" role="button" class="bv-content-btn bv-content-btn-pages bv-content-btn-pages-last bv-focusable bv-content-btn-pages-active custom-link-prev">
+                      <span class="bv-off-screen"> Previous Questions </span>
+                      <span class="bv-content-btn-pages-prev" aria-hidden="true">   ◄   </span>
+                    </a>
+                  </li>
+                  <li class="bv-content-pagination-buttons-item bv-content-pagination-buttons-item-next" role="presentation">
+                    <a href="#" role="button" class="bv-content-btn bv-content-btn-pages bv-content-btn-pages-last bv-focusable bv-content-btn-pages-active custom-link-next">
+                      <span class="bv-off-screen"> Next Questions </span>
+                      <span class="bv-content-btn-pages-next" aria-hidden="true">  ►  </span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

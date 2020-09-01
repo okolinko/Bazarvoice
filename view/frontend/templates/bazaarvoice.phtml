@@ -1,0 +1,16 @@
+
+<?php
+$blockObj= $block->getLayout()->createBlock('Hunters\Bazaarvoice\Block\Index');
+print_r($blockObj->getMyCustomMethod()->addFieldToFilter(
+			'sku',
+			'PKIT20010')->getData());
+
+
+
+// $blockObj= $block->getLayout()->createBlock('Hunters\Bazaarvoice\Block\Index');
+// $res = $blockObj->getMyCustomMethod()->addFieldToFilter(
+// 'id',
+// '148189674')->getData();
+// $json = $res[0]['photo'];
+// print_r(json_decode($json));
+?>

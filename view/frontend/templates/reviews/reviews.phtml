@@ -1,0 +1,460 @@
+<?php
+if ($currentProduct = $this->getCurrentProduct()) {
+  $sku = $currentProduct->getSku();
+}
+$array_reviews = $this->getMyCustomMethod()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'reviews')->getData();
+$rating = $this->getMyCustomMethod()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'product')->getData();
+
+if (!empty($rating[0]['statistic'])) {
+  $statistic = json_decode($rating[0]['statistic'], true);
+  $rat = $statistic['RatingDistribution'];
+  $rating_general = array_fill(1, 5, 0);
+  foreach ($rat as $value) {
+    $rating_general[$value['RatingValue']] = $value['Count'];
+  }
+}
+?>
+
+<script>
+  require(['jquery', 'jquery/ui'], function($){
+    $(document).ready( function() {
+      let array_reviews = <?php echo json_encode($array_reviews); ?>;
+      let items_quantity = 8;
+      let current_page = 1;
+      let current_year = new Date().getFullYear();
+
+      renderReviews(array_reviews, items_quantity, current_page);
+
+      function renderReviews(array_reviews, items_quantity, current_page) {
+        let reviews = [];
+        let item;
+
+        $.each(array_reviews, function(index, value) {
+          let context_data_values = JSON.parse(value.context_data_values);
+          let reviews_statistic = JSON.parse(value.statistic);
+          let gender = (typeof(context_data_values.Gender) !== 'undefined') ? context_data_values.Gender.Value : 'Male';
+          let gender_symbol = (gender == 'Male') ? '♂' : '♀';
+          let years_ago = (current_year - value.data.slice(0, 4) > 1) ? current_year - value.data.slice(0, 4) + ' years ago' : 'a year ago';
+          item =
+            `<li class="bv-content-item bv-content-top-review bv-content-review" itemprop="review" itemscope="" itemtype="http://schema.org/Review" >
+        <div class="bv-author-profile">
+          <div class="bv-inline-profile">
+            <div class="bv-author-avatar">
+              <span title="Avatar image" class="bv-author-no-avatar bv-author-gender-${gender}" aria-hidden="true">
+                ${gender_symbol}
+              </span>
+              <div class="bv-author-avatar-nickname">
+                <div class="bv-content-author-name" role="presentation">
+                  <button type="button" class="bv-author bv-fullprofile-popup-target bv-focusable">
+                    <h3>${value.name}</h3>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="bv-popup-prosnap-userinfo bv-contains-profile-button">
+              <div class="bv-content-author-name" role="presentation">
+                <button type="button" class="bv-author bv-fullprofile-popup-target bv-focusable">
+                  <h3>${value.name}</h3>
+                </button>
+              </div>
+              <div class="bv-author-location">
+                <span>${value.address ? value.address : ''}</span>
+              </div>
+              <div class="bv-author-userstats">
+                <ul class="bv-author-userstats-list" role="presentation">
+                  <li class="bv-author-userstats-reviews" role="presentation">
+                    <span class="bv-author-userstats-data">${reviews_statistic.Review ? 'Review' : ''} </span>
+                    <span class="bv-author-userstats-value">${reviews_statistic.Review ? reviews_statistic.Review : ''}</span>
+                  </li>
+                  <li class="bv-author-userstats-votes" role="presentation">
+                    <span class="bv-author-userstats-data"> ${reviews_statistic.Votes ? 'Votes' : ''} </span>
+                    <span class="bv-author-userstats-value">${reviews_statistic.Votes ? reviews_statistic.Votes : ''}</span>
+                  </li>
+                </ul>
+              </div>
+              <div class="bv-author-userinfo">
+                <ul role="presentation">
+                  <li class="bv-author-cdv bv-first " role="presentation">
+                    <span class="bv-author-userinfo-data">${context_data_values.HowOftenUse ? context_data_values.HowOftenUse.DimensionLabel : ''}</span>
+                    <span class="bv-author-userinfo-value">
+                      ${context_data_values.HowOftenUse ? context_data_values.HowOftenUse.ValueLabel : ''}
+                    </span>
+                  </li>
+                  <li class="bv-author-cdv  " role="presentation">
+                    <span class="bv-author-userinfo-data">${context_data_values.SeverityOfLoss ? context_data_values.SeverityOfLoss.DimensionLabel : ''}</span>
+                    <span class="bv-author-userinfo-value">
+                      ${context_data_values.SeverityOfLoss ? context_data_values.SeverityOfLoss.ValueLabel : ''}
+                    </span>
+                  </li>
+                  <li class="bv-author-cdv  " role="presentation">
+                    <span class="bv-author-userinfo-data">${context_data_values.SalonProfessional ? context_data_values.SalonProfessional.DimensionLabel : ''}</span>
+                    <span class="bv-author-userinfo-value">
+                      ${context_data_values.SalonProfessional ? context_data_values.SalonProfessional.ValueLabel : ''}
+                    </span>
+                  </li>
+                  <li class="bv-author-cdv  " role="presentation">
+                    <span class="bv-author-userinfo-data">${context_data_values.Age ? context_data_values.Age.DimensionLabel : ''}</span>
+                    <span class="bv-author-userinfo-value">
+                      ${context_data_values.Age ? context_data_values.Age.ValueLabel : ''}
+                    </span>
+                  </li>
+                  <li class="bv-author-cdv  bv-last" role="presentation">
+                    <span class="bv-author-userinfo-data">${context_data_values.Gender ? context_data_values.Gender.DimensionLabel : ''}</span>
+                    <span class="bv-author-userinfo-value">
+                      ${context_data_values.Gender ? context_data_values.Gender.ValueLabel : ''}
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bv-content-item-author-profile-offset bv-content-item-author-profile-offset-on">
+          <div class="bv-content-container">
+            <div class="bv-content-core ">
+              <div class="bv-content-header">
+                <div class="bv-content-data-summary">
+                  <div class="bv-content-header-meta">
+                    <span class="bv-content-rating bv-rating-ratio" itemprop="reviewRating" itemscope="" itemtype="http://schema.org/Rating">
+                      <meta itemprop="ratingValue" content="${value.rating}">
+                      <meta itemprop="bestRating" content="${value.rating}">
+                      <span class="bv-rating-stars-container">
+                        <abbr title="${value.rating} out of 5 stars." class="bv-rating bv-rating-stars bv-rating-stars-off" aria-hidden="true"> ★★★★★ </abbr>
+                        <abbr title="${value.rating} out of 5 stars." class="bv-rating-max bv-rating-stars bv-rating-stars-on bv-width-from-rating-stats-${value.rating * 20}" aria-hidden="true"> ★★★★★ </abbr>
+                        <span class="bv-off-screen">${value.rating} out of 5 stars.</span>
+                      </span>
+                    </span>
+                    <div class="bv-content-meta-wrapper">
+                      <div class="bv-content-meta" role="presentation">
+                        <div class="bv-content-reference-data bv-content-author-name">
+                          <button type="button" class="bv-author bv-fullprofile-popup-target bv-focusable" itemprop="author">
+                            <h3>${value.name}</h3>
+                          </button>
+                          <div class="bv-content-datetime" role="presentation">
+                            <meta itemprop="dateCreated" content=">
+                            <meta itemprop="datePublished" content="-">
+                            <span class="bv-content-datetime-dot" aria-hidden="true">·</span>
+                            <span class="bv-content-datetime-stamp">
+                              ${years_ago}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="bv-content-title-container">
+                    <h3 class="bv-content-title" itemprop="headline">
+                      ${value.title_text ? value.title_text : ''}
+                    </h3>
+                  </div>
+                </div>
+              </div>
+              <div class="bv-content-details-offset-on">
+                <div class="bv-content-summary">
+                  <div class="bv-content-summary-body" itemprop="reviewBody">
+                    <div class="bv-content-summary-body-text">\t
+                      <p>${value.text ? value.text : ''}</p>
+                    </div>
+                    <div class="bv-content-data">
+                      <div class="bv-content-product-questions">
+                        <dl class="bv-content-data-product-questions">
+                          <dt class="bv-content-data-label-container"><span class="bv-content-data-label">${context_data_values.LengthOfUse ? context_data_values.LengthOfUse.DimensionLabel : ''}</span> </dt>
+                          <dd class="bv-content-data-value">
+                            ${context_data_values.LengthOfUse ? context_data_values.LengthOfUse.ValueLabel : ''}
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+               </div>
+              <div class="bv-content-details-container">
+                <div class="bv-secondary-ratings" role="presentation">
+                  <dl class="bv-content-secondary-ratings">
+                    <dt class="bv-content-secondary-ratings-label">Effectiveness</dt>
+                    <dd class="bv-popup-histogram-ratings-bar">
+                      <span class="bv-content-secondary-ratings-container">
+                        <ul class="bv-content-secondary-ratings-bars" role="presentation">
+                          <li class="bv-content-secondary-ratings-bar" role="presentation"></li>
+                          <li class="bv-content-secondary-ratings-bar" role="presentation"></li>
+                          <li class="bv-content-secondary-ratings-bar" role="presentation"></li>
+                          <li class="bv-content-secondary-ratings-bar" role="presentation"></li>
+                          <li class="bv-content-secondary-ratings-bar" role="presentation"></li>
+                        </ul>
+                        <span class="bv-content-secondary-ratings-value bv-width-from-rating-stats-${reviews_statistic.Effectiveness ? reviews_statistic.Effectiveness.Value * 20 : 0}"></span>
+                        <span class="bv-off-screen">Effectiveness, ${reviews_statistic.Effectiveness ? reviews_statistic.Effectiveness.Value : 0} out of 5</span>
+                      </span>
+                    </dd>
+                    <dt class="bv-content-secondary-ratings-label">Reliability</dt>
+                    <dd class="bv-popup-histogram-ratings-bar">
+                      <span class="bv-content-secondary-ratings-container">
+                        <ul class="bv-content-secondary-ratings-bars" role="presentation">
+                          <li class="bv-content-secondary-ratings-bar" role="presentation"></li>
+                          <li class="bv-content-secondary-ratings-bar" role="presentation"></li>
+                          <li class="bv-content-secondary-ratings-bar" role="presentation"></li>
+                          <li class="bv-content-secondary-ratings-bar" role="presentation"></li>
+                          <li class="bv-content-secondary-ratings-bar" role="presentation"></li>
+                        </ul>
+                        <span class="bv-content-secondary-ratings-value bv-width-from-rating-stats-${reviews_statistic.Reliability ? reviews_statistic.Reliability.Value * 20 : 0}"></span>
+                        <span class="bv-off-screen">Reliability, ${reviews_statistic.Reliability ? reviews_statistic.Reliability.Value : 0} out of 5</span>
+                      </span>
+                    </dd>
+                    <dt class="bv-content-secondary-ratings-label">Ease of Use</dt>
+                    <dd class="bv-popup-histogram-ratings-bar">
+                      <span class="bv-content-secondary-ratings-container">
+                        <ul class="bv-content-secondary-ratings-bars" role="presentation">
+                          <li class="bv-content-secondary-ratings-bar" role="presentation"></li>
+                          <li class="bv-content-secondary-ratings-bar" role="presentation"></li>
+                          <li class="bv-content-secondary-ratings-bar" role="presentation"></li>
+                          <li class="bv-content-secondary-ratings-bar" role="presentation"></li>
+                          <li class="bv-content-secondary-ratings-bar" role="presentation"></li>
+                        </ul>
+                        <span class="bv-content-secondary-ratings-value bv-width-from-rating-stats-${reviews_statistic.EaseOfUse ? reviews_statistic.EaseOfUse.Value * 20 : 0}"></span>
+                        <span class="bv-off-screen">Ease of Use, ${reviews_statistic.EaseOfUse ? reviews_statistic.EaseOfUse.Value : 0} out of 5</span>
+                      </span>
+                    </dd>
+                    <dt class="bv-content-secondary-ratings-label">Discreteness</dt>
+                    <dd class="bv-popup-histogram-ratings-bar">
+                      <span class="bv-content-secondary-ratings-container">
+                        <ul class="bv-content-secondary-ratings-bars" role="presentation">
+                          <li class="bv-content-secondary-ratings-bar" role="presentation"></li>
+                          <li class="bv-content-secondary-ratings-bar" role="presentation"></li>
+                          <li class="bv-content-secondary-ratings-bar" role="presentation"></li>
+                          <li class="bv-content-secondary-ratings-bar" role="presentation"></li>
+                          <li class="bv-content-secondary-ratings-bar" role="presentation"></li>
+                        </ul>
+                        <span class="bv-content-secondary-ratings-value bv-width-from-rating-stats-${reviews_statistic.Discreteness ? reviews_statistic.Discreteness.Value * 20 : 0}"></span>
+                        <span class="bv-off-screen">Discreteness, ${reviews_statistic.Discreteness ? reviews_statistic.Discreteness.Value : 0} out of 5</span>
+                      </span>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bv-content-actions-container bv-active-feedback"></div>
+          <div class="bv-content-actions-container">
+            <div class="bv-secondary-content-actions-container">
+              <button type="button" aria-label="Comment on review by ${value.name}." class="bv-content-btn bv-content-secondary-btn bv-focusable" disabled="disabled"> Comment </button>
+            </div>
+          </div>
+        </div>
+      </li>`;
+          if(
+            (index >= parseInt(items_quantity * (current_page - 1))) &&
+            (index < parseInt(current_page * items_quantity))
+          ) {
+            reviews.push(item);
+          }
+        })
+        $('.custom-list-reviews').html(reviews);
+        $('.bv-control-bar-review-count-from').html(parseInt(1 + items_quantity * (current_page - 1)));
+        $('.bv-control-bar-review-count-to').html(parseInt((current_page - 1) * items_quantity + reviews.length));
+      }
+
+      $('.custom-review-link-prev').on('click', function(e){
+        e.preventDefault();
+        if(current_page > 1) {
+          current_page--;
+          renderReviews(array_reviews, items_quantity, current_page);
+        }
+      });
+      $('.custom-review-link-next').on('click', function(e){
+        e.preventDefault();
+        if(items_quantity * current_page <= array_reviews.length) {
+          current_page++;
+          renderReviews(array_reviews, items_quantity, current_page);
+        }
+      });
+    });
+  });
+</script>
+
+<div id="custom-reviews">
+  <div style="width: 90%; margin: 0 auto;">
+    <div class="bv-cleanslate bv-cv2-cleanslate">
+      <div class="bv-shared bv-core-container-103">
+        <div class="bv-header">
+          <div class="bv-action-bar">
+            <h2 class="bv-action-bar-header bv-focusable" tabindex="-1">Reviews</h2>
+          </div>
+          <div class="bv-inline-form-container"></div>
+          <div class="bv-section-summary">
+            <div class="bv-section-summary-table bv-table-full-width" role="presentation">
+              <div class="bv-section-summary-inline bv-flex-container-responsive">
+                <div data-bv-v="inlineHistogram:9" class="bv-inline-histogram bv-section-summary-block">
+                  <div class="bv-inline-histogram-ratings">
+                    <div class="bv-inline-histogram-header">
+                      <h3 class="bv-content-title">Rating Snapshot</h3>
+                    </div>
+                    <p class="bv-histogram-filter-helper">Select a row below to filter reviews.</p>
+                    <div class="bv-flex-container-column">
+                      <div class="bv-inline-histogram-ratings-star-container bv-flex-container" aria-labelledby="bv-inline-histogram-ratings-star-label-5" role="button">
+                        <div class="bv-inline-histogram-ratings-star" data-bv-histogram-rating-value="5"> 5<span class="bv-glyph" aria-hidden="true">★</span> <span class="bv-off-screen">stars</span> </div>
+                        <div class="bv-inline-histogram-ratings-bar" data-bv-histogram-rating-value="5" role="presentation" data-bv-histogram-rating-count="<?php echo $rating_general[5]; ?>"> <span class="bv-content-secondary-ratings-container"> <span class="bv-content-secondary-ratings-value bv-width-from-rating-stats-<?php echo $rating_general[5] * 4; ?>"></span> </span> </div>
+                        <div class="bv-inline-histogram-ratings-score">
+                          <span aria-hidden="true"> <?php echo $rating_general[5]; ?> </span>
+                          <span class="bv-off-screen">  <?php echo $rating_general[5]; ?> reviews with 5 stars. </span>
+                          <button type="button" id="bv-inline-histogram-ratings-star-label-5" class="bv-focusable bv-off-screen">Select to filter reviews with 5 stars.</button>
+                        </div>
+                      </div>
+                      <div class="bv-inline-histogram-ratings-star-container bv-flex-container" aria-labelledby="bv-inline-histogram-ratings-star-label-4" role="button">
+                        <div class="bv-inline-histogram-ratings-star" data-bv-histogram-rating-value="4"> 4<span class="bv-glyph" aria-hidden="true">★</span> <span class="bv-off-screen">stars</span> </div>
+                        <div class="bv-inline-histogram-ratings-bar" data-bv-histogram-rating-value="4" role="presentation" data-bv-histogram-rating-count="<?php echo $rating_general[4]; ?>"> <span class="bv-content-secondary-ratings-container"> <span class="bv-content-secondary-ratings-value bv-width-from-rating-stats-<?php echo $rating_general[4] * 4; ?>"></span> </span> </div>
+                        <div class="bv-inline-histogram-ratings-score">
+                          <span aria-hidden="true"> <?php echo $rating_general[4]; ?> </span>
+                          <span class="bv-off-screen"> <?php echo $rating_general[4]; ?> reviews with 4 stars. </span>
+                          <button type="button" id="bv-inline-histogram-ratings-star-label-4" class="bv-focusable bv-off-screen">Select to filter reviews with 4 stars.</button>
+                        </div>
+                      </div>
+                      <div class="bv-inline-histogram-ratings-star-container bv-flex-container" aria-labelledby="bv-inline-histogram-ratings-star-label-3" role="button">
+                        <div class="bv-inline-histogram-ratings-star" data-bv-histogram-rating-value="3"> 3<span class="bv-glyph" aria-hidden="true">★</span> <span class="bv-off-screen">stars</span> </div>
+                        <div class="bv-inline-histogram-ratings-bar" data-bv-histogram-rating-value="3" role="presentation" data-bv-histogram-rating-count="<?php echo $rating_general[3]; ?>"> <span class="bv-content-secondary-ratings-container"> <span class="bv-content-secondary-ratings-value bv-width-from-rating-stats-<?php echo $rating_general[3] * 4; ?>"></span> </span> </div>
+                        <div class="bv-inline-histogram-ratings-score">
+                          <span aria-hidden="true"> <?php echo $rating_general[3]; ?> </span>
+                          <span class="bv-off-screen"> <?php echo $rating_general[3]; ?> reviews with 3 stars. </span>
+                          <button type="button" id="bv-inline-histogram-ratings-star-label-3" class="bv-focusable bv-off-screen">Select to filter reviews with 3 stars.</button>
+                        </div>
+                      </div>
+                      <div class="bv-inline-histogram-ratings-star-container bv-flex-container" aria-labelledby="bv-inline-histogram-ratings-star-label-2" role="button">
+                        <div class="bv-inline-histogram-ratings-star" data-bv-histogram-rating-value="2"> 2<span class="bv-glyph" aria-hidden="true">★</span> <span class="bv-off-screen">stars</span> </div>
+                        <div class="bv-inline-histogram-ratings-bar" data-bv-histogram-rating-value="2" role="presentation" data-bv-histogram-rating-count="<?php echo $rating_general[2]; ?>"> <span class="bv-content-secondary-ratings-container"> <span class="bv-content-secondary-ratings-value bv-width-from-rating-stats-<?php echo $rating_general[2] * 4; ?>"></span> </span> </div>
+                        <div class="bv-inline-histogram-ratings-score">
+                          <span aria-hidden="true"> <?php echo $rating_general[2]; ?> </span>
+                          <span class="bv-off-screen"> <?php echo $rating_general[2]; ?> review with 2 stars. </span>
+                          <button type="button" id="bv-inline-histogram-ratings-star-label-2" class="bv-focusable bv-off-screen">Select to filter reviews with 2 stars.</button>
+                        </div>
+                      </div>
+                      <div class="bv-inline-histogram-ratings-star-container bv-flex-container" aria-labelledby="bv-inline-histogram-ratings-star-label-1" role="button">
+                        <div class="bv-inline-histogram-ratings-star" data-bv-histogram-rating-value="1"> 1<span class="bv-glyph" aria-hidden="true">★</span> <span class="bv-off-screen">stars</span> </div>
+                        <div class="bv-inline-histogram-ratings-bar" data-bv-histogram-rating-value="1" role="presentation" data-bv-histogram-rating-count="<?php echo $rating_general[1]; ?>"> <span class="bv-content-secondary-ratings-container"> <span class="bv-content-secondary-ratings-value bv-width-from-rating-stats-<?php echo $rating_general[1] * 4; ?>"></span> </span> </div>
+                        <div class="bv-inline-histogram-ratings-score">
+                          <span aria-hidden="true"> <?php echo $rating_general[1]; ?> </span>
+                          <span class="bv-off-screen"> <?php echo $rating_general[1]; ?> reviews with 1 star. </span>
+                          <button type="button" id="bv-inline-histogram-ratings-star-label-1" class="bv-focusable bv-off-screen">Select to filter reviews with 1 star.</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="bv-secondary-rating-summary bv-section-summary-block">
+                  <div class="bv-secondary-rating-summary-header">
+                    <h3 class="bv-content-title">Average Customer Ratings</h3>
+                  </div>
+                  <div class="bv-secondary-rating-summary-list bv-table" role="presentation">
+                    <div class="bv-secondary-rating-summary-stars bv-table-row">
+                      <div class="bv-secondary-rating-summary-id bv-td bv-table-cell" aria-hidden="true">Overall</div>
+                      <span class="bv-table-cell">
+                        <span class="bv-rating-stars-container">
+                          <span class="bv-rating-stars bv-rating-stars-off" aria-hidden="true"> ★★★★★ </span>
+                          <span class="bv-rating-stars bv-rating-stars-on bv-width-from-rating-stats-<?php echo round($statistic['AverageOverallRating'], 1) * 20; ?>" aria-hidden="true"> ★★★★★ </span>
+                        </span>
+                      </span>
+                      <span class="bv-secondary-rating-summary-rating bv-table-cell" aria-hidden="true">
+                        <?php echo round($statistic['AverageOverallRating'], 1); ?>
+                      </span>
+                      <span class="bv-off-screen">Overall, average rating value is 4.2 of 5.</span>
+                    </div>
+                    <div class="bv-secondary-rating-summary-bars-container bv-table-row">
+                      <div class="bv-secondary-rating-summary-id bv-td bv-table-cell" aria-hidden="true">Effectiveness</div> <span class="bv-secondary-rating-summary-container bv-table-cell">
+                        <ul class="bv-secondary-rating-summary-bars" role="presentation">
+                            <li class="bv-secondary-rating-summary-bar bv-width-from-rating-stats-20" role="presentation"></li>
+                            <li class="bv-secondary-rating-summary-bar bv-width-from-rating-stats-20" role="presentation"></li>
+                            <li class="bv-secondary-rating-summary-bar bv-width-from-rating-stats-20" role="presentation"></li>
+                            <li class="bv-secondary-rating-summary-bar bv-width-from-rating-stats-20" role="presentation"></li>
+                            <li class="bv-secondary-rating-summary-bar bv-width-from-rating-stats-20" role="presentation"></li>
+                            <li class="bv-secondary-rating-summary-value bv-width-from-rating-stats-<?php echo round($statistic['SecondaryRatingsAverages']['Effectiveness']['AverageRating'], 1) * 20; ?>" role="presentation"></li>
+                        </ul>
+                      </span>
+                      <span class="bv-secondary-rating-summary-rating bv-table-cell" aria-hidden="true">
+                        <?php echo round($statistic['SecondaryRatingsAverages']['Effectiveness']['AverageRating'], 1); ?>
+                      </span>
+                      <span class="bv-off-screen">Effectiveness, average rating value is <?php echo round($statistic['SecondaryRatingsAverages']['Effectiveness']['AverageRating'], 1); ?> of 5.</span>
+                    </div>
+                    <div class="bv-secondary-rating-summary-bars-container bv-table-row">
+                      <div class="bv-secondary-rating-summary-id bv-td bv-table-cell" aria-hidden="true">Reliability</div>
+                      <span class="bv-secondary-rating-summary-container bv-table-cell">
+                        <ul class="bv-secondary-rating-summary-bars" role="presentation">
+                            <li class="bv-secondary-rating-summary-bar bv-width-from-rating-stats-20" role="presentation"></li>
+                            <li class="bv-secondary-rating-summary-bar bv-width-from-rating-stats-20" role="presentation"></li>
+                            <li class="bv-secondary-rating-summary-bar bv-width-from-rating-stats-20" role="presentation"></li>
+                            <li class="bv-secondary-rating-summary-bar bv-width-from-rating-stats-20" role="presentation"></li>
+                            <li class="bv-secondary-rating-summary-bar bv-width-from-rating-stats-20" role="presentation"></li>
+                            <li class="bv-secondary-rating-summary-value bv-width-from-rating-stats-<?php echo round($statistic['SecondaryRatingsAverages']['Reliability']['AverageRating'], 1) * 20; ?>" role="presentation"></li>
+                        </ul>
+                      </span>
+                      <span class="bv-secondary-rating-summary-rating bv-table-cell" aria-hidden="true">
+                        <?php echo round($statistic['SecondaryRatingsAverages']['Reliability']['AverageRating'], 1); ?>
+                      </span>
+                      <span class="bv-off-screen">Reliability, average rating value is <?php echo round($statistic['SecondaryRatingsAverages']['Reliability']['AverageRating'], 1); ?> of 5.</span>
+                    </div>
+                    <div class="bv-secondary-rating-summary-bars-container bv-table-row">
+                      <div class="bv-secondary-rating-summary-id bv-td bv-table-cell" aria-hidden="true">Ease of Use</div> <span class="bv-secondary-rating-summary-container bv-table-cell">
+                        <ul class="bv-secondary-rating-summary-bars" role="presentation">
+                            <li class="bv-secondary-rating-summary-bar bv-width-from-rating-stats-20" role="presentation"></li>
+                            <li class="bv-secondary-rating-summary-bar bv-width-from-rating-stats-20" role="presentation"></li>
+                            <li class="bv-secondary-rating-summary-bar bv-width-from-rating-stats-20" role="presentation"></li>
+                            <li class="bv-secondary-rating-summary-bar bv-width-from-rating-stats-20" role="presentation"></li>
+                            <li class="bv-secondary-rating-summary-bar bv-width-from-rating-stats-20" role="presentation"></li>
+                            <li class="bv-secondary-rating-summary-value bv-width-from-rating-stats-<?php echo round($statistic['SecondaryRatingsAverages']['EaseOfUse']['AverageRating'], 1) * 20; ?>" role="presentation"></li>
+                        </ul>
+                      </span>
+                      <span class="bv-secondary-rating-summary-rating bv-table-cell" aria-hidden="true">
+                        <?php echo round($statistic['SecondaryRatingsAverages']['EaseOfUse']['AverageRating'], 1); ?>
+                      </span>
+                      <span class="bv-off-screen">Ease of Use, average rating value is <?php echo round($statistic['SecondaryRatingsAverages']['EaseOfUse']['AverageRating'], 1); ?> of 5.</span>
+                    </div>
+                    <div class="bv-secondary-rating-summary-bars-container bv-table-row">
+                      <div class="bv-secondary-rating-summary-id bv-td bv-table-cell" aria-hidden="true">Discreteness</div>
+                      <span class="bv-secondary-rating-summary-container bv-table-cell">
+                        <ul class="bv-secondary-rating-summary-bars" role="presentation">
+                            <li class="bv-secondary-rating-summary-bar bv-width-from-rating-stats-20" role="presentation"></li>
+                            <li class="bv-secondary-rating-summary-bar bv-width-from-rating-stats-20" role="presentation"></li>
+                            <li class="bv-secondary-rating-summary-bar bv-width-from-rating-stats-20" role="presentation"></li>
+                            <li class="bv-secondary-rating-summary-bar bv-width-from-rating-stats-20" role="presentation"></li>
+                            <li class="bv-secondary-rating-summary-bar bv-width-from-rating-stats-20" role="presentation"></li>
+                            <li class="bv-secondary-rating-summary-value bv-width-from-rating-stats-<?php echo round($statistic['SecondaryRatingsAverages']['Discreteness']['AverageRating'], 1) * 20; ?>" role="presentation"></li>
+                        </ul>
+                      </span>
+                      <span class="bv-secondary-rating-summary-rating bv-table-cell" aria-hidden="true">
+                        <?php echo round($statistic['SecondaryRatingsAverages']['Discreteness']['AverageRating'], 1); ?>
+                      </span>
+                      <span class="bv-off-screen">Discreteness, average rating value is <?php echo round($statistic['SecondaryRatingsAverages']['Discreteness']['AverageRating'], 1); ?> of 5.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ol class="bv-content-list bv-content-list-reviews custom-list-reviews">
+
+        </ol>
+
+        <div class="bv-content-pagination">
+          <div class="bv-content-pagination-container">
+            <div data-bv-v="ugcCount:6" class="bv-control-bar-count">
+              <div class="bv-content-pagination-pages-current bv-focusable" tabindex="-1"><span class="bv-control-bar-review-count-from"></span>–<span class="bv-control-bar-review-count-to"></span> of <?php print_r(count($array_reviews)); ?> Reviews</div>
+            </div>
+            <ul class="bv-content-pagination-buttons" role="presentation">
+              <li class="bv-content-pagination-buttons-item bv-content-pagination-buttons-item-previous" role="presentation">
+                <a href="#" role="button" class="bv-content-btn bv-content-btn-pages bv-content-btn-pages-last bv-focusable bv-content-btn-pages-active custom-review-link-prev">
+                  <span class="bv-off-screen"> Previous Questions </span>
+                  <span class="bv-content-btn-pages-prev" aria-hidden="true">   ◄   </span>
+                </a>
+              </li>
+              <li class="bv-content-pagination-buttons-item bv-content-pagination-buttons-item-next" role="presentation">
+                <a href="#" role="button" class="bv-content-btn bv-content-btn-pages bv-content-btn-pages-last bv-focusable bv-content-btn-pages-active custom-review-link-next">
+                  <span class="bv-off-screen"> Next Questions </span>
+                  <span class="bv-content-btn-pages-next" aria-hidden="true">  ►  </span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
