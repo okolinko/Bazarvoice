@@ -30,4 +30,7 @@ class Rating extends \Magento\Framework\View\Element\Template
 		$collection = $post->getCollection();
 		return $collection;
 	}
+	public function test(){
+		return "TYT";
+	}
 }

@@ -11,20 +11,29 @@ foreach ($statistic['RatingDistribution'] as $value) {
   $reviews_sum += $value['Count'];
 }
 ?>
-<div class="bv-cleanslate bv-cv2-cleanslate">
-  <div class="bv-core-container-103" style="display: flex!important; align-items: center;">
-    <span class="bv-rating-stars-container" style="padding-right: 17px!important;">
-      <span class="bv-rating-stars bv-rating-stars-off" aria-hidden="true" style="font-size: 27px!important;"> ★★★★★ </span>
-      <span class="bv-rating-stars bv-rating-stars-on bv-width-from-rating-stats-<?php echo round($statistic['AverageOverallRating'], 1) * 20; ?>" aria-hidden="true" style="font-size: 27px!important;"> ★★★★★ </span>
-    </span>
-    <span class="bv_avgRating_component_container notranslate">
-      <button type="button" class="bv_avgRating " aria-expanded="false" aria-label="average rating value is <?php echo round($statistic['AverageOverallRating'], 1); ?> of 5." id="avg-rating-button" role="link" itemprop="ratingValue">
-        <?php echo round($statistic['AverageOverallRating'], 1); ?>
-      </button>
-    </span>
-    <div class="bv_numReviews_component_container">
-      <meta itemprop="reviewCount" content="<?php echo $reviews_sum; ?>">
-      <button type="button" class="bv_numReviews_text " aria-label="Read <?php echo $reviews_sum; ?> Reviews" aria-expanded="false" id="num-reviews-button" role="link">(<?php echo $reviews_sum; ?>)</button>
+<div data-bv-show="rating_summary" data-bv-product-id="FHS4B" data-bv-ready="true">
+  <div class="bv-cleanslate bv-cv2-cleanslate bv_main_container">
+    <div class="bv-core-container-103" style="display: flex!important; align-items: center; padding-right: 17px!important">
+      <span class="bv-rating-stars-container" style="padding-right: 17px!important;">
+        <span class="bv-rating-stars bv-rating-stars-off" aria-hidden="true" style="font-size: 27px!important;"> ★★★★★ </span>
+        <span class="bv-rating-stars bv-rating-stars-on bv-width-from-rating-stats-<?php echo round($statistic['AverageOverallRating'], 1) * 20; ?>" aria-hidden="true" style="font-size: 27px!important;"> ★★★★★ </span>
+      </span>
+      <span class="bv_avgRating_component_container notranslate">
+        <button type="button" class="bv_avgRating " aria-expanded="false" aria-label="average rating value is <?php echo round($statistic['AverageOverallRating'], 1); ?> of 5." id="avg-rating-button" role="link" itemprop="ratingValue">
+          <?php echo round($statistic['AverageOverallRating'], 1); ?>
+        </button>
+      </span>
+      <div class="bv_numReviews_component_container">
+        <meta itemprop="reviewCount" content="<?php echo $reviews_sum; ?>">&nbsp;
+        <button type="button" class="bv_numReviews_text " aria-label="Read <?php echo $reviews_sum; ?> Reviews" aria-expanded="false" id="num-reviews-button" role="link">(<?php echo $reviews_sum; ?>)</button>
+      </div>
+    </div>
+    <div class="bv_main_container_row_flex">
+      <div class="bv_main_container_row_flex">
+        <div class="bv_button_component_container">
+          <button type="button" class="bv_button_buttonMinimalist " id="WAR">Write a review </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
