@@ -64,13 +64,13 @@ class Item
                 '20504231' => 'FHS4B',
                 '20080136' => 'TTS',
                 '20080131' => 'TSA4C',
-                '20080311' => 'OPTE4',
+                '20080130' => 'OPTE4',
                 '20080164' => 'PKIT20010',
                 'STR-ca' => 'STR'
             );
 
-            $new_sku = isset($sku_array[$sku]) ? $sku_array[$sku] : $sku;
-            $productUrl = $this->product->getProductUrl();
+            $sku = isset($sku_array[$sku]) ? $sku_array[$sku] : $sku;
+            // $productUrl = $this->product->getProductUrl();
 
             $post = $this->_postFactory->create();
             $collection = $post->getCollection();
@@ -79,8 +79,19 @@ class Item
             if (!empty($rating[0]['statistic'])) {
                 $statistic = json_decode($rating[0]['statistic'], true);
             }
-            $rat =  round($statistic['AverageOverallRating'], 1);
-            $result = '<h1>'.$rat.'</h1>'.$result;
+            $rat =  round($statistic['AverageOverallRating'], 1) * 20;
+
+            $result = '<div data-bv-show="rating_summary" data-bv-ready="true">
+                <div class="bv-cleanslate bv-cv2-cleanslate bv_main_container">
+                  <div class="bv-core-container-103">
+                    <span class="bv-rating-stars-container">
+                      <span class="bv-rating-stars bv-rating-stars-off" aria-hidden="true"> ★★★★★ </span>
+                      <span class="bv-rating-stars bv-rating-stars-on bv-width-from-rating-stats-' . $rat . '" aria-hidden="true"> ★★★★★ </span>
+                    </span>
+                  </div>
+                </div>
+              </div>' . $result;
+            //$result = '<h1>'.$rat.'</h1>'.$result;
 
         return $result;
     }

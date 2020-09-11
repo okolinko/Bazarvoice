@@ -1,7 +1,24 @@
 <?php
 if ($currentProduct = $this->getCurrentProduct()) {
   $sku = $currentProduct->getSku();
+
+  $sku_array = array(
+                'FIBERS-CA' => 'FIBERS',
+                'BBF-ca' => 'BBF',
+                '20504231' => 'FHS4B',
+                '20080136' => 'TTS',
+                '20080131' => 'TSA4C',
+                '20080311' => 'OPTE4',
+                '20080164' => 'PKIT20010',
+                'STR-ca' => 'STR'
+            );
+
+            $sku = isset($sku_array[$sku]) ? $sku_array[$sku] : $sku;
 }
+
+$array_reviews = $this->getMyCustomRating()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'reviews')->getData();
+// $array_reviews = $this->getMyCustomMethod()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'reviews')->getData();
+
 $rating = $this->getMyCustomRating()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'product')->getData();
 if (!empty($rating[0]['statistic'])) {
   $statistic = json_decode($rating[0]['statistic'], true);
@@ -11,7 +28,7 @@ foreach ($statistic['RatingDistribution'] as $value) {
   $reviews_sum += $value['Count'];
 }
 ?>
-<div data-bv-show="rating_summary" data-bv-product-id="FHS4B" data-bv-ready="true">
+<!-- <div data-bv-show="rating_summary" data-bv-ready="true">
   <div class="bv-cleanslate bv-cv2-cleanslate bv_main_container">
     <div class="bv-core-container-103" style="display: flex!important; align-items: center; padding-right: 17px!important">
       <span class="bv-rating-stars-container" style="padding-right: 17px!important;">
@@ -35,5 +52,43 @@ foreach ($statistic['RatingDistribution'] as $value) {
         </div>
       </div>
     </div>
+
+  <div>
+        <span style="color: #985234" class="test2"></span>
   </div>
-</div>
+
+  </div>
+</div> -->
+
+<!-- <div data-bv-show="review_highlights" data-bv-product-id="<?php echo $sku ?>"></div> -->
+<div data-bv-show="rating_summary" data-bv-product-id="<?php echo $sku ?>"></div>
+
+<script type="text/javascript">
+    require([ 'jquery', 'jquery/ui'], function($){
+        $(document).ready(function($) {
+            $("#WAR").click(function (e) {
+                e.preventDefault();
+                var id1 = "1";
+                var url = "<?php echo $block->getUrl('postjson/page/view', ['_secure' => false]) ?>";
+                jQuery.ajax({
+                    url: url,
+                    type: "POST",
+                    data: {
+                        id_1:id1
+                    },
+                    showLoader: true,
+                    cache: false,
+                    success: function(response){
+                        console.log(response);
+                        // $(".price").text("$"+response.price);
+                        $(".test2").text(response.message);
+                        console.log(response);
+                    },
+                    error:function (res) {
+                        console.log(res);
+                    }
+                });
+            })
+        });
+    });
+</script>

@@ -1,36 +1,68 @@
 <?php
   if ($currentProduct = $this->getCurrentProduct()) {
     $sku = $currentProduct->getSku();
+    $sku_array = array(
+                'FIBERS-CA' => 'FIBERS',
+                'BBF-ca' => 'BBF',
+                '20504231' => 'FHS4B',
+                '20080136' => 'TTS',
+                '20080131' => 'TSA4C',
+                '20080311' => 'OPTE4',
+                '20080164' => 'PKIT20010',
+                'STR-ca' => 'STR'
+            );
+
+            $sku = isset($sku_array[$sku]) ? $sku_array[$sku] : $sku;
  }
+  $reviews_sum = count($this->getMyCustomMethod2()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'reviews')->getData());
   $array_questions = $this->getMyCustomMethod2()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'questions')->getData();
   $array_answers = $this->getMyCustomMethod2()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'answers')->getData();
+
+$rating = $this->getMyCustomMethod2()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'product')->getData();
+if (!empty($rating[0]['statistic'])) {
+  $statistic = json_decode($rating[0]['statistic'], true);
+}
 ?>
+
 <script>
   require(['jquery', 'jquery/ui'], function($){
     $(document).ready( function() {
-
       let array_questions = <?php echo json_encode($array_questions); ?>;
       let array_answers = <?php echo json_encode($array_answers); ?>;
 
       let items_quantity = 10;
       let current_page = 1;
 
+      let current_year = new Date().getFullYear();
+      let current_month = new Date().getMonth();
+
       renderQuestion(array_questions, array_answers, items_quantity, current_page);
+
+      function timeShift(question_year, question_month) {
+        let time_message = '';
+        if(current_year === question_year) {
+          time_message = parseInt(current_month - question_month) + 1 + ' months';
+        } else if((current_year - question_year) === 1) {
+          if(current_month < question_month) {
+            time_message = parseInt(current_month + (12 - question_month)) + ' months';
+          } else {
+            time_message = ' a year';
+          }
+        } else {
+          time_message = parseInt(current_year - question_year) + ' years';
+        }
+        return time_message;
+      }
 
       function renderQuestion(array_questions, array_answers, items_quantity, current_page) {
         let questions = [];
         let answers = [];
         let item;
-        let current_year = new Date().getFullYear();
-        let current_month = new Date().getMonth();
 
         $.each(array_questions, function(index, value) {
-
-          //console.log(value.data);
-
-          //Find all answers for current question
-          array_answers.filter(function(el){
+          array_answers.filter(function(el){      //Find all answers for current question
             if(value.id == el.id) {
+              let time_message = timeShift(parseInt(el.data.slice(0,4)), parseInt(el.data.slice(5,7)));
               item =
                 `<li class="bv-content-item bv-secondary-content-answer bv-secondary-content-item" itemprop="suggestedAnswer" itemscope="" itemtype="http://schema.org/Answer">
                             <div class="bv-content-item-avatar-offset bv-content-item-avatar-offset-on">
@@ -50,7 +82,8 @@
                                                                 <div class="bv-content-datetime" role="presentation">
                                                                     <meta itemprop="dateCreated" content="2020-06-09">
                                                                     <meta itemprop="datePublished" content="2020-06-09">
-                                                                    <span class="bv-content-datetime-dot" aria-hidden="true">·</span> <span class="bv-content-datetime-stamp">months ago &nbsp;
+                                                                    <span class="bv-content-datetime-dot" aria-hidden="true">·</span> <span class="bv-content-datetime-stamp">
+                                                                        ${time_message} ago
                                                                     </span>
                                                                 </div>
                                                             </div>
@@ -80,6 +113,11 @@
             }
           });
           answers.answers_quantity_title = (answers.length !== 1) ? 'answers' : 'answer';
+
+          let question_year = parseInt(value.data.slice(0,4));
+          let question_month = parseInt(value.data.slice(5,7));
+          let time_message = timeShift(question_year, question_month);
+
           item =
             `<li class="bv-content-item bv-content-top-question bv-content-question" itemscope="" itemtype="http://schema.org/Question" data-content-id="Questions-${value.id}">
                     <div class="bv-content-item-avatar-offset bv-content-item-avatar-offset-on">
@@ -97,8 +135,8 @@
                                                             </button>
                                                         </span>
                                                         <div class="bv-content-datetime" role="presentation">
-                                                            <meta itemprop="dateCreated" content="2020-06-04">
-                                                            <meta itemprop="datePublished" content="2020-06-05"> <span class="bv-content-datetime-dot" aria-hidden="true">·</span> <span class="bv-content-datetime-stamp">ago &nbsp;</span> </div>
+                                                            <meta itemprop="dateCreated">
+                                                            <meta itemprop="datePublished"> <span class="bv-content-datetime-dot" aria-hidden="true">·</span> <span class="bv-content-datetime-stamp">${time_message} ago</span> </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -129,7 +167,7 @@
                         </div>
 
                         <div class="bv-content-actions-container">
-                            <div class="bv-secondary-content-actions-container"> <button type="button" aria-label="Answer this question by ${value.name}." class="bv-content-btn bv-content-secondary-btn bv-focusable"> Answer this Question </button> </div>
+                            <div class="bv-secondary-content-actions-container"> <button type="button" aria-label="Answer this question by ${value.name}." class="bv-content-btn bv-content-secondary-btn bv-focusable" data-question-id="${value.id}"> Answer this Question </button> </div>
                         </div>
 
                         <div class="bv-secondary-content-list">
@@ -168,34 +206,174 @@
           renderQuestion(array_questions, array_answers, items_quantity, current_page);
         }
       });
+      $('#bv-dropdown-select-questions').parent().on('mouseenter',function(){
+        $('#questions-custom-sortby').removeClass('hide-custom-block').addClass('show-custom-block');
+      });
+      $('#bv-dropdown-select-questions, .bv-dropdown').on('mouseleave',function(){
+        $('#questions-custom-sortby').removeClass('show-custom-block').addClass('hide-custom-block');
+      });
 
+        $('button.bv-ask-question').on('click', function (e) {
+        e.preventDefault();
+        $('#question-custom-form-container').removeClass('hide').addClass('show');
+        var question = $('#question-custom-form-container');
+        if (question.length) {
+           setTimeout(function(){ 
+            $('html, body').animate({
+                scrollTop: $("#question-custom-form-container").offset().top
+            }, 1000); 
+        }, 500);
+        }
+        });
+
+      $('#question-custom-form-container .bv-mbox-close').on('click', function(e){
+        e.preventDefault();
+        $('#question-custom-form-container').removeClass('show').addClass('hide');
+      });
+
+      $('#bv-dropdown-select-questions-sortby').children().on('click', function () {
+          console.log($(this).data('bv-dropdown-value'));
+      })
     });
   });
 </script>
-
-<div style="width: 90%; margin: 0 auto;" data-bv-show="questions" data-bv-product-id="FHS4B" data-bv-ready="true">
+<div id="custom-questions" class="container">
+  <div data-bv-show="questions" data-bv-product-id="FHS4B" data-bv-ready="true">
+  <div id="BVRRSearchContainer">
+    <div class="bv-cleanslate bv-cv2-cleanslate">
+      <div class="bv-shared bv-core-container-103">
+        <div class="bv-compat">
+          <div class="bv-content-search">
+            <div class="bv-masthead">
+              <div class="bv-masthead-product bv-summary-bar">
+                <div class="bv-secondary-summary">
+                  <dl class="bv-stars-container">
+                    <dt class="bv-rating-ratio">
+                      <a href="#" class="bv-rating-stars-container bv-focusable" title="Read <?php echo $reviews_sum; ?> Reviews">
+                        <span class="bv-rating-stars bv-rating-stars-off" aria-hidden="true"> ★★★★★ </span>
+                        <span class="bv-rating-stars-on bv-rating-stars bv-width-from-rating-stats-<?php echo round($statistic['AverageOverallRating'], 1) * 20; ?>" aria-hidden="true"> ★★★★★ </span>
+                        <span class="bv-off-screen"><?php echo round($statistic['AverageOverallRating'], 1); ?> out of 5 stars.</span>
+                      </a>
+                    </dt>
+                    <dd class="bv-rating-ratio-number">
+                      <span class="bv-rating"><span aria-hidden="true"><?php echo round($statistic['AverageOverallRating'], 1); ?></span></span>
+                    </dd>
+                    <dd class="bv-rating-ratio-count">
+                      <a href="#" class="bv-rating-label bv-text-link bv-focusable"> <?php echo $reviews_sum; ?> Reviews <span class="bv-off-screen">This action will navigate to reviews.</span>
+                      </a> </dd>
+                  </dl>
+                </div>
+              </div>
+              <div class="bv-searchbar" role="search" aria-label="Search">
+                <div class="bv-masthead-search bv-submission">
+                  <div class="bv-fieldsets">
+                    <div class="bv-expand-filter-button-offset-off">
+                      <label for="bv-text-field-search-contentSearch1" class="bv-off-screen">Search topics and reviews</label>
+                      <span class="bv-search-control-icon" aria-hidden="true">ϙ</span>
+                      <input id="bv-text-field-search-contentSearch1" class="bv-text bv-focusable bv-search-text" type="text" name="bv-search" placeholder="Search topics and reviews">
+                      <button class="bv-focusable bv-search-clear-icon bv-hidden">
+                        <span aria-hidden="true"> ✘ </span>
+                        <span class="bv-off-screen">Close</span>
+                      </button>
+                      <button type="button" class="bv-content-btn bv-content-search-btn bv-focusable">
+                        <span class="bv-search-control-icon" aria-hidden="true">ϙ</span>
+                        <span class="bv-off-screen">Search</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <ul class="bv-content-product-stats">
+                <li class="bv-content-product-stats-item bv-content-product-stats-item-first bv-content-product-stats-item-reviews">
+                  <a href="#" class="bv-content-data-count bv-focusable" data-content-type="review">
+                    <span class="bv-content-title"><?php echo $reviews_sum; ?></span>
+                    <span class="bv-content-data-label">Reviews</span>
+                  </a>
+                </li>
+                <li class="bv-content-product-stats-item bv-content-product-stats-item-questions">
+                  <a href="#" class="bv-content-data-count bv-focusable" data-content-type="question">
+                    <span class="bv-content-title"><?php echo count($array_questions) ?></span> <span class="bv-content-data-label">Questions</span>
+                  </a>
+                </li>
+                <li class="bv-content-product-stats-item bv-content-product-stats-item-last bv-content-product-stats-item-answers">
+                  <a href="#" class="bv-content-data-count bv-focusable" data-content-type="question">
+                    <span class="bv-content-title"><?php echo count($array_questions) ?></span>
+                    <span class="bv-content-data-label">Answers</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!---------------------------------------------->
   <div id="BVQAContainer">
     <div class="bv-cleanslate bv-cv2-cleanslate">
       <div class="bv-shared bv-core-container-103">
         <div class="bv-compat bv-scroll-spy">
           <meta name="bvDateModified" content="2020-08-21">
           <div class="bv-content-list-container">
+            <!-- start header block -->
             <div class="bv-header">
               <div class="bv-action-bar">
                 <h2 class="bv-action-bar-header bv-focusable" tabindex="-1">Questions</h2>
+                <div class="bv-ask-question-container bv-write-container">
+                  <button type="button" class="bv-ask-question bv-focusable bv-submission-button"> Ask a question  </button>
+                </div>
+              </div>
+              <div class="bv-control-bar">
+                <div class="bv-control-bar-count">
+                  <div class="bv-content-pagination-pages-current bv-focusable" tabindex="-1"><span class="bv-control-bar-count-from"></span>–<span class="bv-control-bar-count-to"></span> of <span class="bv-control-bar-count-total">
+                      <?php print_r(count($array_questions)); ?></span> Questions</div>
+                </div>
+                <div class="bv-control-bar-sort">
+                  <div class="bv-dropdown">
+                    <div class="bv-dropdown-target" role="menu">
+                      <span id="bv-dropdown-select-questions" class="bv-dropdown-label"> Sort by: </span>
+                      <button type="button" class="bv-focusable" aria-haspopup="true" aria-expanded="false" role="menuitem" aria-labelledby="bv-dropdown-select-questions bv-dropdown-title-questions">
+                        <span id="bv-dropdown-title-questions" class="bv-dropdown-title">            </span>
+                        <span class="bv-dropdown-arrow" aria-hidden="true" role="presentation"> ▼ </span>
+                        <span class="bv-off-screen">Menu</span>
+                      </button>
+                    </div>
+                    <div id="questions-custom-sortby" class="hide-custom-block">
+                      <div class="bv-core-container-103">
+                        <div class="bv-select-dropdown bv-shared bv-dropdown-container bv-content-sort-dropdown">
+                          <div class="bv-compat">
+                            <div class="bv-dropdown">
+                              <ul id="bv-dropdown-select-questions-sortby" role="menu" class="bv-dropdown-active">
+                                <li class="bv-dropdown-item bv-focusable" data-bv-dropdown-value="recentQuestionsFirst" tabindex="0" role="menuitem"> Newest questions </li>
+                                <li class="bv-dropdown-item bv-focusable" data-bv-dropdown-value="recentAnswersFirst" tabindex="0" role="menuitem"> Newest answers </li>
+                                <li class="bv-dropdown-item bv-focusable" data-bv-dropdown-value="mostAnsweredQuestionsFirst" tabindex="0" role="menuitem"> Most answered </li>
+                                <li class="bv-dropdown-item bv-focusable" data-bv-dropdown-value="mostAnsweredQuestionsLast" tabindex="0" role="menuitem"> Answers needed </li>
+                                <!--li class="bv-dropdown-item bv-focusable" data-bv-dropdown-value="helpfulnessAnswersFirst" tabindex="0" role="menuitem"> Most helpful answers </li-->
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
+            <!-- end header block -->
+
+            <!-- start list of questions block -->
             <ol class="bv-content-list bv-content-list-questions custom-list-questions">
 
             </ol>
+            <!-- end list of questions block -->
 
+            <!-- start pagination block -->
             <div class="bv-content-pagination">
               <div class="bv-content-pagination-container">
                 <div class="bv-control-bar-count">
                   <div class="bv-content-pagination-pages-current bv-focusable" tabindex="-1">
                     <span class="bv-control-bar-count-from"></span>–<span class="bv-control-bar-count-to"></span> of <span class="bv-control-bar-count-total">
-                                              <?php print_r(count($array_questions)); ?>
-                                          </span> Questions
+                      <?php print_r(count($array_questions)); ?></span> Questions
                   </div>
                 </div>
                 <ul class="bv-content-pagination-buttons" role="presentation">
@@ -214,9 +392,251 @@
                 </ul>
               </div>
             </div>
+            <!-- end pagination block -->
+
+            <!-- start question form block -->
+            <div id="question-custom-form-container" class="bv-inline-form-container-question hide">
+              <div id="bv-mboxzone-questionSubmission1" class="bv-mboxzone bv-mbox-opened" style="height: auto !important;">
+                <div class="bv-mbox-inner bv-core-container-103 bv-mbox-questionSubmission1">
+                  <div class="bv-mbox-wrapper bv-mbox-content-submission-question bv-mbox-narrow bv-mbox-inline">
+                    <div id="bv-mbox-questionSubmission1-list" class="bv-mbox" role="dialog"
+                    >
+                      <button type="button" name="Cancel" class="bv-mbox-close bv-focusable" tabindex="0" >
+                        <span aria-hidden="true"> ✘ </span>
+                        <span id="bv-mbox-close-label" class="bv-off-screen">Close</span>
+                      </button>
+                      <div class="bv-mbox-content-container">
+                        <h2 class="bv-mbox-breadcrumb">
+                        	<span data-bv-mbox-layer-index="1" class="bv-mbox-breadcrumb-item" id="bv-mbox-breadcrumb-item">	<span>Ask a Question</span>
+                        	</span>
+                        </h2>
+                        <div class="bv-mbox-injection-container" style="height: 472px !important;">
+                          <div class="bv-mbox-injection-target bv-mbox-current">
+                            <div class="bv-submission bv-submission-image">
+                              <div class="bv-compat">
+                                <form id="bv-submitquestion-product" action="#" accept-charset="utf-8" method="POST" class="bv-form">
+                                  <input type="hidden" name="passkey" value="b5xjo1fw42ctw528lazc88mz8" class="bv-noremember">
+                                  <input type="hidden" name="action" value="submit" class="bv-noremember">
+                                  <input type="hidden" name="apiversion" value="5.5" class="bv-noremember">
+                                  <input type="hidden" name="callback" value="parent.rpc.returnSubmissionResponse" class="bv-noremember">
+                                  <input type="hidden" name="productid" value="PKIT20010" class="bv-noremember">
+                                  <input type="hidden" name="campaignid" value="BV_QUESTION_DISPLAY" class="bv-noremember">
+                                  <input type="hidden" name="fp" value="" class="bv-noremember">
+                                  <input type="hidden" name="forceutf8" value="☠" class="bv-noremember">
+                                  <input type="hidden" name="locale" value="en_US" class="bv-noremember">
+                                  <input type="hidden" name="contextdatavalue_VerifiedPurchaser" value="False" class="bv-noremember">
+                                  <input type="hidden" name="displaycode" value="18542-en_us" class="bv-noremember">
+                                  <input type="hidden" name="hostedauthentication_callbackUrl" value="https://www.toppik.com/shop/hair-perfecting-tool-kit/" class="bv-noremember">
+                                  <input type="hidden" name="sendemailalertwhenpublished" class="bv-noremember bv-form-ignore" value="true">
+                                  <input type="hidden" name="sendemailalertwhencommented" class="bv-noremember bv-form-ignore" value="true">
+                                  <input type="hidden" name="sendemailalertwhenanswered" class="bv-noremember bv-form-ignore" value="true">
+                                  <div class="bv-submission-section">
+                                    <span id="bv-required-text">
+                                      <p class="bv-required-fields-text">Required fields are marked with *</p>
+                                    </span>
+                                    <span class="bv-off-screen" id="bv-required-text-reader">Required field</span>
+                                    <div class="bv-fieldsets bv-input-fieldsets">
+                                      <fieldset class="bv-fieldset bv-fieldset-questionsummary bv-textarea-field">
+                                        <div class="bv-fieldset-arrowicon"></div>
+                                        <div class="bv-fieldset-inner"> <label for="bv-textarea-question-field-questionsummary" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Question* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation">Error: Required.</span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-sublabel"> Maximum of 255 characters. </span> <span class="bv-helper"> <span class="bv-helper-label">Required</span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <textarea id="bv-textarea-question-field-questionsummary" aria-describedby="bv-required-text" class="bv-text bv-focusable " name="questionsummary" maxlength="255" placeholder="Ask a question..." required="" aria-required="true" tabindex="0" style="overflow-wrap: break-word; overflow: hidden !important; height: 90px !important;" aria-invalid="true"></textarea> </div>
+                                      </fieldset>
+                                      <fieldset class="bv-fieldset bv-fieldset-usernickname bv-text-field bv-fieldset-small bv-mincount">
+                                        <div class="bv-fieldset-arrowicon"></div>
+                                        <div class="bv-fieldset-inner"> <label for="bv-text-question-field-usernickname" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Nickname* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation">0 out of a minimum 4 characters used</span> </span> <span class="bv-off-screen">Maximum of 25 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label" role="status" aria-live="polite">0 / 4</span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input autocomplete="nickname" id="bv-text-question-field-usernickname" class="bv-text bv-focusable " type="text" name="usernickname" maxlength="25" placeholder="Example: jackie27" value="" required="" aria-required="true" tabindex="0"> </div>
+                                      </fieldset>
+                                      <fieldset class="bv-fieldset bv-fieldset-userlocation bv-text-field bv-nocount bv-fieldset-small">
+                                        <div class="bv-fieldset-arrowicon"></div>
+                                        <div class="bv-fieldset-inner"> <label for="bv-text-question-field-userlocation" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Location </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation"></span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input id="bv-text-question-field-userlocation" class="bv-text bv-focusable " type="text" name="userlocation" maxlength="255" placeholder="Example: New York, NY" value="" tabindex="0"> </div>
+                                      </fieldset>
+                                      <fieldset class="bv-fieldset bv-fieldset-hostedauthentication_authenticationemail bv-email-field bv-nocount bv-fieldset-small-alone">
+                                        <div class="bv-fieldset-arrowicon"></div>
+                                        <div class="bv-fieldset-inner"> <label for="bv-email-question-field-hostedauthentication_authenticationemail" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Email* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation"></span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label" id="bv-invalid-email-for-aria-describedby"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input autocomplete="email" id="bv-email-question-field-hostedauthentication_authenticationemail" class="bv-text bv-focusable bv-email" type="email" name="hostedauthentication_authenticationemail" maxlength="255" placeholder="Example: youremail@example.com" value="" required="" aria-required="true" aria-describedby="bv-invalid-email-for-aria-describedby" tabindex="0"> </div>
+                                      </fieldset>
+                                    </div>
+                                    <div class="bv-fieldsets bv-fieldsets-actions">
+                                      <div class="bv-form-actions bv-fieldset">
+                                        <div class="bv-fieldset-arrowicon"></div>
+                                        <div class="bv-fieldset-inner">
+                                          <div class="bv-actions-container">
+                                            <p id="bv-casltext-question" class="bv-fieldset-casltext">You may receive emails regarding this submission. Any emails will include the ability to opt-out of future communications.</p>
+                                            <button type="button" aria-label="Post Question" aria-describedby="bv-casltext-question" class="bv-form-actions-submit bv-submit bv-focusable bv-submission-button-submit" name="bv-submit-button" tabindex="0" id="question-post">Post Question</button> <button type="button" class="bv-form-action bv-cancel bv-submission-button-submit">Cancel</button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- end question form block -->
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+</div>
+
+
+
+<script type="text/javascript">
+    require([ 'jquery', 'jquery/ui'], function($){
+        $(document).ready(function($) {
+        $("button[data-review-id]").click(function(e){
+            var id_comment = ($(this).attr('data-review-id'));
+            var sku = <?php echo json_encode($sku); ?>;
+            var typeJson = "submitreviewcomment.json";
+            var pattern = /^[a-z0-9_-]+@[a-z0-9-]+\.([a-z]{1,6}\.)?[a-z]{2,6}$/i;
+            $(document).click(function(event) {
+                if($(event.target).closest('#post-comment').length) {
+
+                if ($("#bv-textarea-field-commenttext").val() === ''){
+                    $('.bv-fieldset-commenttext').addClass('bv-error');
+                    $('.bv-fieldset-commenttext').removeClass('bv-valid');
+                    return;
+                }
+                else {
+                    $('.bv-fieldset-commenttext').addClass('bv-valid');
+                    $('.bv-fieldset-commenttext').removeClass('bv-error');
+                }
+                if($("#bv-text-field-usernickname").val() === ''){
+                    $('.bv-fieldset-usernickname').addClass('bv-error');
+                    $('.bv-fieldset-usernickname').removeClass('bv-valid');
+                    return;
+                }
+                else {
+                    $('.bv-fieldset-usernickname').addClass('bv-valid');
+                    $('.bv-fieldset-usernickname').removeClass('bv-error');
+                }
+                if($("#bv-email-field-hostedauthentication_authenticationemail").val() === '' || $("#bv-email-field-hostedauthentication_authenticationemail").val().search(pattern) !== 0 ){
+                    $('.bv-fieldset-hostedauthentication_authenticationemail').addClass('bv-error');
+                    $('.bv-fieldset-hostedauthentication_authenticationemail').removeClass('bv-valid');
+                    return;
+                }
+                else {
+                    $('.bv-fieldset-hostedauthentication_authenticationemail').addClass('bv-valid');
+                    $('.bv-fieldset-hostedauthentication_authenticationemail').removeClass('bv-error');
+                    e.preventDefault();
+                    var comment = $("#bv-textarea-field-commenttext").val();
+                    var nickname = $("#bv-text-field-usernickname").val();
+                    var location = $("#bv-text-field-userlocation").val();
+                    var email = $("#bv-email-field-hostedauthentication_authenticationemail").val();
+                    console.log(comment);
+                    console.log(nickname);
+                    console.log(location);
+                    console.log(email);
+                    console.log(sku);
+                    var url = "<?php echo $block->getUrl('postjson/page/view', ['_secure' => false]) ?>";
+                    jQuery.ajax({
+                        url: url,
+                        type: "POST",
+                        data: {
+                            id_comment:id_comment,
+                            comment:comment,
+                            nickname:nickname,
+                            location:location,
+                            email:email,
+                            sku:sku,
+                            typeJson:typeJson
+                        },
+                        showLoader: true,
+                        cache: false,
+                        success: function(response){
+                            console.log(response);
+                        },
+                        error:function (res) {
+                            console.log(res);
+                        }
+                    });
+                }
+
+                }
+
+            });
+
+        });
+        });
+    });
+</script>
+
+
+
+
+<script type="text/javascript">
+    require([ 'jquery', 'jquery/ui'], function($){
+        $(document).ready(function($) {
+            var sku = <?php echo json_encode($sku); ?>;
+            var typeJson = "submitquestion.json";
+            var pattern = /^[a-z0-9_-]+@[a-z0-9-]+\.([a-z]{1,6}\.)?[a-z]{2,6}$/i;
+            $("#question-post").click(function (e) {
+
+                if ($("#bv-textarea-question-field-questionsummary").val() === '' || $("#bv-textarea-question-field-questionsummary").val().length > 255 ){
+                    $('.bv-fieldset-questionsummary').addClass('bv-error');
+                    $('.bv-fieldset-questionsummary').removeClass('bv-valid');
+                    return;
+                }
+                else {
+                    $('.bv-fieldset-questionsummary').addClass('bv-valid');
+                    $('.bv-fieldset-questionsummary').removeClass('bv-error');
+                }
+                if($("#bv-text-question-field-usernickname").val() === ''){
+                    $('.bv-fieldset-usernickname').addClass('bv-error');
+                    $('.bv-fieldset-usernickname').removeClass('bv-valid');
+                    return;
+                }
+                else {
+                    $('.bv-fieldset-usernickname').addClass('bv-valid');
+                    $('.bv-fieldset-usernickname').removeClass('bv-error');
+                }
+                if($("#bv-email-question-field-hostedauthentication_authenticationemail").val() === ''  || $("#bv-email-question-field-hostedauthentication_authenticationemail").val().search(pattern) !== 0){
+                    $('.bv-fieldset-hostedauthentication_authenticationemail').addClass('bv-error');
+                    $('.bv-fieldset-hostedauthentication_authenticationemail').removeClass('bv-valid');
+                    return;
+                }
+                else {
+                    $('.bv-fieldset-hostedauthentication_authenticationemail').addClass('bv-valid');
+                    $('.bv-fieldset-hostedauthentication_authenticationemail').removeClass('bv-error');
+                    e.preventDefault();
+                    var comment = $("#bv-textarea-question-field-questionsummary").val();
+                    var nickname = $("#bv-text-question-field-usernickname").val();
+                    var location = $("#bv-text-question-field-userlocation").val();
+                    var email = $("#bv-email-question-field-hostedauthentication_authenticationemail").val();
+                    console.log(comment);
+                    console.log(nickname);
+                    console.log(location);
+                    console.log(email);
+                    console.log(sku);
+                    var url = "<?php echo $block->getUrl('postjson/page/view', ['_secure' => false]) ?>";
+                    jQuery.ajax({
+                        url: url,
+                        type: "POST",
+                        data: {
+                            comment:comment,
+                            nickname:nickname,
+                            location:location,
+                            email:email,
+                            sku:sku,
+                            typeJson:typeJson
+                        },
+                        showLoader: true,
+                        cache: false,
+                        success: function(response){
+                            console.log(response);
+                        },
+                        error:function (res) {
+                            console.log(res);
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>

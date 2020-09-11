@@ -22,11 +22,6 @@ class Display extends \Magento\Framework\View\Element\Template
 		parent::__construct($context);
 	}
 
-	public function sayHello()
-	{
-		return __('Hello World');
-	}
-
 	public function getCurrentProduct()
     {       
         return $this->_registry->registry('current_product');

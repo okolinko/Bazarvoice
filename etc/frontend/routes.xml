@@ -4,5 +4,8 @@
         <route frontName="bazaarvoice" id="bazaarvoice">
             <module name="Hunters_Bazaarvoice"/>
         </route>
+        <route id="postjson" frontName="postjson">
+			<module name="Hunters_Bazaarvoice"/>
+		</route>
     </router>
 </config>

@@ -1,40 +1,364 @@
 <?php
 if ($currentProduct = $this->getCurrentProduct()) {
   $sku = $currentProduct->getSku();
+
+  $sku_array = array(
+                'FIBERS-CA' => 'FIBERS',
+                'BBF-ca' => 'BBF',
+                '20504231' => 'FHS4B',
+                '20080136' => 'TTS',
+                '20080131' => 'TSA4C',
+                '20080311' => 'OPTE4',
+                '20080164' => 'PKIT20010',
+                'STR-ca' => 'STR'
+            );
+
+            $sku = isset($sku_array[$sku]) ? $sku_array[$sku] : $sku;
 }
 $array_reviews = $this->getMyCustomMethod()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'reviews')->getData();
+$array_reviewcomments = $this->getMyCustomMethod()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'reviewcomments')->getData();
 $rating = $this->getMyCustomMethod()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'product')->getData();
+
+$questions_sum = count($this->getMyCustomMethod()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'questions')->getData());
+$answers_sum = count($this->getMyCustomMethod()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'answers')->getData());
 
 if (!empty($rating[0]['statistic'])) {
   $statistic = json_decode($rating[0]['statistic'], true);
   $rat = $statistic['RatingDistribution'];
   $rating_general = array_fill(1, 5, 0);
+  $reviews_sum = 0;
   foreach ($rat as $value) {
     $rating_general[$value['RatingValue']] = $value['Count'];
+    $reviews_sum += $value['Count'];
   }
 }
 ?>
-
 <script>
   require(['jquery', 'jquery/ui'], function($){
     $(document).ready( function() {
       let array_reviews = <?php echo json_encode($array_reviews); ?>;
+      let array_reviewcomments = <?php echo json_encode($array_reviewcomments); ?>;
       let items_quantity = 8;
       let current_page = 1;
       let current_year = new Date().getFullYear();
 
-      renderReviews(array_reviews, items_quantity, current_page);
+      renderReviews(array_reviews, array_reviewcomments, items_quantity, current_page);
 
-      function renderReviews(array_reviews, items_quantity, current_page) {
+      let comment_form = `<div class="bv-inline-form-container">
+    <div id="bv-mboxzone-commentSubmission1_inline" class="bv-mboxzone bv-mbox-opened" style="top: 2506.38px !important; left: 382px !important; height: auto !important;">
+        <div class="bv-mbox-inner bv-core-container-103 bv-mbox-commentSubmission1_inline" role="region" aria-label="">
+            <div class="bv-mbox-wrapper bv-mbox-secondary-content bv-mbox-content-submission-comment bv-mbox-narrow bv-mbox-over bv-mbox-inline">
+                <div id="bv-mbox-commentSubmission1_inline-list" class="bv-mbox">
+                    <button type="button" name="Cancel" class="bv-mbox-close bv-focusable custom-commentform-close" tabindex="0" >
+                        <span aria-hidden="true"> ✘ </span>
+                        <span id="bv-mbox-close-label" class="bv-off-screen">Close</span>
+                    </button>
+                    <div class="bv-mbox-sidebar"></div>
+                    <div class="bv-mbox-content-container">
+                        <h2 class="bv-mbox-breadcrumb">
+                            <span class="bv-mbox-breadcrumb-item" id="bv-mbox-breadcrumb-item">
+                                <span>Post Comment</span>
+                            </span>
+                        </h2>
+
+                        <div class="bv-mbox-injection-container" style="height: 551px !important;">
+                            <div class="bv-mbox-injection-target bv-mbox-current">
+                                <div class="bv-submission bv-submission-noimage bv-fake-inline">
+                                    <div class="bv-compat">
+                                        <form id="bv-submitcomment-review" action="" accept-charset="utf-8" method="POST" class="bv-form">
+                                        <input type="hidden" name="passkey" value="b5xjo1fw42ctw528lazc88mz8" class="bv-noremember">
+                                        <input type="hidden" name="action" value="submit" class="bv-noremember"> <input type="hidden" name="apiversion" value="5.5" class="bv-noremember"> <input type="hidden" name="callback" value="parent.rpc.returnSubmissionResponse" class="bv-noremember">
+                                        <input type="hidden" name="reviewid" value="212089419" class="bv-noremember">
+                                        <input type="hidden" name="campaignid" value="BV_REVIEW_DISPLAY" class="bv-noremember">
+                                        <input type="hidden" name="fp" value="" class="bv-noremember">
+                                        <input type="hidden" name="forceutf8" value="☠" class="bv-noremember"> <input type="hidden" name="locale" value="en_US" class="bv-noremember"> <input type="hidden" name="contextdatavalue_VerifiedPurchaser" value="False" class="bv-noremember">
+                                        <input type="hidden" name="displaycode" value="18542-en_us" class="bv-noremember">
+                                        <input type="hidden" name="hostedauthentication_callbackUrl" value="https://www.toppik.com/shop/hair-perfecting-tool-kit/" class="bv-noremember"> <input type="hidden" name="sendemailalertwhenpublished" class="bv-noremember bv-form-ignore" value="true">
+                                        <input type="hidden" name="sendemailalertwhencommented" class="bv-noremember bv-form-ignore" value="true">
+                                        <input type="hidden" name="sendemailalertwhenanswered" class="bv-noremember bv-form-ignore" value="true">
+                                            <div class="bv-submission-section">
+                                                 <span id="bv-required-text">
+                                                    <p class="bv-required-fields-text">Required fields are marked with *</p>
+                                                </span>
+                                                <span class="bv-off-screen" id="bv-required-text-reader">Required field</span>
+                                                <div class="bv-fieldsets bv-input-fieldsets">
+                                                    <fieldset class="bv-fieldset bv-fieldset-commenttext bv-textarea-field bv-mincount">
+                                                        <div class="bv-fieldset-arrowicon"></div>
+                                                        <div class="bv-fieldset-inner"> <label for="bv-textarea-field-commenttext" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Comment* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation">Error: Required.</span> </span> <span class="bv-off-screen">Maximum of 10000 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label">Required</span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <textarea id="bv-textarea-field-commenttext" aria-describedby="bv-required-text" class="bv-text bv-focusable " name="commenttext" maxlength="10000" placeholder="Write a comment..." required="" aria-required="true" tabindex="0" style="overflow-wrap: break-word; overflow: hidden !important; height: 90px !important;" aria-invalid="true"></textarea> </div>
+                                                    </fieldset>
+                                                    <fieldset class="bv-fieldset bv-fieldset-usernickname bv-text-field bv-fieldset-small bv-mincount">
+                                                        <div class="bv-fieldset-arrowicon"></div>
+                                                        <div class="bv-fieldset-inner"> <label for="bv-text-field-usernickname" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Nickname* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation">Error: Required.</span> </span> <span class="bv-off-screen">Maximum of 25 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label" role="status" aria-live="polite">Required</span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input autocomplete="nickname" id="bv-text-field-usernickname" class="bv-text bv-focusable " type="text" name="usernickname" maxlength="25" placeholder="Example: jackie27" value="" required="" aria-required="true" tabindex="0" aria-invalid="true"> </div>
+                                                    </fieldset>
+                                                    <fieldset class="bv-fieldset bv-fieldset-userlocation bv-text-field bv-nocount bv-fieldset-small">
+                                                        <div class="bv-fieldset-arrowicon"></div>
+                                                        <div class="bv-fieldset-inner"> <label for="bv-text-field-userlocation" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Location </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation">Field input is valid.</span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input id="bv-text-field-userlocation" class="bv-text bv-focusable " type="text" name="userlocation" maxlength="255" placeholder="Example: New York, NY" value="" tabindex="0"> </div>
+                                                    </fieldset>
+                                                    <fieldset class="bv-fieldset bv-fieldset-hostedauthentication_authenticationemail bv-email-field bv-fieldset-small-alone ">
+                                                        <div class="bv-fieldset-arrowicon"></div>
+                                                        <div class="bv-fieldset-inner"> <label for="bv-email-field-hostedauthentication_authenticationemail" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Email* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation">Error: Required.</span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label" id="bv-invalid-email-for-aria-describedby">Required</span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input autocomplete="email" id="bv-email-field-hostedauthentication_authenticationemail" class="bv-text bv-focusable bv-email" type="email" name="hostedauthentication_authenticationemail" maxlength="255" placeholder="Example: youremail@example.com" value="" required="" aria-required="true" aria-describedby="bv-invalid-email-for-aria-describedby" tabindex="0" aria-invalid="true"> </div>
+                                                    </fieldset>
+                                                </div>
+                                                <div class="bv-fieldsets bv-fieldsets-actions">
+                                                    <div class="bv-form-actions bv-fieldset">
+                                                        <div class="bv-fieldset-arrowicon"></div>
+                                                        <div class="bv-fieldset-inner">
+                                                            <div class="bv-actions-container">
+                                                                <p id="bv-casltext-comment" class="bv-fieldset-casltext">You may receive emails regarding this submission. Any emails will include the ability to opt-out of future communications.</p>
+                                                                <button type="button" aria-label="Post Comment" aria-describedby="bv-casltext-comment" class="bv-form-actions-submit bv-submit bv-focusable bv-submission-button-submit" name="bv-submit-button" tabindex="0" id="post-comment">Post Comment</button>
+                                                                <button type="button" class="bv-form-action bv-cancel bv-submission-button-submit">Cancel</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>`;
+
+      $('.custom-review-link-prev').on('click', function(e){
+        e.preventDefault();
+        if(current_page > 1) {
+          current_page--;
+          renderReviews(array_reviews, array_reviewcomments, items_quantity, current_page);
+        }
+      });
+      $('.custom-review-link-next').on('click', function(e){
+        e.preventDefault();
+        if(items_quantity * current_page <= array_reviews.length) {
+          current_page++;
+          renderReviews(array_reviews, array_reviewcomments, items_quantity, current_page);
+        }
+      });
+
+      $('#bv-dropdown-select-reviews').parent().on('mouseenter',function(){
+        $('#reviews-custom-sortby').removeClass('hide-custom-block').addClass('show-custom-block');
+      });
+      $('#bv-dropdown-select-reviews, .bv-dropdown').on('mouseleave',function(){
+        $('#reviews-custom-sortby').removeClass('show-custom-block').addClass('hide-custom-block');
+      });
+
+      dropdownMenu($('.bv-dropdown[data-bv-filter-for="Rating"]'), $('#bv-content-filter-dropdown-Rating'));
+      dropdownMenu($('.bv-dropdown[data-bv-filter-for="My hair loss:"]'), $('#bv-content-filter-dropdown-SeverityOfLoss'));
+      dropdownMenu($('.bv-dropdown[data-bv-filter-for="Salon Professional:"]'), $('#bv-content-filter-dropdown-SalonProfessional'));
+
+      $('.bv-filter-control-custom').on('click', function(){
+        if($('#bv-custom-filters').hasClass('show')) {
+          $('#bv-custom-filters').removeClass('show');
+        } else {
+          $('#bv-custom-filters').addClass('show');
+        }
+      });
+
+      $('.custom-list-reviews').on('click', '.custom-comment-button', function (e) {
+        e.preventDefault();
+        $('.bv-inline-form-container').remove();
+        $($(this).closest('div.bv-content-actions-container')[0]).after(comment_form);
+      });
+      $('.custom-list-reviews').on('click', '.custom-commentform-close', function (e) {
+        e.preventDefault();
+        $('.bv-inline-form-container').remove();
+      });
+
+      $('#bv-dropdown-select-reviews-sortby').children().on('click', function () {
+        sortBy(array_reviews, $(this).data('bv-dropdown-value'));
+        $(this).siblings().removeClass('bv-dropdown-item-selected');
+        $(this).addClass('bv-dropdown-item-selected');
+        $('#bv-dropdown-title-reviews').text($(this).text());
+      });
+
+      $('#bv-content-filter-dropdown-Rating li').on('click', function(){
+        let ratings = [];
+        if($(this).hasClass('bv-dropdown-item-selected')) {
+          $(this).removeClass('bv-dropdown-item-selected');
+        } else {
+          $(this).addClass('bv-dropdown-item-selected');
+        };
+        $('#bv-content-filter-dropdown-Rating li').each(function (index, value) {
+          if($(value).hasClass('bv-dropdown-item-selected')) {
+            ratings.push($(value).data('bv-dropdown-value'));
+          }
+        });
+        filterByRating(array_reviews, ratings);
+      });
+      /*$('#bv-content-filter-dropdown-SeverityOfLoss li').on('click', function(){
+        let severities = [];
+        if($(this).hasClass('bv-dropdown-item-selected')) {
+          $(this).removeClass('bv-dropdown-item-selected');
+        } else {
+          $(this).addClass('bv-dropdown-item-selected');
+        };
+        $('#bv-content-filter-dropdown-SeverityOfLoss li').each(function (index, value) {
+          if($(value).hasClass('bv-dropdown-item-selected')) {
+            severities.push($(value).data('bv-dropdown-value'));
+          }
+        });
+        filterBySeverity(array_reviews, severities);
+      });*/
+      /*$('#bv-content-filter-dropdown-SalonProfessional li').on('click', function(){
+        let professionality = [];
+        if($(this).hasClass('bv-dropdown-item-selected')) {
+          $(this).removeClass('bv-dropdown-item-selected');
+        } else {
+          $(this).addClass('bv-dropdown-item-selected');
+        };
+        $('#bv-content-filter-dropdown-SalonProfessional li').each(function (index, value) {
+          if($(value).hasClass('bv-dropdown-item-selected')) {
+            professionality.push($(value).data('bv-dropdown-value'));
+          }
+        });
+        filterByProfessionality(array_reviews, professionality);
+      });*/
+      /****************** functions *********************/
+      function dropdownMenu(hover_block, menu_block){
+        hover_block.hover(
+          function(){
+            menu_block.removeClass('hide-custom-block').addClass('show-custom-block');
+          },function(){
+            menu_block.removeClass('show-custom-block').addClass('hide-custom-block');
+          }
+        );
+      }
+      function sortBy(array_reviews, sort_parameter) {
+        array_reviews_sort = array_reviews.sort(function(a, b){
+          if(sort_parameter == 'relevancy') {
+            return JSON.parse(b.statistic).Votes - JSON.parse(a.statistic).Votes;
+          }
+          if(sort_parameter == 'positive') {
+            return b.rating - a.rating;
+          }
+          if(sort_parameter == 'negative') {
+            return a.rating - b.rating;
+          }
+          if(sort_parameter == 'mostRecent') {
+            return b.data.slice(0, 4) - a.data.slice(0, 4);
+          }
+        });
+        renderReviews(array_reviews_sort, array_reviewcomments, items_quantity, current_page);
+      };
+      function filterByRating(array_reviews, ratings) {
+        if(ratings.length > 0) {
+          const array_reviews_filtered = array_reviews.filter(function(item){
+            for(var i = 0; i < ratings.length; i++) {
+              if(item.rating == ratings[i]) return item;
+            }
+          });
+          renderReviews(array_reviews_filtered, array_reviewcomments, items_quantity, current_page);
+        } else {
+          renderReviews(array_reviews, array_reviewcomments, items_quantity, current_page);
+        }
+      }
+      function filterBySeverity(array_reviews, severities) {
+        if(severities.length > 0) {
+          const array_reviews_filtered = array_reviews.filter(function(item){
+            let context_data_values = JSON.parse(item.context_data_values);
+            let current_severity = context_data_values.SeverityOfLoss;
+            if(current_severity) {
+              for(var i = 0; i < severities.length; i++) {
+                if(current_severity.Value == severities[i]) return item;
+              }
+            }
+          });
+          renderReviews(array_reviews_filtered, array_reviewcomments, items_quantity, current_page);
+        } else {
+          renderReviews(array_reviews, array_reviewcomments, items_quantity, current_page);
+        }
+      }
+      function filterByProfessionality(array_reviews, professionality) {
+        if(professionality.length > 0) {
+          const array_reviews_filtered = array_reviews.filter(function(item){
+            let context_data_values = JSON.parse(item.context_data_values);
+            let current_professionality = context_data_values.SalonProfessional;
+            if(typeof current_professionality !== "undefined") {
+              for(var i = 0; i < professionality.length; i++) {
+                console.log(item.name);
+                console.log(current_professionality);
+                console.log('end');
+                if(current_professionality.Value == professionality[i]) return item;
+              }
+            }
+          });
+          console.log(array_reviews_filtered.length);
+          renderReviews(array_reviews_filtered, array_reviewcomments, items_quantity, current_page);
+        } else {
+          renderReviews(array_reviews, array_reviewcomments, items_quantity, current_page);
+        }
+      }
+      function renderReviews(array_reviews, array_reviewcomments, items_quantity, current_page) {
         let reviews = [];
+        let reviewcomments = [];
         let item;
-
+        let gender = '';
+        let gender_symbol = '';
         $.each(array_reviews, function(index, value) {
+          array_reviewcomments.filter(function(el) {     //Find all comments for current review
+            if (value.id == el.id) {
+              gender = (typeof(el.Gender) !== 'undefined') ? el.Gender.Value : 'Male';
+              gender_symbol = (gender == 'Male') ? '♂' : '♀';
+              item =
+                `<li class="bv-content-item bv-secondary-content-comment bv-secondary-content-item" itemprop="comment" itemscope="" itemtype="http://schema.org/Comment">
+                  <div class="bv-content-item-avatar-offset bv-content-item-avatar-offset-on">
+                    <div class="bv-content-container">
+                      <div class="bv-content-core ">
+                        <div class="bv-content-header">
+                          <div class="bv-author-avatar">
+                            <span title="Avatar image" class="bv-author-no-avatar bv-author-gender-" aria-hidden="true">
+                              ${gender_symbol}
+                            </span>
+                          </div>
+                          <div class="bv-content-data-summary">
+                            <div class="bv-content-header-meta">
+                              <div class="bv-content-meta-wrapper">
+                                <div class="bv-content-meta" role="presentation">
+                                  <div class="bv-content-reference-data bv-content-author-name">
+                                    <div class="bv-author">
+                                      <span class="bv-author" itemprop="creator">
+                                        ${el.name}
+                                      </span>
+                                    </div>
+                                    <div class="bv-content-datetime" role="presentation">
+                                      <meta itemprop="dateCreated" content="2020-03-15">
+                                      <meta itemprop="datePublished" content="2020-03-15">
+                                      <span class="bv-content-datetime-dot" aria-hidden="true">·</span> <span class="bv-content-datetime-stamp"> ago</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="bv-content-details-offset-off">
+                          <div class="bv-content-summary">
+                            <div class="bv-content-summary-body" itemprop="text">
+                              <div class="bv-content-summary-body-text">
+                                <p>${el.text}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              </li>`;
+              reviewcomments.push(item);
+            }
+          });
+
           let context_data_values = JSON.parse(value.context_data_values);
           let reviews_statistic = JSON.parse(value.statistic);
-          let gender = (typeof(context_data_values.Gender) !== 'undefined') ? context_data_values.Gender.Value : 'Male';
-          let gender_symbol = (gender == 'Male') ? '♂' : '♀';
+          gender = (typeof(context_data_values.Gender) !== 'undefined') ? context_data_values.Gender.Value : 'Male';
+          gender_symbol = (gender == 'Male') ? '♂' : '♀';
           let years_ago = (current_year - value.data.slice(0, 4) > 1) ? current_year - value.data.slice(0, 4) + ' years ago' : 'a year ago';
+
           item =
             `<li class="bv-content-item bv-content-top-review bv-content-review" itemprop="review" itemscope="" itemtype="http://schema.org/Review" >
         <div class="bv-author-profile">
@@ -132,7 +456,7 @@ if (!empty($rating[0]['statistic'])) {
                             <h3>${value.name}</h3>
                           </button>
                           <div class="bv-content-datetime" role="presentation">
-                            <meta itemprop="dateCreated" content=">
+                            <meta itemprop="dateCreated" content="">
                             <meta itemprop="datePublished" content="-">
                             <span class="bv-content-datetime-dot" aria-hidden="true">·</span>
                             <span class="bv-content-datetime-stamp">
@@ -172,8 +496,8 @@ if (!empty($rating[0]['statistic'])) {
               <div class="bv-content-details-container">
                 <div class="bv-secondary-ratings" role="presentation">
                   <dl class="bv-content-secondary-ratings">
-                    <dt class="bv-content-secondary-ratings-label">Effectiveness</dt>
-                    <dd class="bv-popup-histogram-ratings-bar">
+                    <dt class="bv-content-secondary-ratings-label" style="display: ${reviews_statistic.Effectiveness ? 'block!important' : 'none!important'}">Effectiveness</dt>
+                    <dd class="bv-popup-histogram-ratings-bar" style="display: ${reviews_statistic.Effectiveness ? 'block!important' : 'none!important'}">
                       <span class="bv-content-secondary-ratings-container">
                         <ul class="bv-content-secondary-ratings-bars" role="presentation">
                           <li class="bv-content-secondary-ratings-bar" role="presentation"></li>
@@ -186,8 +510,8 @@ if (!empty($rating[0]['statistic'])) {
                         <span class="bv-off-screen">Effectiveness, ${reviews_statistic.Effectiveness ? reviews_statistic.Effectiveness.Value : 0} out of 5</span>
                       </span>
                     </dd>
-                    <dt class="bv-content-secondary-ratings-label">Reliability</dt>
-                    <dd class="bv-popup-histogram-ratings-bar">
+                    <dt class="bv-content-secondary-ratings-label" style="display: ${reviews_statistic.Reliability ? 'block!important' : 'none!important'}">Reliability</dt>
+                    <dd class="bv-popup-histogram-ratings-bar" style="display: ${reviews_statistic.Reliability ? 'block!important' : 'none!important'}">
                       <span class="bv-content-secondary-ratings-container">
                         <ul class="bv-content-secondary-ratings-bars" role="presentation">
                           <li class="bv-content-secondary-ratings-bar" role="presentation"></li>
@@ -200,8 +524,8 @@ if (!empty($rating[0]['statistic'])) {
                         <span class="bv-off-screen">Reliability, ${reviews_statistic.Reliability ? reviews_statistic.Reliability.Value : 0} out of 5</span>
                       </span>
                     </dd>
-                    <dt class="bv-content-secondary-ratings-label">Ease of Use</dt>
-                    <dd class="bv-popup-histogram-ratings-bar">
+                    <dt class="bv-content-secondary-ratings-label" style="display: ${reviews_statistic.EaseOfUse ? 'block!important' : 'none!important'}">Ease of Use</dt>
+                    <dd class="bv-popup-histogram-ratings-bar" style="display: ${reviews_statistic.EaseOfUse ? 'block!important' : 'none!important'}">
                       <span class="bv-content-secondary-ratings-container">
                         <ul class="bv-content-secondary-ratings-bars" role="presentation">
                           <li class="bv-content-secondary-ratings-bar" role="presentation"></li>
@@ -214,8 +538,8 @@ if (!empty($rating[0]['statistic'])) {
                         <span class="bv-off-screen">Ease of Use, ${reviews_statistic.EaseOfUse ? reviews_statistic.EaseOfUse.Value : 0} out of 5</span>
                       </span>
                     </dd>
-                    <dt class="bv-content-secondary-ratings-label">Discreteness</dt>
-                    <dd class="bv-popup-histogram-ratings-bar">
+                    <dt class="bv-content-secondary-ratings-label" style="display: ${reviews_statistic.Discreteness ? 'block!important' : 'none!important'}">Discreteness</dt>
+                    <dd class="bv-popup-histogram-ratings-bar" style="display: ${reviews_statistic.Discreteness ? 'block!important' : 'none!important'}">
                       <span class="bv-content-secondary-ratings-container">
                         <ul class="bv-content-secondary-ratings-bars" role="presentation">
                           <li class="bv-content-secondary-ratings-bar" role="presentation"></li>
@@ -236,8 +560,13 @@ if (!empty($rating[0]['statistic'])) {
           <div class="bv-content-actions-container bv-active-feedback"></div>
           <div class="bv-content-actions-container">
             <div class="bv-secondary-content-actions-container">
-              <button type="button" aria-label="Comment on review by ${value.name}." class="bv-content-btn bv-content-secondary-btn bv-focusable" disabled="disabled"> Comment </button>
+              <button type="button" aria-label="Comment on review by ${value.name}." class="bv-content-btn bv-content-secondary-btn bv-focusable custom-comment-button" data-review-id="${value.id}"> Comment </button>
             </div>
+          </div>
+          <div class="bv-secondary-content-list">
+            <ol class="bv-content-list bv-content-list-comments">
+              ${reviewcomments}
+            </ol>
           </div>
         </div>
       </li>`;
@@ -247,34 +576,91 @@ if (!empty($rating[0]['statistic'])) {
           ) {
             reviews.push(item);
           }
-        })
+          reviewcomments.length = 0;
+        });
         $('.custom-list-reviews').html(reviews);
         $('.bv-control-bar-review-count-from').html(parseInt(1 + items_quantity * (current_page - 1)));
         $('.bv-control-bar-review-count-to').html(parseInt((current_page - 1) * items_quantity + reviews.length));
       }
-
-      $('.custom-review-link-prev').on('click', function(e){
-        e.preventDefault();
-        if(current_page > 1) {
-          current_page--;
-          renderReviews(array_reviews, items_quantity, current_page);
-        }
-      });
-      $('.custom-review-link-next').on('click', function(e){
-        e.preventDefault();
-        if(items_quantity * current_page <= array_reviews.length) {
-          current_page++;
-          renderReviews(array_reviews, items_quantity, current_page);
-        }
-      });
     });
   });
 </script>
 
-<div id="custom-reviews">
-  <div style="width: 90%; margin: 0 auto;">
+<div id="custom-reviews" class="container">
+  <div>
+    <div id="BVRRSearchContainer">
+      <div class="bv-cleanslate bv-cv2-cleanslate">
+        <div class="bv-shared bv-core-container-103">
+          <div class="bv-compat">
+            <div class="bv-content-search">
+              <div class="bv-masthead">
+                <div class="bv-masthead-product bv-summary-bar">
+                  <div class="bv-secondary-summary">
+                    <dl class="bv-stars-container">
+                      <dt class="bv-rating-ratio">
+                        <a href="#" class="bv-rating-stars-container bv-focusable" title="Read <?php echo $reviews_sum; ?> Reviews">
+                          <span class="bv-rating-stars bv-rating-stars-off" aria-hidden="true"> ★★★★★ </span>
+                          <span class="bv-rating-stars-on bv-rating-stars bv-width-from-rating-stats-<?php echo round($statistic['AverageOverallRating'], 1) * 20; ?>" aria-hidden="true"> ★★★★★ </span>
+                          <span class="bv-off-screen"><?php echo round($statistic['AverageOverallRating'], 1); ?> out of 5 stars.</span>
+                        </a>
+                      </dt>
+                      <dd class="bv-rating-ratio-number">
+                        <span class="bv-rating"><span aria-hidden="true"><?php echo round($statistic['AverageOverallRating'], 1); ?></span></span>
+                      </dd>
+                      <dd class="bv-rating-ratio-count">
+                        <a href="#" class="bv-rating-label bv-text-link bv-focusable"> <?php echo $reviews_sum; ?> Reviews <span class="bv-off-screen">This action will navigate to reviews.</span>
+                        </a> </dd>
+                    </dl>
+                  </div>
+                </div>
+                <div class="bv-searchbar" role="search" aria-label="Search">
+                  <div class="bv-masthead-search bv-submission">
+                    <div class="bv-fieldsets">
+                      <div class="bv-expand-filter-button-offset-off">
+                        <label for="bv-text-field-search-contentSearch1" class="bv-off-screen">Search topics and reviews</label>
+                        <span class="bv-search-control-icon" aria-hidden="true">ϙ</span>
+                        <input id="bv-text-field-search-contentSearch1" class="bv-text bv-focusable bv-search-text" type="text" name="bv-search" placeholder="Search topics and reviews">
+                        <button class="bv-focusable bv-search-clear-icon bv-hidden">
+                          <span aria-hidden="true"> ✘ </span>
+                          <span class="bv-off-screen">Close</span>
+                        </button>
+                        <button type="button" class="bv-content-btn bv-content-search-btn bv-focusable">
+                          <span class="bv-search-control-icon" aria-hidden="true">ϙ</span>
+                          <span class="bv-off-screen">Search</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <ul class="bv-content-product-stats">
+                  <li class="bv-content-product-stats-item bv-content-product-stats-item-first bv-content-product-stats-item-reviews">
+                    <a href="#" class="bv-content-data-count bv-focusable" data-content-type="review">
+                      <span class="bv-content-title"><?php echo $reviews_sum; ?></span>
+                      <span class="bv-content-data-label">Reviews</span>
+                    </a>
+                  </li>
+                  <li class="bv-content-product-stats-item bv-content-product-stats-item-questions">
+                    <a href="#" class="bv-content-data-count bv-focusable" data-content-type="question">
+                      <span class="bv-content-title"><?php echo $questions_sum; ?></span> <span class="bv-content-data-label">Questions</span>
+                    </a>
+                  </li>
+                  <li class="bv-content-product-stats-item bv-content-product-stats-item-last bv-content-product-stats-item-answers">
+                    <a href="#" class="bv-content-data-count bv-focusable" data-content-type="question">
+                      <span class="bv-content-title"><?php echo $answers_sum; ?></span>
+                      <span class="bv-content-data-label">Answers</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!---------------------------------------------->
     <div class="bv-cleanslate bv-cv2-cleanslate">
       <div class="bv-shared bv-core-container-103">
+        <!-- start header block -->
         <div class="bv-header">
           <div class="bv-action-bar">
             <h2 class="bv-action-bar-header bv-focusable" tabindex="-1">Reviews</h2>
@@ -354,7 +740,7 @@ if (!empty($rating[0]['statistic'])) {
                       <span class="bv-secondary-rating-summary-rating bv-table-cell" aria-hidden="true">
                         <?php echo round($statistic['AverageOverallRating'], 1); ?>
                       </span>
-                      <span class="bv-off-screen">Overall, average rating value is 4.2 of 5.</span>
+                      <span class="bv-off-screen">Overall, average rating value is <?php echo round($statistic['AverageOverallRating'], 1); ?> of 5.</span>
                     </div>
                     <div class="bv-secondary-rating-summary-bars-container bv-table-row">
                       <div class="bv-secondary-rating-summary-id bv-td bv-table-cell" aria-hidden="true">Effectiveness</div> <span class="bv-secondary-rating-summary-container bv-table-cell">
@@ -427,15 +813,247 @@ if (!empty($rating[0]['statistic'])) {
               </div>
             </div>
           </div>
+          <div class="bv-control-bar bv-control-bar-filter-offset">
+            <div class="bv-control-bar-count">
+              <div class="bv-content-pagination-pages-current bv-focusable" tabindex="-1">
+                <span class="bv-control-bar-review-count-from"></span>–<span class="bv-control-bar-review-count-to"></span> of <?php print_r(count($array_reviews)); ?> Reviews &nbsp;
+              </div>
+            </div>
+            <div class="bv-relevancy-link-target">
+              <span class="bv-sort-relevancy"> <button type="button" class="bv-relevancy-popup-target bv-focusable"> <span aria-hidden="true">?</span> <span class="bv-off-screen">Display a popup with information about Relevancy Sort.</span> </button> </span>
+            </div>
+            <div class="bv-control-bar-sort">
+              <div class="bv-dropdown">
+                <div class="bv-dropdown-target" role="menu"> <span id="bv-dropdown-select-reviews" class="bv-dropdown-label"> Sort by: </span>
+                  <button type="button" class="bv-focusable" aria-haspopup="true" aria-expanded="false" role="menuitem" aria-labelledby="bv-dropdown-select-reviews bv-dropdown-title-reviews">
+                    <span id="bv-dropdown-title-reviews" class="bv-dropdown-title"> Most Recent </span>
+                    <span class="bv-dropdown-arrow" aria-hidden="true" role="presentation"> ▼ </span>
+                    <span class="bv-off-screen">Menu</span>
+                  </button>
+                </div>
+                <div id="reviews-custom-sortby" class="hide-custom-block">
+                  <div class="bv-core-container-103">
+                    <div class="bv-select-dropdown bv-shared bv-dropdown-container bv-content-sort-dropdown">
+                      <div class="bv-compat">
+                        <div class="bv-dropdown">
+                          <ul id="bv-dropdown-select-reviews-sortby" role="menu" class="bv-dropdown-active">
+                            <li class="bv-dropdown-item bv-focusable" data-bv-dropdown-value="relevancy" tabindex="0" role="menuitem"> Most Relevant </li>
+                            <li class="bv-dropdown-item bv-focusable" data-bv-dropdown-value="positive" tabindex="0" role="menuitem"> Highest to Lowest Rating </li>
+                            <li class="bv-dropdown-item bv-focusable" data-bv-dropdown-value="negative" tabindex="0" role="menuitem"> Lowest to Highest Rating </li>
+                            <li class="bv-dropdown-item bv-dropdown-item-selected bv-focusable" data-bv-dropdown-value="mostRecent" tabindex="0" role="menuitem"> Most Recent </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button class="bv-content-btn bv-filter-control bv-expand-filter-button bv-focusable bv-filter-control-custom" type="button" tabindex="0">
+              <span class="bv-filter-control-icon" aria-hidden="true">≡</span> <span class="bv-filter-control-text">Filter Reviews</span> <span class="bv-off-screen">Clicking on the following button will update the content below</span>
+            </button>
+          </div>
         </div>
+        <!-- end header block -->
+
+        <!-- start filters block -->
+        <div id="bv-custom-filters">
+          <div class="bv-filter-controls bv-focusable" tabindex="-1">
+            <div class="bv-filters" role="menubar">
+              <div class="bv-content-filter-select" style="width: auto !important; max-width: 1120px !important;">
+                <div class="bv-dropdown" data-bv-filter-for="Rating">
+                  <div class="bv-dropdown-target" role="menu">
+                    <button type="button" class="bv-focusable" role="menuitem" aria-haspopup="true" aria-expanded="false">
+                      <span class="bv-dropdown-arrow" aria-hidden="true" role="presentation"> ▼ </span>
+                      <span class="bv-dropdown-title">Rating</span>
+                      <span class="bv-off-screen">Menu</span>
+                    </button>
+                  </div>
+                  <label for="bv-dropdown-select-78" class="bv-off-screen"> Filter by Rating </label>
+                  <select id="bv-dropdown-select-78" class="bv-select-cleanslate bv-dropdown-select">
+                    <option value="1"> 1 star </option>
+                    <option value="2"> 2 stars </option>
+                    <option value="3"> 3 stars </option>
+                    <option value="4"> 4 stars </option>
+                    <option value="5"> 5 stars </option>
+                  </select>
+                  <div id="bv-content-filter-dropdown-Rating" class="hide-custom-block bv-select-dropdown bv-shared bv-dropdown-container">
+                    <div class="bv-compat">
+                      <div class="bv-dropdown bv-filter-dropdown">
+                        <ul role="menu" class="">
+                          <li class="bv-dropdown-item bv-focusable" data-bv-dropdown-value="1" tabindex="0" role="menuitem"> <span>1 star</span> </li>
+                          <li class="bv-dropdown-item bv-focusable " data-bv-dropdown-value="2" tabindex="0" role="menuitem"> <span>2 stars</span> </li>
+                          <li class="bv-dropdown-item bv-focusable " data-bv-dropdown-value="3" tabindex="0" role="menuitem"> <span>3 stars</span> </li>
+                          <li class="bv-dropdown-item bv-focusable " data-bv-dropdown-value="4" tabindex="0" role="menuitem"> <span>4 stars</span> </li>
+                          <li class="bv-dropdown-item bv-focusable " data-bv-dropdown-value="5" tabindex="0" role="menuitem"> <span>5 stars</span> </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="bv-content-filter-select" style="width: auto !important; max-width: 1120px !important;">
+                <div class="bv-dropdown" data-bv-filter-for="My hair loss:">
+                  <div class="bv-dropdown-target" role="menu">
+                    <button type="button" class="bv-focusable" role="menuitem" aria-haspopup="true" aria-expanded="false">
+                      <span class="bv-dropdown-arrow" aria-hidden="true" role="presentation"> ▼ </span>
+                      <span class="bv-dropdown-title">My hair loss:</span>
+                      <span class="bv-off-screen">Menu</span>
+                    </button>
+                  </div>
+                  <label for="bv-dropdown-select-79" class="bv-off-screen"> Filter by My hair loss: </label>
+                  <select id="bv-dropdown-select-79" class="bv-select-cleanslate bv-dropdown-select">
+                    <option value="LightThinning"> Light thinning </option>
+                    <option value="ModerateThinning"> Moderate thinning </option>
+                    <option value="ModeratelySevereThinning"> Moderately severe thinning </option>
+                    <option value="SevereHairLoss"> Severe hair loss </option>
+                  </select>
+                  <div id="bv-content-filter-dropdown-SeverityOfLoss" class="hide-custom-block bv-select-dropdown bv-shared bv-dropdown-container">
+                    <div class="bv-compat">
+                      <div class="bv-dropdown bv-filter-dropdown">
+                        <ul id="bv-content-filter-dropdown-contextdatavalue_SeverityOfLoss" role="menu" class="">
+                          <li class="bv-dropdown-item bv-focusable" data-bv-dropdown-value="LightThinning" tabindex="0" role="menuitem"> <span>Light thinning</span> </li>
+                          <li class="bv-dropdown-item bv-focusable " data-bv-dropdown-value="ModerateThinning" tabindex="0" role="menuitem"> <span>Moderate thinning</span> </li>
+                          <li class="bv-dropdown-item bv-focusable " data-bv-dropdown-value="ModeratelySevereThinning" tabindex="0" role="menuitem"> <span>Moderately severe thinning</span> </li>
+                          <li class="bv-dropdown-item bv-focusable " data-bv-dropdown-value="SevereHairLoss" tabindex="0" role="menuitem"> <span>Severe hair loss</span> </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="bv-content-filter-select" style="width: auto !important; max-width: 1120px !important;">
+                <div class="bv-dropdown" data-bv-filter-for="Salon Professional:">
+                  <div class="bv-dropdown-target" role="menu">
+                    <button type="button" class="bv-focusable" role="menuitem" aria-haspopup="true" aria-expanded="false">
+                      <span class="bv-dropdown-arrow" aria-hidden="true" role="presentation"> ▼ </span>
+                      <span class="bv-dropdown-title">Salon Professional:</span>
+                      <span class="bv-off-screen">Menu</span>
+                    </button>
+                  </div>
+                  <label for="bv-dropdown-select-80" class="bv-off-screen"> Filter by Salon Professional: </label>
+                  <select id="bv-dropdown-select-80" class="bv-select-cleanslate bv-dropdown-select">
+                    <option value="Yes"> Yes </option>
+                    <option value="No"> No </option>
+                  </select>
+                  <div id="bv-content-filter-dropdown-SalonProfessional" class="hide-custom-block bv-select-dropdown bv-shared bv-dropdown-container">
+                    <div class="bv-compat">
+                      <div class="bv-dropdown bv-filter-dropdown">
+                        <ul id="bv-content-filter-dropdown-contextdatavalue_SalonProfessional" role="menu" class="">
+                          <li class="bv-dropdown-item bv-focusable" data-bv-dropdown-value="Yes" tabindex="0" role="menuitem"> <span>Yes</span> </li>
+                          <li class="bv-dropdown-item bv-focusable " data-bv-dropdown-value="No" tabindex="0" role="menuitem"> <span>No</span> </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bv-active-filters bv-hidden">
+            <div class="bv-active-filters-list-title">Active Filters</div>
+            <ul class="bv-active-filters-list">
+              <li data-bv-filter-headerid="Rating" class="bv-active-filters-list-item">
+                <button type="button" data-bv-filter-option="1" class="bv-active-filter-button bv-focusable" title="Rating">
+                  1 star
+                  <span class="bv-close-icon" aria-hidden="true"> ✘ </span>
+                  <span class="bv-off-screen">Remove Filter</span>
+                </button>
+              </li>
+              <li data-bv-filter-headerid="Rating" class="bv-active-filters-list-item">
+                <button type="button" data-bv-filter-option="2" class="bv-active-filter-button bv-focusable" title="Rating">
+                  2 stars
+                  <span class="bv-close-icon" aria-hidden="true"> ✘ </span>
+                  <span class="bv-off-screen">Remove Filter</span>
+                </button>
+              </li>
+              <li data-bv-filter-headerid="Rating" class="bv-active-filters-list-item">
+                <button type="button" data-bv-filter-option="3" class="bv-active-filter-button bv-focusable" title="Rating">
+                  3 stars
+                  <span class="bv-close-icon" aria-hidden="true"> ✘ </span>
+                  <span class="bv-off-screen">Remove Filter</span>
+                </button>
+              </li>
+              <li data-bv-filter-headerid="Rating" class="bv-active-filters-list-item">
+                <button type="button" data-bv-filter-option="4" class="bv-active-filter-button bv-focusable" title="Rating">
+                  4 stars
+                  <span class="bv-close-icon" aria-hidden="true"> ✘ </span>
+                  <span class="bv-off-screen">Remove Filter</span>
+                </button>
+              </li>
+              <li data-bv-filter-headerid="Rating" class="bv-active-filters-list-item">
+                <button type="button" data-bv-filter-option="5" class="bv-active-filter-button bv-focusable" title="Rating">
+                  5 stars
+                  <span class="bv-close-icon" aria-hidden="true"> ✘ </span>
+                  <span class="bv-off-screen">Remove Filter</span>
+                </button>
+              </li>
+              <li data-bv-filter-headerid="contextdatavalue_SeverityOfLoss" class="bv-active-filters-list-item">
+                <button type="button" data-bv-filter-option="LightThinning" class="bv-active-filter-button bv-focusable" title="My hair loss:">
+                  Light thinning
+                  <span class="bv-close-icon" aria-hidden="true"> ✘ </span>
+                  <span class="bv-off-screen">Remove Filter</span>
+                </button>
+              </li>
+              <li data-bv-filter-headerid="contextdatavalue_SeverityOfLoss" class="bv-active-filters-list-item">
+                <button type="button" data-bv-filter-option="ModerateThinning" class="bv-active-filter-button bv-focusable" title="My hair loss:">
+                  Moderate thinning
+                  <span class="bv-close-icon" aria-hidden="true"> ✘ </span>
+                  <span class="bv-off-screen">Remove Filter</span>
+                </button>
+              </li>
+              <li data-bv-filter-headerid="contextdatavalue_SeverityOfLoss" class="bv-active-filters-list-item">
+                <button type="button" data-bv-filter-option="ModeratelySevereThinning" class="bv-active-filter-button bv-focusable" title="My hair loss:">
+                  Moderately severe thinning
+                  <span class="bv-close-icon" aria-hidden="true"> ✘ </span>
+                  <span class="bv-off-screen">Remove Filter</span>
+                </button>
+              </li>
+              <li data-bv-filter-headerid="contextdatavalue_SeverityOfLoss" class="bv-active-filters-list-item">
+                <button type="button" data-bv-filter-option="SevereHairLoss" class="bv-active-filter-button bv-focusable" title="My hair loss:">
+                  Severe hair loss
+                  <span class="bv-close-icon" aria-hidden="true"> ✘ </span>
+                  <span class="bv-off-screen">Remove Filter</span>
+                </button>
+              </li>
+              <li data-bv-filter-headerid="contextdatavalue_SalonProfessional" class="bv-active-filters-list-item">
+                <button type="button" data-bv-filter-option="Yes" class="bv-active-filter-button bv-focusable" title="Salon Professional:">
+                  Yes
+                  <span class="bv-close-icon" aria-hidden="true"> ✘ </span>
+                  <span class="bv-off-screen">Remove Filter</span>
+                </button>
+              </li>
+              <li data-bv-filter-headerid="contextdatavalue_SalonProfessional" class="bv-active-filters-list-item">
+                <button type="button" data-bv-filter-option="No" class="bv-active-filter-button bv-focusable" title="Salon Professional:">
+                  No <span class="bv-close-icon" aria-hidden="true"> ✘ </span>
+                  <span class="bv-off-screen">Remove Filter</span>
+                </button>
+              </li>
+              <li class="bv-active-filters-list-item">
+                <button type="button" class="bv-active-filter-button-clear bv-focusable">
+                  <span aria-hidden="true">Clear All</span>
+                  <span class="bv-close-icon" aria-hidden="true"> ✘ </span>
+                  <span class="bv-off-screen">Clear All Filters</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <!-- end filters block -->
+
+        <!-- start list of reviews block -->
         <ol class="bv-content-list bv-content-list-reviews custom-list-reviews">
 
         </ol>
+        <!-- end list of reviews block -->
 
+        <!-- start pagination block -->
         <div class="bv-content-pagination">
           <div class="bv-content-pagination-container">
-            <div data-bv-v="ugcCount:6" class="bv-control-bar-count">
-              <div class="bv-content-pagination-pages-current bv-focusable" tabindex="-1"><span class="bv-control-bar-review-count-from"></span>–<span class="bv-control-bar-review-count-to"></span> of <?php print_r(count($array_reviews)); ?> Reviews</div>
+            <div class="bv-control-bar-count">
+              <div class="bv-content-pagination-pages-current bv-focusable" tabindex="-1">
+                <span class="bv-control-bar-review-count-from"></span>–<span class="bv-control-bar-review-count-to"></span> of <?php print_r(count($array_reviews)); ?> Reviews
+              </div>
             </div>
             <ul class="bv-content-pagination-buttons" role="presentation">
               <li class="bv-content-pagination-buttons-item bv-content-pagination-buttons-item-previous" role="presentation">
@@ -453,7 +1071,7 @@ if (!empty($rating[0]['statistic'])) {
             </ul>
           </div>
         </div>
-
+        <!-- end pagination block -->
       </div>
     </div>
   </div>

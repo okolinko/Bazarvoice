@@ -410,6 +410,114 @@ class AddProductDatabase
 		$result5 = $this->addbazaarvoiceproducts($productSku, "products.json");
 	}
 
+	public function submitreviewcomment($productSku, $idComment, $comment, $nickname, $location, $email){
+		$client = $this->clientFactory->create(['config' => [
+			'base_uri' => self::API_REQUEST_URI
+		]]);
+		$jsonType = "submitreviewcomment.json";
+		$params = [
+			'headers' => [
+				'Content-Type: application/x-www-form-urlencoded'
+			],
+			'query' => [
+				'ApiVersion' => '5.4',
+				'Passkey' => 'caXxEJtdQlYP3kdQvuL2rX3tggBti9F4K0GdWh7HWNNb4',
+				'ReviewId' => $idComment,
+				'Action' => 'submit',
+				'CommentText'=> $comment,
+				'UserEmail' => $email,
+				'UserNickname' => $nickname,
+				'UserLocation' => $location
+			]
+		];
+		$response = null;
+		try {
+			$response = $client->request(
+				'POST',
+				'data/'.$jsonType.'?',
+				$params
+			);
+
+		} catch (GuzzleException $exception) {
+			return $exception->getMessage();
+		}
+		$responseDataArray = json_decode($response->getBody()->getContents(), true);
+
+		return $responseDataArray;
+	}
+
+	public function submitquestion($productSku, $questionSummary, $nickname, $location, $email){
+		$client = $this->clientFactory->create(['config' => [
+			'base_uri' => self::API_REQUEST_URI
+		]]);
+		$jsonType = "submitquestion.json";
+		$params = [
+			'headers' => [
+				'Content-Type: application/x-www-form-urlencoded'
+			],
+			'query' => [
+				'ApiVersion' => '5.4',
+				'Passkey' => 'caXxEJtdQlYP3kdQvuL2rX3tggBti9F4K0GdWh7HWNNb4',
+				'ProductId' => $productSku,
+				'Action' => 'submit',
+				'QuestionSummary'=> $questionSummary,
+				'UserEmail' => $email,
+				'UserNickname' => $nickname,
+				'UserLocation' => $location
+			]
+		];
+		$response = null;
+		try {
+			$response = $client->request(
+				'POST',
+				'data/'.$jsonType.'?',
+				$params
+			);
+
+		} catch (GuzzleException $exception) {
+			return $exception->getMessage();
+		}
+		$responseDataArray = json_decode($response->getBody()->getContents(), true);
+
+		return $responseDataArray;
+	}
+
+	public function submitanswer($productSku, $idQuestion, $answer, $nickname, $location, $email){
+		$client = $this->clientFactory->create(['config' => [
+			'base_uri' => self::API_REQUEST_URI
+		]]);
+		$jsonType = "submitanswer.json";
+		$params = [
+			'headers' => [
+				'Content-Type: application/x-www-form-urlencoded'
+			],
+			'query' => [
+				'ApiVersion' => '5.4',
+				'Passkey' => 'caXxEJtdQlYP3kdQvuL2rX3tggBti9F4K0GdWh7HWNNb4',
+				'QuestionId' => $idQuestion,
+				'Action' => 'submit',
+				'AnswerText'=> $answer,
+				'UserEmail' => $email,
+				'UserNickname' => $nickname,
+				'UserLocation' => $location
+			]
+		];
+		$response = null;
+		try {
+			$response = $client->request(
+				'POST',
+				'data/'.$jsonType.'?',
+				$params
+			);
+
+		} catch (GuzzleException $exception) {
+			return $exception->getMessage();
+		}
+		$responseDataArray = json_decode($response->getBody()->getContents(), true);
+
+		return $responseDataArray;
+	}
+
 	public function apibazaarvoice(){
 		$connection = $this->connection->getConnection();
 		$table = $this->connection->getTableName('bazaarvoice_index');

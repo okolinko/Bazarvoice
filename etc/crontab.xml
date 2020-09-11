@@ -3,7 +3,7 @@
     <group id="index">
         <job name="huntersbazaarvoicesystem" instance="Hunters\Bazaarvoice\Cron\DailySystem" method="execute">
 <!--            <schedule>0 0 * * *</schedule> -->
-            <schedule>0 0 * * *</schedule>
+            <schedule>0 1 * * *</schedule>
         </job>
     </group>
 </config>
