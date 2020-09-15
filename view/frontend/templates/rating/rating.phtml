@@ -28,7 +28,7 @@ foreach ($statistic['RatingDistribution'] as $value) {
   $reviews_sum += $value['Count'];
 }
 ?>
-<!-- <div data-bv-show="rating_summary" data-bv-ready="true">
+ <!-- <div data-bv-show="rating_summary" data-bv-ready="true">
   <div class="bv-cleanslate bv-cv2-cleanslate bv_main_container">
     <div class="bv-core-container-103" style="display: flex!important; align-items: center; padding-right: 17px!important">
       <span class="bv-rating-stars-container" style="padding-right: 17px!important;">
@@ -58,12 +58,12 @@ foreach ($statistic['RatingDistribution'] as $value) {
   </div>
 
   </div>
-</div> -->
+</div> 
 
-<!-- <div data-bv-show="review_highlights" data-bv-product-id="<?php echo $sku ?>"></div> -->
+<div data-bv-show="review_highlights" data-bv-product-id="<?php echo $sku ?>"></div>  -->
 <div data-bv-show="rating_summary" data-bv-product-id="<?php echo $sku ?>"></div>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
     require([ 'jquery', 'jquery/ui'], function($){
         $(document).ready(function($) {
             $("#WAR").click(function (e) {
@@ -91,4 +91,4 @@ foreach ($statistic['RatingDistribution'] as $value) {
             })
         });
     });
-</script>
+</script> -->

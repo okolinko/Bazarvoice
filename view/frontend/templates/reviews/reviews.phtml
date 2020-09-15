@@ -259,6 +259,16 @@ if (!empty($rating[0]['statistic'])) {
         array_reviews_filtered = filterBy(array_reviews);
       });
 
+      /****************** show/hide search results *********************/
+      $('#custom-reviews .bv-content-search-btn').click(function() {
+        var popup_id = $('#' + $(this).attr("rel"));
+        $(popup_id).show();
+        $('.review_overlay_popup').show();
+      });
+
+      $('.review_overlay_popup, #bv-mboxzone-lightbox .bv-mbox-close').click(function() {
+        $('.review_overlay_popup, .bv-custom-review-popup').hide();
+      });
       /****************** functions *********************/
       function dropdownMenu(hover_block, menu_block){
         hover_block.hover(
@@ -670,7 +680,7 @@ if (!empty($rating[0]['statistic'])) {
                           <span aria-hidden="true"> ✘ </span>
                           <span class="bv-off-screen">Close</span>
                         </button>
-                        <button type="button" class="bv-content-btn bv-content-search-btn bv-focusable">
+                        <button type="button" class="bv-content-btn bv-content-search-btn bv-focusable" rel="review_search_results">
                           <span class="bv-search-control-icon" aria-hidden="true">ϙ</span>
                           <span class="bv-off-screen">Search</span>
                         </button>
@@ -1118,6 +1128,28 @@ if (!empty($rating[0]['statistic'])) {
           </div>
         </div>
         <!-- end pagination block -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="review_overlay_popup"></div>
+<div class="bv-custom-review-popup" id="review_search_results">
+  <div id="bv-mboxzone-lightbox" class="bv-mboxzone bv-cleanslate bv-cv2-cleanslate bv-mbox-lightbox bv-mbox-opened" style="height: auto !important;">
+    <div class="bv-mbox-inner bv-core-container-103 bv-mbox-lightbox">
+      <div class="bv-mbox-wrapper bv-mbox-narrow bv-mbox-search bv-mbox-narrow bv-mbox-box">
+        <div id="bv-mbox-lightbox-list" class="bv-mbox" role="dialog" aria-modal="true" aria-describedby="bv-content-list-products-wrapper">
+          <button type="button" name="Cancel" class="bv-mbox-close bv-focusable" tabindex="0" aria-labelledby="bv-mbox-close-label bv-mbox-breadcrumb-item">
+            <span aria-hidden="true"> ✘ </span>
+            <span id="bv-mbox-close-label" class="bv-off-screen">Close</span>
+          </button>
+          <div class="bv-mbox-sidebar bv-sidebar-disabled"></div>
+          <div class="bv-mbox-content-container">
+            <div class="bv-mbox-injection-container" style="height: 927px !important;">
+
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

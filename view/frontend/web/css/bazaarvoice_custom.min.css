@@ -73,7 +73,7 @@
 
 /* Окно */
 
-.overlay_popup {
+.overlay_popup, .review_overlay_popup {
 	display:none;
 	position:fixed;
 	z-index: 999;
@@ -85,7 +85,7 @@
 	opacity:0.5;
 }
 
-#popup1.popup {
+#popup1.bv-custom-question-popup, #review_search_results.bv-custom-review-popup {
 	display: none;
   width: 100%;
   position: fixed!important;
