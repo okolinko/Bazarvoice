@@ -214,7 +214,7 @@ if (!empty($rating[0]['statistic'])) {
         $('#questions-custom-sortby').removeClass('show-custom-block').addClass('hide-custom-block');
       });
 
-      $('button.bv-ask-question').on('click', function (e) {
+        $('button.bv-ask-question').on('click', function (e) {
         e.preventDefault();
         $('#question-custom-form-container').removeClass('hide').addClass('show');
         var question = $('#question-custom-form-container');
@@ -225,7 +225,7 @@ if (!empty($rating[0]['statistic'])) {
             }, 1000);
         }, 500);
         }
-      });
+        });
 
       $('#question-custom-form-container .bv-mbox-close').on('click', function(e){
         e.preventDefault();
@@ -540,21 +540,21 @@ if (!empty($rating[0]['statistic'])) {
                     <p class="bv-required-fields-text">Required fields are marked with *</p>
                 </span> <span class="bv-off-screen" id="bv-required-text-reader">Required field</span>
                           <div class="bv-fieldsets bv-input-fieldsets">
-                            <fieldset class="bv-fieldset bv-fieldset-answertext bv-textarea-field bv-fieldset-active bv-error">
+                            <fieldset class="bv-fieldset bv-fieldset-answertext bv-textarea-field bv-fieldset-active">
                               <div class="bv-fieldset-arrowicon"></div>
-                              <div class="bv-fieldset-inner"> <label for="bv-textarea-field-answertext" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Answer* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation">Error: Required.</span> </span> <span class="bv-off-screen">Maximum of 10000 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label">Required</span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <textarea id="bv-textarea-field-answertext" aria-describedby="bv-required-text" class="bv-text bv-focusable " name="answertext" maxlength="10000" placeholder="Answer this question..." required="" aria-required="true" tabindex="0" style="overflow-wrap: break-word; overflow: hidden !important; height: 90px !important;" aria-invalid="true"></textarea> </div>
+                              <div class="bv-fieldset-inner"> <label for="bv-popup-textarea-field-answertext" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Answer* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation">Error: Required.</span> </span> <span class="bv-off-screen">Maximum of 10000 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label">Required</span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <textarea id="bv-popup-textarea-field-answertext" aria-describedby="bv-required-text" class="bv-text bv-focusable " name="answertext" maxlength="10000" placeholder="Answer this question..." required="" aria-required="true" tabindex="0" style="overflow-wrap: break-word; overflow: hidden !important; height: 90px !important;" aria-invalid="true"></textarea> </div>
                             </fieldset>
                             <fieldset class="bv-fieldset bv-fieldset-usernickname bv-text-field bv-fieldset-small bv-mincount">
                               <div class="bv-fieldset-arrowicon"></div>
-                              <div class="bv-fieldset-inner"> <label for="bv-text-field-usernickname" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Nickname* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation">0 out of a minimum 4 characters used</span> </span> <span class="bv-off-screen">Maximum of 25 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label" role="status" aria-live="polite">0 / 4</span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input autocomplete="nickname" id="bv-text-field-usernickname" class="bv-text bv-focusable " type="text" name="usernickname" maxlength="25" placeholder="Example: jackie27" value="" required="" aria-required="true" tabindex="0"> </div>
+                              <div class="bv-fieldset-inner"> <label for="bv-popup-text-field-usernickname" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Nickname* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation">0 out of a minimum 4 characters used</span> </span> <span class="bv-off-screen">Maximum of 25 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label" role="status" aria-live="polite">0 / 4</span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input autocomplete="nickname" id="bv-popup-text-field-usernickname" class="bv-text bv-focusable " type="text" name="usernickname" maxlength="25" placeholder="Example: jackie27" value="" required="" aria-required="true" tabindex="0"> </div>
                             </fieldset>
                             <fieldset class="bv-fieldset bv-fieldset-userlocation bv-text-field bv-nocount bv-fieldset-small">
                               <div class="bv-fieldset-arrowicon"></div>
-                              <div class="bv-fieldset-inner"> <label for="bv-text-field-userlocation" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Location </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation"></span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input id="bv-text-field-userlocation" class="bv-text bv-focusable " type="text" name="userlocation" maxlength="255" placeholder="Example: New York, NY" value="" tabindex="0"> </div>
+                              <div class="bv-fieldset-inner"> <label for="bv-popup-text-field-userlocation" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Location </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation"></span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input id="bv-popup-text-field-userlocation" class="bv-text bv-focusable " type="text" name="userlocation" maxlength="255" placeholder="Example: New York, NY" value="" tabindex="0"> </div>
                             </fieldset>
                             <fieldset class="bv-fieldset bv-fieldset-hostedauthentication_authenticationemail bv-email-field bv-nocount bv-fieldset-small-alone">
                               <div class="bv-fieldset-arrowicon"></div>
-                              <div class="bv-fieldset-inner"> <label for="bv-email-field-hostedauthentication_authenticationemail" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Email* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation"></span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label" id="bv-invalid-email-for-aria-describedby"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input autocomplete="email" id="bv-email-field-hostedauthentication_authenticationemail" class="bv-text bv-focusable bv-email" type="email" name="hostedauthentication_authenticationemail" maxlength="255" placeholder="Example: youremail@example.com" value="" required="" aria-required="true" aria-describedby="bv-invalid-email-for-aria-describedby" tabindex="0"> </div>
+                              <div class="bv-fieldset-inner"> <label for="bv-popup-email-field-hostedauthentication_authenticationemail" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Email* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation"></span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label" id="bv-invalid-email-for-aria-describedby"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input autocomplete="email" id="bv-popup-email-field-hostedauthentication_authenticationemail" class="bv-text bv-focusable bv-email" type="email" name="hostedauthentication_authenticationemail" maxlength="255" placeholder="Example: youremail@example.com" value="" required="" aria-required="true" aria-describedby="bv-invalid-email-for-aria-describedby" tabindex="0"> </div>
                             </fieldset>
                           </div>
                           <div class="bv-fieldsets bv-fieldsets-actions">
@@ -562,7 +562,7 @@ if (!empty($rating[0]['statistic'])) {
                               <div class="bv-fieldset-arrowicon"></div>
                               <div class="bv-fieldset-inner">
                                 <div class="bv-actions-container">
-                                  <p id="bv-casltext-answer" class="bv-fieldset-casltext">You may receive emails regarding this submission. Any emails will include the ability to opt-out of future communications.</p> <button type="button" aria-label="Post Answer" aria-describedby="bv-casltext-answer" class="bv-form-actions-submit bv-submit bv-focusable bv-submission-button-submit" name="bv-submit-button" tabindex="0">Post Answer</button> <button type="button" class="bv-form-action bv-cancel bv-submission-button-submit">Cancel</button>
+                                  <p id="bv-casltext-answer" class="bv-fieldset-casltext">You may receive emails regarding this submission. Any emails will include the ability to opt-out of future communications.</p> <button type="button" aria-label="Post Answer" aria-describedby="bv-casltext-answer" id="custom-button-answer-submit" class="bv-form-actions-submit bv-submit bv-focusable bv-submission-button-submit" name="bv-submit-button" tabindex="0">Post Answer</button> <button type="button" class="bv-form-action bv-cancel bv-submission-button-submit">Cancel</button>
                                 </div>
                               </div>
                             </div>
@@ -591,7 +591,7 @@ $('.show_popup').click(function() { // Вызываем функцию по на
     $(popup_id).show(); // Открываем окно
     $('.overlay_popup').show(); // Открываем блок заднего фона
 })
-$('.overlay_popup, #popup1 button.bv-mbox-close').click(function() { // Обрабатываем клик по заднему фону
+$('.overlay_popup, #bv-mbox-lightbox-list .bv-mbox-close').click(function() { // Обрабатываем клик по заднему фону
     $('.overlay_popup, .popup').hide(); // Скрываем затемнённый задний фон и основное всплывающее окно
 });
 
@@ -743,6 +743,93 @@ $('.overlay_popup, #popup1 button.bv-mbox-close').click(function() { // Обра
                 }
             });
 
+        });
+    });
+</script>
+
+
+
+
+
+
+
+<script type="text/javascript">
+    require([ 'jquery', 'jquery/ui'], function($){
+        $(document).ready(function($) {
+
+        $("button[data-question-id]").click(function(e){
+            var id_comment = ($(this).attr('data-question-id'));
+            var sku = <?php echo json_encode($sku); ?>;
+            var typeJson = "submitanswer.json";
+            var pattern = /^[a-z0-9_-]+@[a-z0-9-]+\.([a-z]{1,6}\.)?[a-z]{2,6}$/i;
+            $(document).click(function(event) {
+                if($(event.target).closest('#custom-button-answer-submit').length) {
+
+                if ($("#bv-popup-textarea-field-answertext").val() === ''){
+                    $('.bv-fieldset-answertext').addClass('bv-error');
+                    $('.bv-fieldset-answertext').removeClass('bv-valid');
+                    return;
+                }
+                else {
+                    $('.bv-fieldset-answertext').addClass('bv-valid');
+                    $('.bv-fieldset-answertext').removeClass('bv-error');
+                }
+                if($("#bv-popup-text-field-usernickname").val() === ''){
+                    $('.bv-fieldset-usernickname').addClass('bv-error');
+                    $('.bv-fieldset-usernickname').removeClass('bv-valid');
+                    return;
+                }
+                else {
+                    $('.bv-fieldset-usernickname').addClass('bv-valid');
+                    $('.bv-fieldset-usernickname').removeClass('bv-error');
+                }
+                if($("#bv-popup-email-field-hostedauthentication_authenticationemail").val() === '' || $("#bv-popup-email-field-hostedauthentication_authenticationemail").val().search(pattern) !== 0 ){
+                    $('.bv-fieldset-hostedauthentication_authenticationemail').addClass('bv-error');
+                    $('.bv-fieldset-hostedauthentication_authenticationemail').removeClass('bv-valid');
+                    return;
+                }
+                else {
+                    $('.bv-fieldset-hostedauthentication_authenticationemail').addClass('bv-valid');
+                    $('.bv-fieldset-hostedauthentication_authenticationemail').removeClass('bv-error');
+                    e.preventDefault();
+                    var comment = $("#bv-popup-textarea-field-answertext").val();
+                    var nickname = $("#bv-popup-text-field-usernickname").val();
+                    var location = $("#bv-popup-text-field-userlocation").val();
+                    var email = $("#bv-popup-email-field-hostedauthentication_authenticationemail").val();
+                    console.log(comment);
+                    console.log(nickname);
+                    console.log(location);
+                    console.log(email);
+                    console.log(sku);
+                    // var url = "<?php echo $block->getUrl('postjson/page/view', ['_secure' => false]) ?>";
+                    // jQuery.ajax({
+                    //     url: url,
+                    //     type: "POST",
+                    //     data: {
+                    //         id_comment:id_comment,
+                    //         comment:comment,
+                    //         nickname:nickname,
+                    //         location:location,
+                    //         email:email,
+                    //         sku:sku,
+                    //         typeJson:typeJson
+                    //     },
+                    //     showLoader: true,
+                    //     cache: false,
+                    //     success: function(response){
+                    //         console.log(response);
+                    //     },
+                    //     error:function (res) {
+                    //         console.log(res);
+                    //     }
+                    // });
+                }
+
+                }
+
+            });
+
+        });
         });
     });
 </script>

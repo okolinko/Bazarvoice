@@ -60,6 +60,10 @@ class View extends \Magento\Framework\App\Action\Action
             	$res = $this->AddProductDatabase->submitquestion($sku, $comment, $nickname, $location, $email);
 			return $result->setData($res);
             }
+            if ($jsonType = "submitanswer.json"){
+            	$res = $this->AddProductDatabase->submitanswer($sku, $idComment, $comment, $nickname, $location, $email);
+			return $result->setData($res);
+            }
 		}
 		$data = ['message' => 'In development!'];
 		file_put_contents('/var/www/html/toppik-us-us.huntersconsult.com/var/log/bazar.log',  json_encode("TEST2") . "\n");
