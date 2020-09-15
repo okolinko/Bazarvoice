@@ -70,3 +70,34 @@
   position: absolute!important;
   z-index: 1!important;
 }
+
+/* Окно */
+
+.overlay_popup {
+	display:none;
+	position:fixed;
+	z-index: 999;
+	top:0;
+	right:0;
+	left:0;
+	bottom:0;
+	background:#000;
+	opacity:0.5;
+}
+
+#popup1.popup {
+	display: none;
+  width: 100%;
+  position: fixed!important;
+  z-index: 1000;
+  top: 0;
+  padding: 0;
+  border: none;
+}
+#popup1 #bv-mbox-lightbox-list > .bv-mbox-content-container {
+  left: -12.5%!important;
+}
+
+/*.box1 ~ div[itemtype="https://schema.org/Product"]  {
+  display: none;
+}*/

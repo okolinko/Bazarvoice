@@ -38,6 +38,7 @@ if (!empty($rating[0]['statistic'])) {
     $(document).ready( function() {
       let array_reviews = <?php echo json_encode($array_reviews); ?>;
       let array_reviewcomments = <?php echo json_encode($array_reviewcomments); ?>;
+      let array_reviews_filtered = [];
       let items_quantity = 8;
       let current_page = 1;
       let current_year = new Date().getFullYear();
@@ -125,21 +126,34 @@ if (!empty($rating[0]['statistic'])) {
     </div>
 </div>`;
 
+      /****************** handlers *********************/
+
+      /****************** next/prev page *********************/
       $('.custom-review-link-prev').on('click', function(e){
         e.preventDefault();
         if(current_page > 1) {
           current_page--;
-          renderReviews(array_reviews, array_reviewcomments, items_quantity, current_page);
+          if(array_reviews_filtered.length > 0) {
+            renderReviews(array_reviews_filtered, array_reviewcomments, items_quantity, current_page)
+          } else {
+            renderReviews(array_reviews, array_reviewcomments, items_quantity, current_page);
+          }
         }
       });
       $('.custom-review-link-next').on('click', function(e){
         e.preventDefault();
-        if(items_quantity * current_page <= array_reviews.length) {
+        let length = array_reviews_filtered.length > 0 ? array_reviews_filtered.length : array_reviews.length;
+        if(items_quantity * current_page <= length) {
           current_page++;
-          renderReviews(array_reviews, array_reviewcomments, items_quantity, current_page);
+          if(array_reviews_filtered.length > 0) {
+            renderReviews(array_reviews_filtered, array_reviewcomments, items_quantity, current_page)
+          } else {
+            renderReviews(array_reviews, array_reviewcomments, items_quantity, current_page);
+          }
         }
       });
 
+      /****************** review dropdown menu *********************/
       $('#bv-dropdown-select-reviews').parent().on('mouseenter',function(){
         $('#reviews-custom-sortby').removeClass('hide-custom-block').addClass('show-custom-block');
       });
@@ -147,10 +161,12 @@ if (!empty($rating[0]['statistic'])) {
         $('#reviews-custom-sortby').removeClass('show-custom-block').addClass('hide-custom-block');
       });
 
+      /****************** review filters dropdown menu *********************/
       dropdownMenu($('.bv-dropdown[data-bv-filter-for="Rating"]'), $('#bv-content-filter-dropdown-Rating'));
       dropdownMenu($('.bv-dropdown[data-bv-filter-for="My hair loss:"]'), $('#bv-content-filter-dropdown-SeverityOfLoss'));
       dropdownMenu($('.bv-dropdown[data-bv-filter-for="Salon Professional:"]'), $('#bv-content-filter-dropdown-SalonProfessional'));
 
+      /****************** show/hide filters *********************/
       $('.bv-filter-control-custom').on('click', function(){
         if($('#bv-custom-filters').hasClass('show')) {
           $('#bv-custom-filters').removeClass('show');
@@ -159,6 +175,7 @@ if (!empty($rating[0]['statistic'])) {
         }
       });
 
+      /****************** show/hide comment form *********************/
       $('.custom-list-reviews').on('click', '.custom-comment-button', function (e) {
         e.preventDefault();
         $('.bv-inline-form-container').remove();
@@ -169,6 +186,7 @@ if (!empty($rating[0]['statistic'])) {
         $('.bv-inline-form-container').remove();
       });
 
+      /****************** sort by parameters *********************/
       $('#bv-dropdown-select-reviews-sortby').children().on('click', function () {
         sortBy(array_reviews, $(this).data('bv-dropdown-value'));
         $(this).siblings().removeClass('bv-dropdown-item-selected');
@@ -176,8 +194,32 @@ if (!empty($rating[0]['statistic'])) {
         $('#bv-dropdown-title-reviews').text($(this).text());
       });
 
-      $('#bv-content-filter-dropdown-Rating li').on('click', function(){
+      /****************** filters from hidden menu *********************/
+      $('.bv-active-filters-list li').not(':last-child').on('click', function(){
+        $(this).addClass('bv-hidden');
+        let type = $(this).data('bv-filter-headerid');
+        let option = $(this).children().data('bv-filter-option');
+        $('[data-bv-filter-for="' + type + '"]').find('li[data-bv-dropdown-value="' + option + '"]').removeClass('bv-dropdown-item-selected');
         let ratings = [];
+        let severities = [];
+        let professionality = [];
+        $('#bv-content-filter-dropdown-Rating li').each(function (index, value) {
+          if($(value).hasClass('bv-dropdown-item-selected')) ratings.push($(value).data('bv-dropdown-value'));
+        });
+        $('#bv-content-filter-dropdown-SeverityOfLoss li').each(function (index, value) {
+          if($(value).hasClass('bv-dropdown-item-selected')) severities.push($(value).data('bv-dropdown-value'));
+        });
+        $('#bv-content-filter-dropdown-SalonProfessional li').each(function (index, value) {
+          if($(value).hasClass('bv-dropdown-item-selected')) professionality.push($(value).data('bv-dropdown-value'));
+        });
+        array_reviews_filtered = filterBy(array_reviews, ratings, severities, professionality);
+      });
+
+      /****************** filters from drop down menu *********************/
+      $('#bv-custom-filters .bv-dropdown-container li').on('click', function(){
+        let ratings = [];
+        let severities = [];
+        let professionality = [];
         if($(this).hasClass('bv-dropdown-item-selected')) {
           $(this).removeClass('bv-dropdown-item-selected');
         } else {
@@ -186,38 +228,37 @@ if (!empty($rating[0]['statistic'])) {
         $('#bv-content-filter-dropdown-Rating li').each(function (index, value) {
           if($(value).hasClass('bv-dropdown-item-selected')) {
             ratings.push($(value).data('bv-dropdown-value'));
+            $('button[title="Rating"][data-bv-filter-option="' + $(value).data('bv-dropdown-value') + '"]').parent().removeClass('bv-hidden');
+          } else {
+            $('button[title="Rating"][data-bv-filter-option="' + $(value).data('bv-dropdown-value') + '"]').parent().addClass('bv-hidden');
           }
         });
-        filterByRating(array_reviews, ratings);
-      });
-      /*$('#bv-content-filter-dropdown-SeverityOfLoss li').on('click', function(){
-        let severities = [];
-        if($(this).hasClass('bv-dropdown-item-selected')) {
-          $(this).removeClass('bv-dropdown-item-selected');
-        } else {
-          $(this).addClass('bv-dropdown-item-selected');
-        };
         $('#bv-content-filter-dropdown-SeverityOfLoss li').each(function (index, value) {
           if($(value).hasClass('bv-dropdown-item-selected')) {
             severities.push($(value).data('bv-dropdown-value'));
+            $('button[title="My hair loss:"][data-bv-filter-option="' + $(value).data('bv-dropdown-value') + '"]').parent().removeClass('bv-hidden');
+          } else {
+            $('button[title="My hair loss:"][data-bv-filter-option="' + $(value).data('bv-dropdown-value') + '"]').parent().addClass('bv-hidden');
           }
         });
-        filterBySeverity(array_reviews, severities);
-      });*/
-      /*$('#bv-content-filter-dropdown-SalonProfessional li').on('click', function(){
-        let professionality = [];
-        if($(this).hasClass('bv-dropdown-item-selected')) {
-          $(this).removeClass('bv-dropdown-item-selected');
-        } else {
-          $(this).addClass('bv-dropdown-item-selected');
-        };
         $('#bv-content-filter-dropdown-SalonProfessional li').each(function (index, value) {
           if($(value).hasClass('bv-dropdown-item-selected')) {
             professionality.push($(value).data('bv-dropdown-value'));
+            $('button[title="Salon Professional:"][data-bv-filter-option="' + $(value).data('bv-dropdown-value') + '"]').parent().removeClass('bv-hidden');
+          } else {
+            $('button[title="Salon Professional:"][data-bv-filter-option="' + $(value).data('bv-dropdown-value') + '"]').parent().addClass('bv-hidden');
           }
         });
-        filterByProfessionality(array_reviews, professionality);
-      });*/
+        array_reviews_filtered = filterBy(array_reviews, ratings, severities, professionality);
+      });
+
+      /****************** clear filters from hidden menu *********************/
+      $('.bv-active-filter-button-clear').on('click', function(){
+        $('#bv-custom-filters .bv-dropdown-container li').removeClass('bv-dropdown-item-selected');
+        $('#bv-custom-filters .bv-active-filters-list li').not(':last-child').addClass('bv-hidden');
+        array_reviews_filtered = filterBy(array_reviews);
+      });
+
       /****************** functions *********************/
       function dropdownMenu(hover_block, menu_block){
         hover_block.hover(
@@ -245,52 +286,56 @@ if (!empty($rating[0]['statistic'])) {
         });
         renderReviews(array_reviews_sort, array_reviewcomments, items_quantity, current_page);
       };
-      function filterByRating(array_reviews, ratings) {
-        if(ratings.length > 0) {
-          const array_reviews_filtered = array_reviews.filter(function(item){
-            for(var i = 0; i < ratings.length; i++) {
-              if(item.rating == ratings[i]) return item;
+      function filterBy(array_reviews, ratings = [], severities = [], professionality = []) {
+        const array_reviews_filtered = array_reviews.filter(function(item){
+          if(ratings.length > 0) {
+            for (var i = 0; i < ratings.length; i++) {
+              if (item.rating == ratings[i]) return item;
             }
-          });
-          renderReviews(array_reviews_filtered, array_reviewcomments, items_quantity, current_page);
-        } else {
-          renderReviews(array_reviews, array_reviewcomments, items_quantity, current_page);
-        }
-      }
-      function filterBySeverity(array_reviews, severities) {
-        if(severities.length > 0) {
-          const array_reviews_filtered = array_reviews.filter(function(item){
+          } else return item;
+        }).filter(function(item){
+          if(severities.length > 0) {
             let context_data_values = JSON.parse(item.context_data_values);
             let current_severity = context_data_values.SeverityOfLoss;
             if(current_severity) {
               for(var i = 0; i < severities.length; i++) {
-                if(current_severity.Value == severities[i]) return item;
+                if(current_severity.Value == severities[i]) {
+                  return item;
+                } else return false;
               }
-            }
-          });
-          renderReviews(array_reviews_filtered, array_reviewcomments, items_quantity, current_page);
-        } else {
-          renderReviews(array_reviews, array_reviewcomments, items_quantity, current_page);
-        }
-      }
-      function filterByProfessionality(array_reviews, professionality) {
-        if(professionality.length > 0) {
-          const array_reviews_filtered = array_reviews.filter(function(item){
+            } else return false;
+          } else return item;
+        }).filter(function(item){
+          if(professionality.length > 0) {
             let context_data_values = JSON.parse(item.context_data_values);
             let current_professionality = context_data_values.SalonProfessional;
-            if(typeof current_professionality !== "undefined") {
+            if(current_professionality) {
               for(var i = 0; i < professionality.length; i++) {
-                console.log(item.name);
-                console.log(current_professionality);
-                console.log('end');
-                if(current_professionality.Value == professionality[i]) return item;
+                if(current_professionality.Value == professionality[i]) {
+                  return item;
+                } else return false;
               }
-            }
-          });
-          console.log(array_reviews_filtered.length);
-          renderReviews(array_reviews_filtered, array_reviewcomments, items_quantity, current_page);
+            } else return false;
+          } else return item;
+        });
+
+        if((ratings.length == 0) && (severities.length == 0) && (professionality.length == 0)) {
+          $('#bv-custom-filters > .bv-active-filters').removeClass('bv-show').addClass('bv-hidden');
         } else {
-          renderReviews(array_reviews, array_reviewcomments, items_quantity, current_page);
+          $('#bv-custom-filters > .bv-active-filters').removeClass('bv-hidden').addClass('bv-show');
+        }
+
+        if(array_reviews_filtered.length > 0) {
+          renderReviews(array_reviews_filtered, array_reviewcomments, items_quantity, current_page);
+          return array_reviews_filtered;
+        } else {
+          if((ratings.length > 0) || (severities.length > 0) || (professionality.length > 0)) {
+            array_reviews_filtered.length = 0;
+            renderReviews([], array_reviewcomments, items_quantity, current_page);
+          } else {
+            array_reviews_filtered.length = 0;
+            renderReviews(array_reviews, array_reviewcomments, items_quantity, current_page);
+          }
         }
       }
       function renderReviews(array_reviews, array_reviewcomments, items_quantity, current_page) {
@@ -581,6 +626,7 @@ if (!empty($rating[0]['statistic'])) {
         $('.custom-list-reviews').html(reviews);
         $('.bv-control-bar-review-count-from').html(parseInt(1 + items_quantity * (current_page - 1)));
         $('.bv-control-bar-review-count-to').html(parseInt((current_page - 1) * items_quantity + reviews.length));
+        $('.bv-control-bar-review-count-total').html(array_reviews.length);
       }
     });
   });
@@ -816,7 +862,7 @@ if (!empty($rating[0]['statistic'])) {
           <div class="bv-control-bar bv-control-bar-filter-offset">
             <div class="bv-control-bar-count">
               <div class="bv-content-pagination-pages-current bv-focusable" tabindex="-1">
-                <span class="bv-control-bar-review-count-from"></span>–<span class="bv-control-bar-review-count-to"></span> of <?php print_r(count($array_reviews)); ?> Reviews &nbsp;
+                <span class="bv-control-bar-review-count-from"></span>–<span class="bv-control-bar-review-count-to"></span> of <span class="bv-control-bar-review-count-total"><?php print_r(count($array_reviews)); ?></span> Reviews &nbsp;
               </div>
             </div>
             <div class="bv-relevancy-link-target">
@@ -953,77 +999,77 @@ if (!empty($rating[0]['statistic'])) {
           <div class="bv-active-filters bv-hidden">
             <div class="bv-active-filters-list-title">Active Filters</div>
             <ul class="bv-active-filters-list">
-              <li data-bv-filter-headerid="Rating" class="bv-active-filters-list-item">
+              <li data-bv-filter-headerid="Rating" class="bv-active-filters-list-item bv-hidden">
                 <button type="button" data-bv-filter-option="1" class="bv-active-filter-button bv-focusable" title="Rating">
                   1 star
                   <span class="bv-close-icon" aria-hidden="true"> ✘ </span>
                   <span class="bv-off-screen">Remove Filter</span>
                 </button>
               </li>
-              <li data-bv-filter-headerid="Rating" class="bv-active-filters-list-item">
+              <li data-bv-filter-headerid="Rating" class="bv-active-filters-list-item bv-hidden">
                 <button type="button" data-bv-filter-option="2" class="bv-active-filter-button bv-focusable" title="Rating">
                   2 stars
                   <span class="bv-close-icon" aria-hidden="true"> ✘ </span>
                   <span class="bv-off-screen">Remove Filter</span>
                 </button>
               </li>
-              <li data-bv-filter-headerid="Rating" class="bv-active-filters-list-item">
+              <li data-bv-filter-headerid="Rating" class="bv-active-filters-list-item bv-hidden">
                 <button type="button" data-bv-filter-option="3" class="bv-active-filter-button bv-focusable" title="Rating">
                   3 stars
                   <span class="bv-close-icon" aria-hidden="true"> ✘ </span>
                   <span class="bv-off-screen">Remove Filter</span>
                 </button>
               </li>
-              <li data-bv-filter-headerid="Rating" class="bv-active-filters-list-item">
+              <li data-bv-filter-headerid="Rating" class="bv-active-filters-list-item bv-hidden">
                 <button type="button" data-bv-filter-option="4" class="bv-active-filter-button bv-focusable" title="Rating">
                   4 stars
                   <span class="bv-close-icon" aria-hidden="true"> ✘ </span>
                   <span class="bv-off-screen">Remove Filter</span>
                 </button>
               </li>
-              <li data-bv-filter-headerid="Rating" class="bv-active-filters-list-item">
+              <li data-bv-filter-headerid="Rating" class="bv-active-filters-list-item bv-hidden">
                 <button type="button" data-bv-filter-option="5" class="bv-active-filter-button bv-focusable" title="Rating">
                   5 stars
                   <span class="bv-close-icon" aria-hidden="true"> ✘ </span>
                   <span class="bv-off-screen">Remove Filter</span>
                 </button>
               </li>
-              <li data-bv-filter-headerid="contextdatavalue_SeverityOfLoss" class="bv-active-filters-list-item">
+              <li data-bv-filter-headerid="My hair loss:" class="bv-active-filters-list-item bv-hidden">
                 <button type="button" data-bv-filter-option="LightThinning" class="bv-active-filter-button bv-focusable" title="My hair loss:">
                   Light thinning
                   <span class="bv-close-icon" aria-hidden="true"> ✘ </span>
                   <span class="bv-off-screen">Remove Filter</span>
                 </button>
               </li>
-              <li data-bv-filter-headerid="contextdatavalue_SeverityOfLoss" class="bv-active-filters-list-item">
+              <li data-bv-filter-headerid="My hair loss:" class="bv-active-filters-list-item bv-hidden">
                 <button type="button" data-bv-filter-option="ModerateThinning" class="bv-active-filter-button bv-focusable" title="My hair loss:">
                   Moderate thinning
                   <span class="bv-close-icon" aria-hidden="true"> ✘ </span>
                   <span class="bv-off-screen">Remove Filter</span>
                 </button>
               </li>
-              <li data-bv-filter-headerid="contextdatavalue_SeverityOfLoss" class="bv-active-filters-list-item">
+              <li data-bv-filter-headerid="My hair loss:" class="bv-active-filters-list-item bv-hidden">
                 <button type="button" data-bv-filter-option="ModeratelySevereThinning" class="bv-active-filter-button bv-focusable" title="My hair loss:">
                   Moderately severe thinning
                   <span class="bv-close-icon" aria-hidden="true"> ✘ </span>
                   <span class="bv-off-screen">Remove Filter</span>
                 </button>
               </li>
-              <li data-bv-filter-headerid="contextdatavalue_SeverityOfLoss" class="bv-active-filters-list-item">
+              <li data-bv-filter-headerid="My hair loss:" class="bv-active-filters-list-item bv-hidden">
                 <button type="button" data-bv-filter-option="SevereHairLoss" class="bv-active-filter-button bv-focusable" title="My hair loss:">
                   Severe hair loss
                   <span class="bv-close-icon" aria-hidden="true"> ✘ </span>
                   <span class="bv-off-screen">Remove Filter</span>
                 </button>
               </li>
-              <li data-bv-filter-headerid="contextdatavalue_SalonProfessional" class="bv-active-filters-list-item">
+              <li data-bv-filter-headerid="Salon Professional:" class="bv-active-filters-list-item bv-hidden">
                 <button type="button" data-bv-filter-option="Yes" class="bv-active-filter-button bv-focusable" title="Salon Professional:">
                   Yes
                   <span class="bv-close-icon" aria-hidden="true"> ✘ </span>
                   <span class="bv-off-screen">Remove Filter</span>
                 </button>
               </li>
-              <li data-bv-filter-headerid="contextdatavalue_SalonProfessional" class="bv-active-filters-list-item">
+              <li data-bv-filter-headerid="Salon Professional:" class="bv-active-filters-list-item bv-hidden">
                 <button type="button" data-bv-filter-option="No" class="bv-active-filter-button bv-focusable" title="Salon Professional:">
                   No <span class="bv-close-icon" aria-hidden="true"> ✘ </span>
                   <span class="bv-off-screen">Remove Filter</span>
@@ -1052,7 +1098,7 @@ if (!empty($rating[0]['statistic'])) {
           <div class="bv-content-pagination-container">
             <div class="bv-control-bar-count">
               <div class="bv-content-pagination-pages-current bv-focusable" tabindex="-1">
-                <span class="bv-control-bar-review-count-from"></span>–<span class="bv-control-bar-review-count-to"></span> of <?php print_r(count($array_reviews)); ?> Reviews
+                <span class="bv-control-bar-review-count-from"></span>–<span class="bv-control-bar-review-count-to"></span> of <span class="bv-control-bar-review-count-total"><?php print_r(count($array_reviews)); ?></span> Reviews
               </div>
             </div>
             <ul class="bv-content-pagination-buttons" role="presentation">

@@ -167,7 +167,8 @@ if (!empty($rating[0]['statistic'])) {
                         </div>
 
                         <div class="bv-content-actions-container">
-                            <div class="bv-secondary-content-actions-container"> <button type="button" aria-label="Answer this question by ${value.name}." class="bv-content-btn bv-content-secondary-btn bv-focusable" data-question-id="${value.id}"> Answer this Question </button> </div>
+                            <div class="bv-secondary-content-actions-container"> <button type="button" aria-label="Answer this question by ${value.name}." class="bv-content-btn bv-content-secondary-btn bv-focusable show_popup" rel="popup1" data-question-id="${value.id}"> Answer this Question </button> </div>
+                              </div>
                         </div>
 
                         <div class="bv-secondary-content-list">
@@ -213,18 +214,18 @@ if (!empty($rating[0]['statistic'])) {
         $('#questions-custom-sortby').removeClass('show-custom-block').addClass('hide-custom-block');
       });
 
-        $('button.bv-ask-question').on('click', function (e) {
+      $('button.bv-ask-question').on('click', function (e) {
         e.preventDefault();
         $('#question-custom-form-container').removeClass('hide').addClass('show');
         var question = $('#question-custom-form-container');
         if (question.length) {
-           setTimeout(function(){ 
+           setTimeout(function(){
             $('html, body').animate({
                 scrollTop: $("#question-custom-form-container").offset().top
-            }, 1000); 
+            }, 1000);
         }, 500);
         }
-        });
+      });
 
       $('#question-custom-form-container .bv-mbox-close').on('click', function(e){
         e.preventDefault();
@@ -308,6 +309,7 @@ if (!empty($rating[0]['statistic'])) {
       </div>
     </div>
   </div>
+
   <!---------------------------------------------->
   <div id="BVQAContainer">
     <div class="bv-cleanslate bv-cv2-cleanslate">
@@ -485,11 +487,114 @@ if (!empty($rating[0]['statistic'])) {
 </div>
 </div>
 
+<!-- <div class="content">
+
+    <button class="show_popup " rel="popup1">Test PopUp</button>
+
+
+  </div> -->
+
+  <div class="overlay_popup"></div>
+
+  <div class="popup" id="popup1">
+    <div class="bv-mboxzone bv-cleanslate bv-cv2-cleanslate bv-mbox-lightbox bv-mbox-opened">
+      <div class="bv-mbox-inner bv-core-container-103 bv-mbox-lightbox" role="region" aria-label="">
+        <div class="bv-mbox-wrapper bv-mbox-secondary-content bv-mbox-content-submission-answer">
+          <div id="bv-mbox-lightbox-list" class="bv-mbox" aria-modal="true" aria-label="Answer this Question">
+            <div class="bv-mbox-sidebar bv-sidebar-disabled"></div>
+            <div class="bv-mbox-content-container">
+              <button type="button" name="Cancel" class="bv-mbox-close bv-focusable" tabindex="0" aria-labelledby="bv-mbox-close-label bv-mbox-breadcrumb-item">
+                <span aria-hidden="true"> ✘ </span>
+                <span id="bv-mbox-close-label" class="bv-off-screen">Close</span>
+              </button>
+
+              <h1 class="bv-mbox-breadcrumb">
+                <span data-bv-mbox-layer-index="0" class="bv-mbox-breadcrumb-item" id="bv-mbox-breadcrumb-item">
+                  <span>Post Answer</span>
+                </span>
+              </h1>
+              <div class="bv-mbox-injection-container" style="height: 838px !important;">
+                <div class="bv-mbox-injection-target bv-mbox-current">
+
+
+
+                  <div class="bv-submission bv-submission-noimage bv-fake-inline">
+                    <div class="bv-compat">
+                      <form id="bv-submitanswer-question-3091891-c531" target="bv-submission-target-default6203" action="#" accept-charset="utf-8" method="POST" class="bv-form">
+                        <input type="hidden" name="passkey" value="b5xjo1fw42ctw528lazc88mz8" class="bv-noremember">
+                        <input type="hidden" name="action" value="submit" class="bv-noremember">
+                        <input type="hidden" name="apiversion" value="5.5" class="bv-noremember">
+                        <input type="hidden" name="callback" value="parent.rpc.returnSubmissionResponse" class="bv-noremember">
+                        <input type="hidden" name="questionid" value="3091891" class="bv-noremember">
+                        <input type="hidden" name="campaignid" value="BV_QUESTION_DISPLAY" class="bv-noremember">
+                        <input type="hidden" name="fp" value="" class="bv-noremember">
+                        <input type="hidden" name="forceutf8" value="☠" class="bv-noremember">
+                        <input type="hidden" name="locale" value="en_US" class="bv-noremember">
+                        <input type="hidden" name="contextdatavalue_VerifiedPurchaser" value="False" class="bv-noremember">
+                        <input type="hidden" name="displaycode" value="18542-en_us" class="bv-noremember">
+                        <input type="hidden" name="hostedauthentication_callbackUrl" value="https://toppik-us-us.huntersconsult.com/shop/fiberhold-spray-full-size/" class="bv-noremember">
+                        <input type="hidden" name="sendemailalertwhenpublished" class="bv-noremember bv-form-ignore" value="true">
+                        <input type="hidden" name="sendemailalertwhencommented" class="bv-noremember bv-form-ignore" value="true">
+                        <input type="hidden" name="sendemailalertwhenanswered" class="bv-noremember bv-form-ignore" value="true">
+                        <div class="bv-submission-section"> <span id="bv-required-text">
+                    <p class="bv-required-fields-text">Required fields are marked with *</p>
+                </span> <span class="bv-off-screen" id="bv-required-text-reader">Required field</span>
+                          <div class="bv-fieldsets bv-input-fieldsets">
+                            <fieldset class="bv-fieldset bv-fieldset-answertext bv-textarea-field bv-fieldset-active bv-error">
+                              <div class="bv-fieldset-arrowicon"></div>
+                              <div class="bv-fieldset-inner"> <label for="bv-textarea-field-answertext" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Answer* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation">Error: Required.</span> </span> <span class="bv-off-screen">Maximum of 10000 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label">Required</span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <textarea id="bv-textarea-field-answertext" aria-describedby="bv-required-text" class="bv-text bv-focusable " name="answertext" maxlength="10000" placeholder="Answer this question..." required="" aria-required="true" tabindex="0" style="overflow-wrap: break-word; overflow: hidden !important; height: 90px !important;" aria-invalid="true"></textarea> </div>
+                            </fieldset>
+                            <fieldset class="bv-fieldset bv-fieldset-usernickname bv-text-field bv-fieldset-small bv-mincount">
+                              <div class="bv-fieldset-arrowicon"></div>
+                              <div class="bv-fieldset-inner"> <label for="bv-text-field-usernickname" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Nickname* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation">0 out of a minimum 4 characters used</span> </span> <span class="bv-off-screen">Maximum of 25 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label" role="status" aria-live="polite">0 / 4</span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input autocomplete="nickname" id="bv-text-field-usernickname" class="bv-text bv-focusable " type="text" name="usernickname" maxlength="25" placeholder="Example: jackie27" value="" required="" aria-required="true" tabindex="0"> </div>
+                            </fieldset>
+                            <fieldset class="bv-fieldset bv-fieldset-userlocation bv-text-field bv-nocount bv-fieldset-small">
+                              <div class="bv-fieldset-arrowicon"></div>
+                              <div class="bv-fieldset-inner"> <label for="bv-text-field-userlocation" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Location </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation"></span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input id="bv-text-field-userlocation" class="bv-text bv-focusable " type="text" name="userlocation" maxlength="255" placeholder="Example: New York, NY" value="" tabindex="0"> </div>
+                            </fieldset>
+                            <fieldset class="bv-fieldset bv-fieldset-hostedauthentication_authenticationemail bv-email-field bv-nocount bv-fieldset-small-alone">
+                              <div class="bv-fieldset-arrowicon"></div>
+                              <div class="bv-fieldset-inner"> <label for="bv-email-field-hostedauthentication_authenticationemail" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Email* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation"></span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label" id="bv-invalid-email-for-aria-describedby"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input autocomplete="email" id="bv-email-field-hostedauthentication_authenticationemail" class="bv-text bv-focusable bv-email" type="email" name="hostedauthentication_authenticationemail" maxlength="255" placeholder="Example: youremail@example.com" value="" required="" aria-required="true" aria-describedby="bv-invalid-email-for-aria-describedby" tabindex="0"> </div>
+                            </fieldset>
+                          </div>
+                          <div class="bv-fieldsets bv-fieldsets-actions">
+                            <div class="bv-form-actions bv-fieldset">
+                              <div class="bv-fieldset-arrowicon"></div>
+                              <div class="bv-fieldset-inner">
+                                <div class="bv-actions-container">
+                                  <p id="bv-casltext-answer" class="bv-fieldset-casltext">You may receive emails regarding this submission. Any emails will include the ability to opt-out of future communications.</p> <button type="button" aria-label="Post Answer" aria-describedby="bv-casltext-answer" class="bv-form-actions-submit bv-submit bv-focusable bv-submission-button-submit" name="bv-submit-button" tabindex="0">Post Answer</button> <button type="button" class="bv-form-action bv-cancel bv-submission-button-submit">Cancel</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
 
 <script type="text/javascript">
     require([ 'jquery', 'jquery/ui'], function($){
         $(document).ready(function($) {
+
+$('.show_popup').click(function() { // Вызываем функцию по нажатию на кнопку
+    var popup_id = $('#' + $(this).attr("rel")); // Связываем rel и popup_id
+    $(popup_id).show(); // Открываем окно
+    $('.overlay_popup').show(); // Открываем блок заднего фона
+})
+$('.overlay_popup, #popup1 button.bv-mbox-close').click(function() { // Обрабатываем клик по заднему фону
+    $('.overlay_popup, .popup').hide(); // Скрываем затемнённый задний фон и основное всплывающее окно
+});
+
         $("button[data-review-id]").click(function(e){
             var id_comment = ($(this).attr('data-review-id'));
             var sku = <?php echo json_encode($sku); ?>;
@@ -637,6 +742,7 @@ if (!empty($rating[0]['statistic'])) {
                     });
                 }
             });
+
         });
     });
 </script>
