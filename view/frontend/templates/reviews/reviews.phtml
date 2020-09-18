@@ -260,20 +260,20 @@ if (!empty($rating[0]['statistic'])) {
       });
 
       /****************** show/hide search results *********************/
-      /*$('#custom-reviews .bv-content-search-btn').click(function() {
+      $('#custom-reviews .bv-content-search-btn').click(function() {
         if($('#bv-text-field-search-contentSearch1').val() != '') {
           var popup_id = $('#' + $(this).attr('rel'));
           $(popup_id).show();
           $('.review_overlay_popup').show();
+          $('#review_search_results').css('top', $(window).scrollTop());
           searchBy($('#bv-text-field-search-contentSearch1').val());
         }
-      });*/
+      });
       $('#review_search_results .bv-content-search-btn').on('click', function () {
         if($('#bv-text-field-search-contentSearch1-lightboxSearch').val() != '') {
           var popup_id = $('#' + $(this).attr('rel'));
           $(popup_id).show();
           $('.review_overlay_popup').show();
-          $('#review_search_results').css('top', $('#custom-reviews').offset().top);
           searchBy($('#bv-text-field-search-contentSearch1-lightboxSearch').val());
         }
       });
@@ -284,23 +284,22 @@ if (!empty($rating[0]['statistic'])) {
             var popup_id = $('#review_search_results');
             $(popup_id).show();
             $('.review_overlay_popup').show();
-            $('#review_search_results').css('top', $('#custom-reviews').offset().top);
+            $('#review_search_results').css('top', $(window).scrollTop());
             searchBy($('#bv-text-field-search-contentSearch1').val());
           }
         }
       });
-      /*$('#bv-text-field-search-contentSearch1-lightboxSearch').keyup(function(event){
+      $('#bv-text-field-search-contentSearch1-lightboxSearch').keyup(function(event){
         if($(this).val() != '') {
           if(event.keyCode == 13){
             event.preventDefault();
             var popup_id = $('#review_search_results');
             $(popup_id).show();
             $('.review_overlay_popup').show();
-            $('.review_overlay_popup').css('top',$('#custom-reviews').offset().top);
             searchBy($('#bv-text-field-search-contentSearch1-lightboxSearch').val());
           }
         }
-      });*/
+      });
 
       $('.review_overlay_popup, #review_search_results .bv-mbox-close').click(function() {
         $('.review_overlay_popup, .bv-custom-review-popup').hide();
@@ -1420,19 +1419,19 @@ if (!empty($rating[0]['statistic'])) {
                         <div class="bv-fieldsets bv-input-fieldsets">
                           <fieldset class="bv-fieldset bv-fieldset-questionsummary bv-textarea-field bv-nocount">
                             <div class="bv-fieldset-arrowicon"></div>
-                            <div class="bv-fieldset-inner"> <label for="bv-textarea-field-questionsummary" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Question* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation"></span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-sublabel"> Maximum of 255 characters. </span> <span class="bv-helper"> <span class="bv-helper-label"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <textarea id="bv-textarea-field-questionsummary" aria-describedby="bv-required-text" class="bv-text bv-focusable " name="questionsummary" maxlength="255" placeholder="Ask a question..." required="" aria-required="true" style="overflow-wrap: break-word; overflow: hidden !important; height: 90px !important;"></textarea> </div>
+                            <div class="bv-fieldset-inner"> <label for="bv-textarea-review-search-field-questionsummary" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Question* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation"></span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-sublabel"> Maximum of 255 characters. </span> <span class="bv-helper"> <span class="bv-helper-label"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <textarea id="bv-textarea-review-search-field-questionsummary" aria-describedby="bv-required-text" class="bv-text bv-focusable " name="questionsummary" maxlength="255" placeholder="Ask a question..." required="" aria-required="true" style="overflow-wrap: break-word; overflow: hidden !important; height: 90px !important;"></textarea> </div>
                           </fieldset>
                           <fieldset class="bv-fieldset bv-fieldset-usernickname bv-text-field bv-fieldset-small bv-mincount">
                             <div class="bv-fieldset-arrowicon"></div>
-                            <div class="bv-fieldset-inner"> <label for="bv-text-field-usernickname" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Nickname* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation">0 out of a minimum 4 characters used</span> </span> <span class="bv-off-screen">Maximum of 25 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label" role="status" aria-live="polite">0 / 4</span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input autocomplete="nickname" id="bv-text-field-usernickname" class="bv-text bv-focusable " type="text" name="usernickname" maxlength="25" placeholder="Example: jackie27" value="" required="" aria-required="true"> </div>
+                            <div class="bv-fieldset-inner"> <label for="bv-text-revies-search-field-usernickname" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Nickname* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation">0 out of a minimum 4 characters used</span> </span> <span class="bv-off-screen">Maximum of 25 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label" role="status" aria-live="polite">0 / 4</span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input autocomplete="nickname" id="bv-text-revies-search-field-usernickname" class="bv-text bv-focusable " type="text" name="usernickname" maxlength="25" placeholder="Example: jackie27" value="" required="" aria-required="true"> </div>
                           </fieldset>
                           <fieldset class="bv-fieldset bv-fieldset-userlocation bv-text-field bv-nocount bv-fieldset-small">
                             <div class="bv-fieldset-arrowicon"></div>
-                            <div class="bv-fieldset-inner"> <label for="bv-text-field-userlocation" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Location </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation"></span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input id="bv-text-field-userlocation" class="bv-text bv-focusable " type="text" name="userlocation" maxlength="255" placeholder="Example: New York, NY" value=""> </div>
+                            <div class="bv-fieldset-inner"> <label for="bv-text-review-search-field-userlocation" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Location </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation"></span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input id="bv-text-review-search-field-userlocation" class="bv-text bv-focusable " type="text" name="userlocation" maxlength="255" placeholder="Example: New York, NY" value=""> </div>
                           </fieldset>
                           <fieldset class="bv-fieldset bv-fieldset-hostedauthentication_authenticationemail bv-email-field bv-nocount bv-fieldset-small-alone">
                             <div class="bv-fieldset-arrowicon"></div>
-                            <div class="bv-fieldset-inner"> <label for="bv-email-field-hostedauthentication_authenticationemail" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Email* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation"></span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label" id="bv-invalid-email-for-aria-describedby"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input autocomplete="email" id="bv-email-field-hostedauthentication_authenticationemail" class="bv-text bv-focusable bv-email" type="email" name="hostedauthentication_authenticationemail" maxlength="255" placeholder="Example: youremail@example.com" value="" required="" aria-required="true" aria-describedby="bv-invalid-email-for-aria-describedby"> </div>
+                            <div class="bv-fieldset-inner"> <label for="bv-email-field-review-search-hostedauthentication_authenticationemail" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Email* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation"></span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label" id="bv-invalid-email-for-aria-describedby"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input autocomplete="email" id="bv-email-field-review-search-hostedauthentication_authenticationemail" class="bv-text bv-focusable bv-email" type="email" name="hostedauthentication_authenticationemail" maxlength="255" placeholder="Example: youremail@example.com" value="" required="" aria-required="true" aria-describedby="bv-invalid-email-for-aria-describedby"> </div>
                           </fieldset>
                         </div>
                         <div class="bv-fieldsets bv-fieldsets-actions">
