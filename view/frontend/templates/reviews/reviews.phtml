@@ -8,7 +8,7 @@ if ($currentProduct = $this->getCurrentProduct()) {
                 '20504231' => 'FHS4B',
                 '20080136' => 'TTS',
                 '20080131' => 'TSA4C',
-                '20080311' => 'OPTE4',
+                '20080130' => 'OPTE4',
                 '20080164' => 'PKIT20010',
                 'STR-ca' => 'STR'
             );
@@ -31,6 +31,11 @@ if (!empty($rating[0]['statistic'])) {
     $rating_general[$value['RatingValue']] = $value['Count'];
     $reviews_sum += $value['Count'];
   }
+}
+else {
+	$rat = 0;
+  	$rating_general = 0;
+  	$reviews_sum = 0;
 }
 ?>
 <script>
@@ -260,26 +265,44 @@ if (!empty($rating[0]['statistic'])) {
       });
 
       /****************** show/hide search results *********************/
+      function clearSearch(){
+      	$('.bv-fieldset-questionsummary').removeClass('bv-valid');
+      	$('.bv-fieldset-questionsummary').removeClass('bv-error');
+        $('.bv-fieldset-usernickname').removeClass('bv-valid');
+        $('.bv-fieldset-usernickname').removeClass('bv-error');
+        $('.bv-fieldset-hostedauthentication_authenticationemail').removeClass('bv-valid');
+        $('.bv-fieldset-hostedauthentication_authenticationemail').removeClass('bv-error');
+        $("#bv-text-review-search-field-userlocation").val("");
+        $("#bv-textarea-review-search-field-questionsummary").val("");
+        $("#bv-text-revies-search-field-usernickname").val("");
+        $("#bv-email-field-review-search-hostedauthentication_authenticationemail").val("");
+        $("#bv-text-field-search-contentSearch1-lightboxSearch").val("");
+      }
+      $(".bv-ask-question").click(function(e){
+      	clearSearch();
+      });
       $('#custom-reviews .bv-content-search-btn').click(function() {
         if($('#bv-text-field-search-contentSearch1').val() != '') {
-          var popup_id = $('#' + $(this).attr('rel'));
-          $(popup_id).show();
-          $('.review_overlay_popup').show();
-          $('#review_search_results').css('top', $(window).scrollTop());
-          searchBy($('#bv-text-field-search-contentSearch1').val());
+        	clearSearch();
+        	var popup_id = $('#' + $(this).attr('rel'));
+        	$(popup_id).show();
+        	$('.review_overlay_popup').show();
+        	$('#review_search_results').css('top', $(window).scrollTop());
+        	searchBy($('#bv-text-field-search-contentSearch1').val());
         }
       });
       $('#review_search_results .bv-content-search-btn').on('click', function () {
         if($('#bv-text-field-search-contentSearch1-lightboxSearch').val() != '') {
-          var popup_id = $('#' + $(this).attr('rel'));
-          $(popup_id).show();
-          $('.review_overlay_popup').show();
-          searchBy($('#bv-text-field-search-contentSearch1-lightboxSearch').val());
+         	var popup_id = $('#' + $(this).attr('rel'));
+         	$(popup_id).show();
+         	$('.review_overlay_popup').show();
+          	searchBy($('#bv-text-field-search-contentSearch1-lightboxSearch').val());
         }
       });
       $('#bv-text-field-search-contentSearch1').keyup(function(event){
         if($(this).val() != '') {
           if(event.keyCode == 13){
+          	clearSearch();
             event.preventDefault();
             var popup_id = $('#review_search_results');
             $(popup_id).show();

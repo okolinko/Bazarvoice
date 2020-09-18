@@ -17,7 +17,6 @@ if ($currentProduct = $this->getCurrentProduct()) {
 }
 
 $array_reviews = $this->getMyCustomRating()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'reviews')->getData();
-// $array_reviews = $this->getMyCustomMethod()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'reviews')->getData();
 
 $rating = $this->getMyCustomRating()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'product')->getData();
 if (!empty($rating[0]['statistic'])) {
@@ -28,58 +27,9 @@ foreach ($statistic['RatingDistribution'] as $value) {
   $reviews_sum += $value['Count'];
 }
 ?>
- <!-- <div data-bv-show="rating_summary" data-bv-ready="true">
-  <div class="bv-cleanslate bv-cv2-cleanslate bv_main_container">
-    <div class="bv-core-container-103" style="display: flex!important; align-items: center; padding-right: 17px!important">
-      <span class="bv-rating-stars-container" style="padding-right: 17px!important;">
-        <span class="bv-rating-stars bv-rating-stars-off" aria-hidden="true" style="font-size: 27px!important;"> ★★★★★ </span>
-        <span class="bv-rating-stars bv-rating-stars-on bv-width-from-rating-stats-<?php echo round($statistic['AverageOverallRating'], 1) * 20; ?>" aria-hidden="true" style="font-size: 27px!important;"> ★★★★★ </span>
-      </span>
-      <span class="bv_avgRating_component_container notranslate">
-        <button type="button" class="bv_avgRating " aria-expanded="false" aria-label="average rating value is <?php echo round($statistic['AverageOverallRating'], 1); ?> of 5." id="avg-rating-button" role="link" itemprop="ratingValue">
-          <?php echo round($statistic['AverageOverallRating'], 1); ?>
-        </button>
-      </span>
-      <div class="bv_numReviews_component_container">
-        <meta itemprop="reviewCount" content="<?php echo $reviews_sum; ?>">&nbsp;
-        <button type="button" class="bv_numReviews_text " aria-label="Read <?php echo $reviews_sum; ?> Reviews" aria-expanded="false" id="num-reviews-button" role="link">(<?php echo $reviews_sum; ?>)</button>
-      </div>
-    </div>
-    <div class="bv_main_container_row_flex">
-      <div class="bv_main_container_row_flex">
-        <div class="bv_button_component_container">
-          <button type="button" class="bv_button_buttonMinimalist " id="WAR">Write a review </button>
-        </div>
-      </div>
-    </div>
 
-  <div>
-        <span style="color: #985234" class="test2"></span>
-  </div>
-
-  </div>
-</div> 
--->
-<!-- <div data-bv-show="review_highlights" data-bv-product-id="<?php echo $sku ?>"></div>  -->
-<!-- <div data-bv-show="rating_summary" data-bv-product-id="<?php echo $sku ?>"></div> -->
 <div data-bv-show="rating_summary" data-bv-product-id="<?php echo  $sku ?>"></div>
 <div data-bv-show="review_highlights" data-bv-product-id="<?php echo $sku ?>"></div>
-
-
-<!-- <script type="text/javascript">
-    require([ 'jquery', 'jquery/ui'], function($){
-        $(document).ready(function($) {
-            $(document).mouseup(function (e){
-                console.log(e.target.outerHTML);
-                if (e.target.outerHTML == '<span aria-hidden="true"> ✘ </span>' ) {
-                    $("#bv-mbox-overlay-id").remove();
-                    $("#bv-mboxzone-lightbox").remove();
-                }
-            });
-        });
-    });
-</script> -->
-
 
 <script type="text/javascript">
     require([ 'jquery', 'jquery/ui'], function($){
@@ -88,7 +38,6 @@ foreach ($statistic['RatingDistribution'] as $value) {
             var typeJson = "submitquestion.json";
             var pattern = /^[a-z0-9_-]+@[a-z0-9-]+\.([a-z]{1,6}\.)?[a-z]{2,6}$/i;
             $("#bv-search-results-review__question-button").click(function (e) {
-                console.log(555);
                 if ($("#bv-textarea-review-search-field-questionsummary").val() === '' || $("#bv-textarea-review-search-field-questionsummary").val().length > 255 ){
                     $('.bv-fieldset-questionsummary').addClass('bv-error');
                     $('.bv-fieldset-questionsummary').removeClass('bv-valid');
@@ -149,6 +98,66 @@ foreach ($statistic['RatingDistribution'] as $value) {
                 }
             });
 
+            $("#bv-search-results-question__question-button").click(function (e) {
+                if ($("#bv-textarea-question-search-field-questionsummary").val() === '' || $("#bv-textarea-question-search-field-questionsummary").val().length > 255 ){
+                    $('.bv-fieldset-questionsummary').addClass('bv-error');
+                    $('.bv-fieldset-questionsummary').removeClass('bv-valid');
+                    return;
+                }
+                else {
+                    $('.bv-fieldset-questionsummary').addClass('bv-valid');
+                    $('.bv-fieldset-questionsummary').removeClass('bv-error');
+                }
+                if($("#bv-text-question-search-field-usernickname").val() === ''){
+                    $('.bv-fieldset-usernickname').addClass('bv-error');
+                    $('.bv-fieldset-usernickname').removeClass('bv-valid');
+                    return;
+                }
+                else {
+                    $('.bv-fieldset-usernickname').addClass('bv-valid');
+                    $('.bv-fieldset-usernickname').removeClass('bv-error');
+                }
+                if($("#bv-email-question-search-field-hostedauthentication_authenticationemail").val() === ''  || $("#bv-email-question-search-field-hostedauthentication_authenticationemail").val().search(pattern) !== 0){
+                    $('.bv-fieldset-hostedauthentication_authenticationemail').addClass('bv-error');
+                    $('.bv-fieldset-hostedauthentication_authenticationemail').removeClass('bv-valid');
+                    return;
+                }
+                else {
+                    $('.bv-fieldset-hostedauthentication_authenticationemail').addClass('bv-valid');
+                    $('.bv-fieldset-hostedauthentication_authenticationemail').removeClass('bv-error');
+                    e.preventDefault();
+                    var comment = $("#bv-textarea-question-search-field-questionsummary").val();
+                    var nickname = $("#bv-text-question-search-field-usernickname").val();
+                    var location = $("#bv-text-question-search-field-userlocation").val();
+                    var email = $("#bv-email-question-search-field-hostedauthentication_authenticationemail").val();
+                    console.log(comment);
+                    console.log(nickname);
+                    console.log(location);
+                    console.log(email);
+                    console.log(sku);
+                    var url = "<?php echo $block->getUrl('postjson/page/view', ['_secure' => false]) ?>";
+                    // jQuery.ajax({
+                    //     url: url,
+                    //     type: "POST",
+                    //     data: {
+                    //         comment:comment,
+                    //         nickname:nickname,
+                    //         location:location,
+                    //         email:email,
+                    //         sku:sku,
+                    //         typeJson:typeJson
+                    //     },
+                    //     showLoader: true,
+                    //     cache: false,
+                    //     success: function(response){
+                    //         console.log(response);
+                    //     },
+                    //     error:function (res) {
+                    //         console.log(res);
+                    //     }
+                    // });
+                }
+            });
         });
     });
 </script>

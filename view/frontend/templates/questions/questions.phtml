@@ -87,6 +87,53 @@ else{
       $('#bv-dropdown-select-questions-sortby').children().on('click', function () {
           console.log($(this).data('bv-dropdown-value'));
       });
+
+      /****************** show/hide search results *********************/
+      $('#custom-questions .bv-content-search-btn').click(function() {
+        if($('#bv-text-field-search-contentSearch2').val() != '') {
+          var popup_id = $('#' + $(this).attr('rel'));
+          $(popup_id).show();
+          clearSearch();
+          $('.overlay_popup').show();
+          $('#question_search_results').css('top', $(window).scrollTop());
+          searchQuestionBy($('#bv-text-field-search-contentSearch2').val());
+        }
+      });
+      $('#question_search_results .bv-content-search-btn').on('click', function () {
+        if($('#bv-text-field-search-contentSearch2-lightboxSearch').val() != '') {
+          var popup_id = $('#' + $(this).attr('rel'));
+          $(popup_id).show();
+          $('.overlay_popup').show();
+          searchQuestionBy($('#bv-text-field-search-contentSearch2-lightboxSearch').val());
+        }
+      });
+      $('#bv-text-field-search-contentSearch2').keyup(function(event){
+        if($(this).val() != '') {
+          if(event.keyCode == 13){
+            event.preventDefault();
+            clearSearch();
+            var popup_id = $('#question_search_results');
+            $(popup_id).show();
+            $('.overlay_popup').show();
+            $('#question_search_results').css('top', $(window).scrollTop());
+            searchQuestionBy($('#bv-text-field-search-contentSearch2').val());
+          }
+        }
+      });
+      $('#bv-text-field-search-contentSearch2-lightboxSearch').keyup(function(event){
+        if($(this).val() != '') {
+          if(event.keyCode == 13){
+            event.preventDefault();
+            var popup_id = $('#' + $(this).attr('rel'));
+            $(popup_id).show();
+            $('.overlay_popup').show();
+            searchQuestionBy($('#bv-text-field-search-contentSearch2-lightboxSearch').val());
+          }
+        }
+      });
+      $('#question_search_results .bv-mbox-close').click(function() {
+        $('.overlay_popup, #question_search_results').hide();
+      });
       /****************** functions *********************/
       function timeShift(question_year, question_month) {
         let time_message = '';
@@ -241,7 +288,166 @@ else{
         $('.bv-control-bar-count-from').html(parseInt(1 + items_quantity * (current_page - 1)));
         $('.bv-control-bar-count-to').html(parseInt((current_page - 1) * items_quantity + questions.length));
       }
+      function renderSearchQuestion(array_questions, array_answers) {
+        let questions = [];
+        let answers = [];
+        let item;
 
+        $.each(array_questions, function(index, value) {
+          array_answers.filter(function(el){      //Find all answers for current question
+            if(value.id == el.id) {
+              let time_message = timeShift(parseInt(el.data.slice(0,4)), parseInt(el.data.slice(5,7)));
+              item =
+                `<li class="bv-content-item bv-secondary-content-answer bv-secondary-content-item" itemprop="suggestedAnswer" itemscope="" itemtype="http://schema.org/Answer">
+                            <div class="bv-content-item-avatar-offset bv-content-item-avatar-offset-on">
+                                <div class="bv-content-container">
+                                    <div class="bv-content-core ">
+                                        <div class="bv-content-header">
+                                            <div class="bv-author-avatar"> <span title="Avatar image" class="bv-author-no-avatar bv-author-gender-Male" aria-hidden="true"> ♂ </span> </div>
+                                            <div class="bv-content-data-summary">
+                                                <div class="bv-content-header-meta">
+                                                    <div class="bv-content-meta-wrapper">
+                                                        <div class="bv-content-meta" role="presentation">
+                                                            <div class="bv-content-reference-data bv-content-author-name"> <span data-bv-v="avatar:11" class="bv-author">
+                                                                    <button id="bv-avatar-popup-target-questionContentList1-11" class="bv-avatar-popup-target bv-focusable" itemprop="author" aria-expanded="false">
+                                                                        <h4>${el.name}</h4>
+                                                                    </button>
+                                                                </span>
+                                                                <div class="bv-content-datetime" role="presentation">
+                                                                    <meta itemprop="dateCreated" content="2020-06-09">
+                                                                    <meta itemprop="datePublished" content="2020-06-09">
+                                                                    <span class="bv-content-datetime-dot" aria-hidden="true">·</span> <span class="bv-content-datetime-stamp">
+                                                                        ${time_message} ago
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="bv-content-title-container"> </div>
+                                            </div>
+                                        </div>
+                                        <div class="bv-content-details-offset-off">
+                                            <div class="bv-content-summary">
+                                                <div class="bv-content-summary-body" itemprop="text">
+                                                    <div class="bv-content-summary-body-text">
+                                                        <p>${el.text}</p>
+                                                    </div>
+                                                    <div class="bv-content-data">
+                                                        <div class="bv-content-product-questions"> </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>`;
+              answers.push(item);
+            }
+          });
+          answers.answers_quantity_title = (answers.length !== 1) ? 'answers' : 'answer';
+
+          let question_year = parseInt(value.data.slice(0,4));
+          let question_month = parseInt(value.data.slice(5,7));
+          let time_message = timeShift(question_year, question_month);
+
+          item =
+            `<li class="bv-content-item bv-content-top-question bv-content-question" itemscope="" itemtype="http://schema.org/Question" data-content-id="Questions-${value.id}">
+                    <div class="bv-content-item-avatar-offset bv-content-item-avatar-offset-on">
+                        <div class="bv-content-container">
+                            <div class="bv-content-core bv-content-core-float">
+                                <div class="bv-content-header">
+                                    <div class="bv-author-avatar"> <span title="Avatar image" class="bv-author-no-avatar bv-author-gender-Male" aria-hidden="true"> ♂ </span> </div>
+                                    <div class="bv-content-data-summary">
+                                        <div class="bv-content-header-meta">
+                                            <div class="bv-content-meta-wrapper">
+                                                <div class="bv-content-meta" role="presentation">
+                                                    <div class="bv-content-reference-data bv-content-author-name"> <span class="bv-author">
+                                                        <button id="bv-avatar-popup-target-questionContentList1-13" class="bv-avatar-popup-target bv-focusable" itemprop="author" aria-expanded="false">
+                                                                <span>${value.name}</span>
+                                                            </button>
+                                                        </span>
+                                                        <div class="bv-content-datetime" role="presentation">
+                                                            <meta itemprop="dateCreated">
+                                                            <meta itemprop="datePublished"> <span class="bv-content-datetime-dot" aria-hidden="true">·</span> <span class="bv-content-datetime-stamp">${time_message} ago</span> </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="bv-content-title-container">
+                                            <h3 class="bv-content-title" itemprop="headline">
+                                                <a class="bv-secondary-content-link bv-focusable" href="#" data-contentid="${value.id}">
+                                                    ${value.text}
+                                                </a>
+                                            </h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bv-content-details-offset-off">
+                                    <div class="bv-content-summary">
+                                        <div class="bv-content-summary-body" itemprop="text">
+                                            <div class="bv-content-data">
+                                                <div class="bv-content-product-questions"> </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bv-content-actions-container">
+                            <div class="bv-secondary-content-actions-container"> <button type="button" aria-label="Answer this question by ${value.name}." class="bv-content-btn bv-content-secondary-btn bv-focusable bv-custom-show_popup" rel="popup1" data-question-id="${value.id}"> Answer this Question </button> </div>
+                              </div>
+                        </div>
+
+                        <div class="bv-secondary-content-list">
+                            <ol class="bv-content-list bv-content-list-answers">
+                                ${answers}
+                            </ol>
+                        </div>
+                    </div>
+                </li>`;
+
+          questions.push(item);
+          answers.length = 0;
+        });
+        $('#bv-search-questions-results-count').html(function(){
+          if(questions.length == 1) { return '1 Result' } else { return questions.length + ' Results' };
+        });
+        return questions;
+      }
+      function searchQuestionBy(search_text = ''){
+        search_text = search_text.toLowerCase();
+        $('.bv-content-search-results').addClass('bv-content-search-results__no-results');
+        $('.popup-custom-question__search-results').html('');
+        let array_searched = array_questions.filter(function(item) {
+          if (item.text && item.text.toLowerCase().indexOf(search_text) != -1) {
+            return item;
+          }
+        });
+        if(array_searched.length > 0) {
+          let search_result = renderSearchQuestion(array_searched, array_answers);
+          $('.popup-custom-question__search-results').html(search_result);
+        } else {
+
+          $('#bv-search-questions-results-count').html('');
+          $('.bv-content-search-results').removeClass('bv-content-search-results__no-results');
+        }
+      }
+      function clearSearch(){
+        $('.bv-fieldset-questionsummary').removeClass('bv-valid');
+        $('.bv-fieldset-questionsummary').removeClass('bv-error');
+        $('.bv-fieldset-usernickname').removeClass('bv-valid');
+        $('.bv-fieldset-usernickname').removeClass('bv-error');
+        $('.bv-fieldset-hostedauthentication_authenticationemail').removeClass('bv-valid');
+        $('.bv-fieldset-hostedauthentication_authenticationemail').removeClass('bv-error');
+        $("#bv-text-question-search-field-userlocation").val("");
+        $("#bv-textarea-question-search-field-questionsummary").val("");
+        $("#bv-text-question-search-field-usernickname").val("");
+        $("#bv-email-question-search-field-hostedauthentication_authenticationemail").val("");
+        $("#bv-text-field-search-contentSearch2-lightboxSearch").val("");
+      }
     });
   });
 </script>
@@ -267,7 +473,7 @@ else{
                       <span class="bv-rating"><span aria-hidden="true"><?php echo round($statistic['AverageOverallRating'], 1); ?></span></span>
                     </dd>
                     <dd class="bv-rating-ratio-count">
-                      <a href="#" class="bv-rating-label bv-text-link bv-focusable"> <?php echo $reviews_sum; ?> Reviews <span class="bv-off-screen">This action will navigate to reviews.</span>
+                      <a href="#" class="bv-rating-label bv-text-link bv-focusable"> <?php echo count($array_questions) ?> Questions <span class="bv-off-screen">This action will navigate to reviews.</span>
                       </a> </dd>
                   </dl>
                 </div>
@@ -278,12 +484,12 @@ else{
                     <div class="bv-expand-filter-button-offset-off">
                       <label for="bv-text-field-search-contentSearch2" class="bv-off-screen">Search topics and reviews</label>
                       <span class="bv-search-control-icon" aria-hidden="true">ϙ</span>
-                      <input id="bv-text-field-search-contentSearch2" class="bv-text bv-focusable bv-search-text" type="text" name="bv-search" placeholder="Search topics and reviews">
+                      <input id="bv-text-field-search-contentSearch2" class="bv-text bv-focusable bv-search-text" type="text" name="bv-search" placeholder="Search questions and answers">
                       <button class="bv-focusable bv-search-clear-icon bv-hidden">
                         <span aria-hidden="true"> ✘ </span>
                         <span class="bv-off-screen">Close</span>
                       </button>
-                      <button type="button" class="bv-content-btn bv-content-search-btn bv-focusable">
+                      <button type="button" class="bv-content-btn bv-content-search-btn bv-focusable" rel="question_search_results">
                         <span class="bv-search-control-icon" aria-hidden="true">ϙ</span>
                         <span class="bv-off-screen">Search</span>
                       </button>
@@ -578,7 +784,6 @@ else{
     </div>
   </div>
 </div>
-
 <div class="bv-custom-review-popup" id="question_search_results">
   <div class="bv-mboxzone bv-cleanslate bv-cv2-cleanslate bv-mbox-lightbox bv-mbox-opened" style="height: auto !important;">
     <div class="bv-mbox-inner bv-core-container-103 bv-mbox-lightbox">
@@ -603,12 +808,12 @@ else{
                               <div class="bv-expand-filter-button-offset-off">
                                 <label for="bv-text-field-search-contentSearch2-lightboxSearch" class="bv-off-screen">Search topics and reviews</label>
                                 <span class="bv-search-control-icon" aria-hidden="true">ϙ</span>
-                                <input id="bv-text-field-search-contentSearch2-lightboxSearch" class="bv-text bv-focusable bv-search-text" type="text" name="bv-search" placeholder="Search topics and reviews">
+                                <input id="bv-text-field-search-contentSearch2-lightboxSearch" class="bv-text bv-focusable bv-search-text" type="text" name="bv-search" placeholder="Search questions and answers">
                                 <button class="bv-focusable bv-search-clear-icon bv-hidden">
                                   <span aria-hidden="true"> ✘ </span>
                                   <span class="bv-off-screen">Close</span>
                                 </button>
-                                <button type="button" class="bv-content-btn bv-content-search-btn bv-focusable" rel="review_search_results">
+                                <button type="button" class="bv-content-btn bv-content-search-btn bv-focusable" rel="question_search_results">
                                   <span class="bv-search-control-icon" aria-hidden="true">ϙ</span>
                                   <span class="bv-off-screen">Search</span>
                                 </button>
@@ -626,13 +831,13 @@ else{
                       <div class="bv-inline-form-container"></div>
                       <div class="bv-control-bar">
                         <div class="bv-control-bar-count">
-                          <div id="bv-search-results-count" class="bv-content-pagination-pages-current bv-focusable" tabindex="-1"> </div>
+                          <div id="bv-search-questions-results-count" class="bv-content-pagination-pages-current bv-focusable" tabindex="-1"> </div>
                         </div>
                       </div>
                     </div>
                     <div class="bv-content-search-results bv-content-search-results__no-results bv-focusable" tabindex="-1"> Your search returned no results. </div>
                     <div id="bv-content-list-products-wrapper">
-                      <ol class="bv-content-list bv-content-list-products popup-custom-search-results">
+                      <ol class="bv-content-list bv-content-list-products popup-custom-question__search-results">
 
                       </ol>
                     </div>
@@ -664,19 +869,19 @@ else{
                         <div class="bv-fieldsets bv-input-fieldsets">
                           <fieldset class="bv-fieldset bv-fieldset-questionsummary bv-textarea-field bv-nocount">
                             <div class="bv-fieldset-arrowicon"></div>
-                            <div class="bv-fieldset-inner"> <label for="bv-textarea-field-questionsummary" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Question* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation"></span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-sublabel"> Maximum of 255 characters. </span> <span class="bv-helper"> <span class="bv-helper-label"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <textarea id="bv-textarea-field-questionsummary" aria-describedby="bv-required-text" class="bv-text bv-focusable " name="questionsummary" maxlength="255" placeholder="Ask a question..." required="" aria-required="true" style="overflow-wrap: break-word; overflow: hidden !important; height: 90px !important;"></textarea> </div>
+                            <div class="bv-fieldset-inner"> <label for="bv-textarea-question-search-field-questionsummary" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Question* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation"></span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-sublabel"> Maximum of 255 characters. </span> <span class="bv-helper"> <span class="bv-helper-label"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <textarea id="bv-textarea-question-search-field-questionsummary" aria-describedby="bv-required-text" class="bv-text bv-focusable " name="questionsummary" maxlength="255" placeholder="Ask a question..." required="" aria-required="true" style="overflow-wrap: break-word; overflow: hidden !important; height: 90px !important;"></textarea> </div>
                           </fieldset>
                           <fieldset class="bv-fieldset bv-fieldset-usernickname bv-text-field bv-fieldset-small bv-mincount">
                             <div class="bv-fieldset-arrowicon"></div>
-                            <div class="bv-fieldset-inner"> <label for="bv-text-field-usernickname" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Nickname* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation">0 out of a minimum 4 characters used</span> </span> <span class="bv-off-screen">Maximum of 25 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label" role="status" aria-live="polite">0 / 4</span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input autocomplete="nickname" id="bv-text-field-usernickname" class="bv-text bv-focusable " type="text" name="usernickname" maxlength="25" placeholder="Example: jackie27" value="" required="" aria-required="true"> </div>
+                            <div class="bv-fieldset-inner"> <label for="bv-text-question-search-field-usernickname" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Nickname* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation">0 out of a minimum 4 characters used</span> </span> <span class="bv-off-screen">Maximum of 25 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label" role="status" aria-live="polite">0 / 4</span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input autocomplete="nickname" id="bv-text-question-search-field-usernickname" class="bv-text bv-focusable " type="text" name="usernickname" maxlength="25" placeholder="Example: jackie27" value="" required="" aria-required="true"> </div>
                           </fieldset>
                           <fieldset class="bv-fieldset bv-fieldset-userlocation bv-text-field bv-nocount bv-fieldset-small">
                             <div class="bv-fieldset-arrowicon"></div>
-                            <div class="bv-fieldset-inner"> <label for="bv-text-field-userlocation" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Location </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation"></span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input id="bv-text-field-userlocation" class="bv-text bv-focusable " type="text" name="userlocation" maxlength="255" placeholder="Example: New York, NY" value=""> </div>
+                            <div class="bv-fieldset-inner"> <label for="bv-text-question-search-field-userlocation" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Location </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation"></span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input id="bv-text-question-search-field-userlocation" class="bv-text bv-focusable " type="text" name="userlocation" maxlength="255" placeholder="Example: New York, NY" value=""> </div>
                           </fieldset>
                           <fieldset class="bv-fieldset bv-fieldset-hostedauthentication_authenticationemail bv-email-field bv-nocount bv-fieldset-small-alone">
                             <div class="bv-fieldset-arrowicon"></div>
-                            <div class="bv-fieldset-inner"> <label for="bv-email-field-hostedauthentication_authenticationemail" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Email* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation"></span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label" id="bv-invalid-email-for-aria-describedby"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input autocomplete="email" id="bv-email-field-hostedauthentication_authenticationemail" class="bv-text bv-focusable bv-email" type="email" name="hostedauthentication_authenticationemail" maxlength="255" placeholder="Example: youremail@example.com" value="" required="" aria-required="true" aria-describedby="bv-invalid-email-for-aria-describedby"> </div>
+                            <div class="bv-fieldset-inner"> <label for="bv-email-question-search-field-hostedauthentication_authenticationemail" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Email* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation"></span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label" id="bv-invalid-email-for-aria-describedby"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input autocomplete="email" id="bv-email-question-search-field-hostedauthentication_authenticationemail" class="bv-text bv-focusable bv-email" type="email" name="hostedauthentication_authenticationemail" maxlength="255" placeholder="Example: youremail@example.com" value="" required="" aria-required="true" aria-describedby="bv-invalid-email-for-aria-describedby"> </div>
                           </fieldset>
                         </div>
                         <div class="bv-fieldsets bv-fieldsets-actions">
@@ -684,7 +889,9 @@ else{
                             <div class="bv-fieldset-arrowicon"></div>
                             <div class="bv-fieldset-inner">
                               <div class="bv-actions-container">
-                                <p id="bv-casltext-question" class="bv-fieldset-casltext">You may receive emails regarding this submission. Any emails will include the ability to opt-out of future communications.</p> <button type="button" aria-label="Post Question" aria-describedby="bv-casltext-question" class="bv-form-actions-submit bv-submit bv-focusable bv-submission-button-submit" name="bv-submit-button">Post Question</button> <button type="button" class="bv-form-action bv-cancel bv-submission-button-submit">Cancel</button>
+                                <p id="bv-casltext-question" class="bv-fieldset-casltext">You may receive emails regarding this submission. Any emails will include the ability to opt-out of future communications.</p>
+                                <button id="bv-search-results-question__question-button" type="button" aria-label="Post Question" aria-describedby="bv-casltext-question" class="bv-form-actions-submit bv-submit bv-focusable bv-submission-button-submit" name="bv-submit-button">Post Question</button>
+                                <button type="button" class="bv-form-action bv-cancel bv-submission-button-submit">Cancel</button>
                               </div>
                             </div>
                           </div>
@@ -710,10 +917,11 @@ else{
 		$('.bv-custom-show_popup').click(function() { // Вызываем функцию по нажатию на кнопку
     	var popup_id = $('#' + $(this).attr("rel")); // Связываем rel и popup_id
    		$(popup_id).show(); // Открываем окно
+      $(popup_id).css('top', $(window).scrollTop());
  	   	$('.overlay_popup').show(); // Открываем блок заднего фона
 		});
 		$('.overlay_popup, #bv-mbox-lightbox-list .bv-mbox-close').click(function() {
-    	$('.overlay_popup, .bv-custom-question-popup').hide();
+    	$('.overlay_popup, .bv-custom-question-popup, #question_search_results').hide();
 		});
 
 		$(document).mouseup(function (e){
@@ -721,7 +929,7 @@ else{
 			var div2 = $(".bv-mbox-breadcrumb");
 			if (!div.is(e.target) && div.has(e.target).length === 0 &&
 				!div2.is(e.target) && div2.has(e.target).length === 0 ) {
-				$('.overlay_popup, .bv-custom-question-popup').hide();
+				$('.overlay_popup, .bv-custom-question-popup, #question_search_results').hide();
 				}
 			});
 
