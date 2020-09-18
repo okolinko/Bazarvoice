@@ -70,17 +70,19 @@ class Item
             );
 
             $sku = isset($sku_array[$sku]) ? $sku_array[$sku] : $sku;
-            // $productUrl = $this->product->getProductUrl();
-
+            $productUrl = $this->product->getProductUrl();
             $post = $this->_postFactory->create();
             $collection = $post->getCollection();
-
             $rating = $collection->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'product')->getData();
             if (!empty($rating[0]['statistic'])) {
                 $statistic = json_decode($rating[0]['statistic'], true);
             }
-            $rat =  round($statistic['AverageOverallRating'], 1) * 20;
-
+            if (!empty($statistic['AverageOverallRating'])){
+              $rat =  round($statistic['AverageOverallRating'], 1) * 20;
+            }
+            else {
+              $rat = 0;
+            }
             $result = '<div data-bv-show="rating_summary" data-bv-ready="true">
                 <div class="bv-cleanslate bv-cv2-cleanslate bv_main_container">
                   <div class="bv-core-container-103">
@@ -91,8 +93,6 @@ class Item
                   </div>
                 </div>
               </div>' . $result;
-            //$result = '<h1>'.$rat.'</h1>'.$result;
-
         return $result;
     }
 }

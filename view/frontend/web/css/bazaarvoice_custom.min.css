@@ -85,10 +85,12 @@
 	opacity:0.5;
 }
 
-#popup1.bv-custom-question-popup, #review_search_results.bv-custom-review-popup {
+#popup1.bv-custom-question-popup,
+#review_search_results.bv-custom-review-popup,
+#question_search_results.bv-custom-review-popup {
 	display: none;
   width: 100%;
-  position: fixed!important;
+  position: absolute!important;
   z-index: 1000;
   top: 0;
   padding: 0;
@@ -97,7 +99,12 @@
 #popup1 #bv-mbox-lightbox-list > .bv-mbox-content-container {
   left: -12.5%!important;
 }
-
-/*.box1 ~ div[itemtype="https://schema.org/Product"]  {
-  display: none;
-}*/
+#bv-content-list-products-wrapper {
+  /*max-height: 440px!important;*/
+  max-height: 240px!important;
+  overflow-y: auto!important;
+}
+#review_search_results .bv-content-search-results.bv-content-search-results__no-results,
+#question_search_results .bv-content-search-results.bv-content-search-results__no-results {
+  display: none!important;
+}

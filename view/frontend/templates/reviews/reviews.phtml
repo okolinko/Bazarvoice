@@ -260,13 +260,49 @@ if (!empty($rating[0]['statistic'])) {
       });
 
       /****************** show/hide search results *********************/
-      $('#custom-reviews .bv-content-search-btn').click(function() {
-        var popup_id = $('#' + $(this).attr("rel"));
-        $(popup_id).show();
-        $('.review_overlay_popup').show();
+      /*$('#custom-reviews .bv-content-search-btn').click(function() {
+        if($('#bv-text-field-search-contentSearch1').val() != '') {
+          var popup_id = $('#' + $(this).attr('rel'));
+          $(popup_id).show();
+          $('.review_overlay_popup').show();
+          searchBy($('#bv-text-field-search-contentSearch1').val());
+        }
+      });*/
+      $('#review_search_results .bv-content-search-btn').on('click', function () {
+        if($('#bv-text-field-search-contentSearch1-lightboxSearch').val() != '') {
+          var popup_id = $('#' + $(this).attr('rel'));
+          $(popup_id).show();
+          $('.review_overlay_popup').show();
+          $('#review_search_results').css('top', $('#custom-reviews').offset().top);
+          searchBy($('#bv-text-field-search-contentSearch1-lightboxSearch').val());
+        }
       });
+      $('#bv-text-field-search-contentSearch1').keyup(function(event){
+        if($(this).val() != '') {
+          if(event.keyCode == 13){
+            event.preventDefault();
+            var popup_id = $('#review_search_results');
+            $(popup_id).show();
+            $('.review_overlay_popup').show();
+            $('#review_search_results').css('top', $('#custom-reviews').offset().top);
+            searchBy($('#bv-text-field-search-contentSearch1').val());
+          }
+        }
+      });
+      /*$('#bv-text-field-search-contentSearch1-lightboxSearch').keyup(function(event){
+        if($(this).val() != '') {
+          if(event.keyCode == 13){
+            event.preventDefault();
+            var popup_id = $('#review_search_results');
+            $(popup_id).show();
+            $('.review_overlay_popup').show();
+            $('.review_overlay_popup').css('top',$('#custom-reviews').offset().top);
+            searchBy($('#bv-text-field-search-contentSearch1-lightboxSearch').val());
+          }
+        }
+      });*/
 
-      $('.review_overlay_popup, #bv-mboxzone-lightbox .bv-mbox-close').click(function() {
+      $('.review_overlay_popup, #review_search_results .bv-mbox-close').click(function() {
         $('.review_overlay_popup, .bv-custom-review-popup').hide();
       });
       /****************** functions *********************/
@@ -348,7 +384,162 @@ if (!empty($rating[0]['statistic'])) {
           }
         }
       }
-      function renderReviews(array_reviews, array_reviewcomments, items_quantity, current_page) {
+      function searchBy(search_text = ''){
+        search_text = search_text.toLowerCase();
+        $('.bv-content-search-results').addClass('bv-content-search-results__no-results');
+        $('.popup-custom-search-results').html('');
+        let array_searched = array_reviews.filter(function(item) {
+          if (item.title_text && item.title_text.toLowerCase().indexOf(search_text) != -1) {
+            return item;
+          }
+          if (item.text && item.text.toLowerCase().indexOf(search_text) != -1) {
+            return item;
+          }
+        });
+        if(array_searched.length > 0) {
+          let search_result = renderSearchReview(array_searched, array_reviewcomments);
+          $('.popup-custom-search-results').html(search_result);
+        } else {
+          $('#bv-search-results-count').html('');
+          $('.bv-content-search-results').removeClass('bv-content-search-results__no-results');
+        }
+      }
+      function renderSearchReview(array_reviews, array_reviewcomments) {
+        let reviews = [];
+        let reviewcomments = [];
+        let item;
+        let gender = '';
+        let gender_symbol = '';
+        $.each(array_reviews, function(index, value) {
+          array_reviewcomments.filter(function(el) {     //Find all comments for current review
+            if (value.id == el.id) {
+              gender = (typeof(el.Gender) !== 'undefined') ? el.Gender.Value : 'Male';
+              gender_symbol = (gender == 'Male') ? '♂' : '♀';
+              item =
+                `<li class="bv-content-item bv-secondary-content-comment bv-secondary-content-item" itemprop="comment" itemscope="" itemtype="http://schema.org/Comment">
+                  <div class="bv-content-item-avatar-offset bv-content-item-avatar-offset-on">
+                    <div class="bv-content-container">
+                      <div class="bv-content-core ">
+                        <div class="bv-content-header">
+                          <div class="bv-author-avatar">
+                            <span title="Avatar image" class="bv-author-no-avatar bv-author-gender-" aria-hidden="true">
+                              ${gender_symbol}
+                            </span>
+                          </div>
+                          <div class="bv-content-data-summary">
+                            <div class="bv-content-header-meta">
+                              <div class="bv-content-meta-wrapper">
+                                <div class="bv-content-meta" role="presentation">
+                                  <div class="bv-content-reference-data bv-content-author-name">
+                                    <div class="bv-author">
+                                      <span class="bv-author" itemprop="creator">
+                                        ${el.name}
+                                      </span>
+                                    </div>
+                                    <div class="bv-content-datetime" role="presentation">
+                                      <meta itemprop="dateCreated" content="2020-03-15">
+                                      <meta itemprop="datePublished" content="2020-03-15">
+                                      <span class="bv-content-datetime-dot" aria-hidden="true">·</span> <span class="bv-content-datetime-stamp"> ago</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="bv-content-details-offset-off">
+                          <div class="bv-content-summary">
+                            <div class="bv-content-summary-body" itemprop="text">
+                              <div class="bv-content-summary-body-text">
+                                <p>${el.text}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              </li>`;
+              reviewcomments.push(item);
+            }
+          });
+          let context_data_values = JSON.parse(value.context_data_values);
+          gender = (typeof(context_data_values.Gender) !== 'undefined') ? context_data_values.Gender.Value : 'Male';
+          gender_symbol = (gender == 'Male') ? '♂' : '♀';
+          let years_ago = (current_year - value.data.slice(0, 4) > 1) ? current_year - value.data.slice(0, 4) + ' years ago' : 'a year ago';
+
+          item =
+            `<li class="bv-content-item bv-content-top-review bv-content-review" itemprop="review" itemscope="" itemtype="http://schema.org/Review" data-content-id="Reviews-${value.id}">
+                <div class="bv-content-item-avatar-offset bv-content-item-avatar-offset-off">
+        <div class="bv-content-container">
+            <div class="bv-content-core bv-content-core-float">
+                <div class="bv-content-header">
+                    <div class="bv-content-data-summary">
+                        <div class="bv-content-header-meta">
+                          <span class="bv-content-rating bv-rating-ratio" itemprop="reviewRating" itemscope="" itemtype="http://schema.org/Rating">
+                                <meta itemprop="ratingValue" content="${value.rating}">
+                                <meta itemprop="bestRating" content="5">
+                                 <span class="bv-rating-stars-container">
+                                  <abbr title="${value.rating} out of 5 stars." class="bv-rating bv-rating-stars bv-rating-stars-off" aria-hidden="true"> ★★★★★ </abbr>
+                                  <abbr title="${value.rating} out of 5 stars." class="bv-rating-max bv-rating-stars bv-rating-stars-on bv-width-from-rating-stats-${value.rating * 20}" aria-hidden="true"> ★★★★★ </abbr>
+                                  <span class="bv-off-screen">${value.rating} out of 5 stars.</span>
+                                 </span>
+                            </span>
+                            <div class="bv-content-meta-wrapper">
+                                <div class="bv-content-meta" role="presentation">
+                                    <div class="bv-content-reference-data bv-content-author-name">
+                                      <span class="bv-author">
+                                            <span class="bv-avatar-author-name" itemprop="author">
+                                             <span>${value.name}</span>
+                                         </span>
+                                        </span>
+                                        <div class="bv-content-datetime" role="presentation">
+                                            <span class="bv-content-datetime-dot" aria-hidden="true">·</span>
+                                            <span class="bv-content-datetime-stamp">${years_ago}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bv-content-title-container">
+                            <h3 class="bv-content-title" itemprop="headline">
+                                <a class="bv-secondary-content-link bv-focusable" href="#" data-contentid="147129449">
+                                    ${value.title_text ? value.title_text : ''}
+                                </a>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="bv-content-details-offset-off">
+                    <div class="bv-content-summary">
+                        <div class="bv-content-summary-body" itemprop="reviewBody">
+                            <div class="bv-content-summary-body-text">
+                                <p>${value.text ? value.text : ''}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bv-content-actions-container">
+            <!--div class="bv-secondary-content-actions-container"> <button type="button" aria-label="Comment on review by jonesy." class="bv-content-btn bv-content-secondary-btn bv-focusable bv-mbox-hide-answer-question-button"> Comment </button> </div-->
+        </div>
+        <div class="bv-secondary-content-list">
+          <ol class="bv-content-list bv-content-list-comments">
+            ${reviewcomments}
+          </ol>
+        </div>
+    </div>
+            </li>`;
+          reviews.push(item);
+          reviewcomments.length = 0;
+        });
+        $('#bv-search-results-count').html(function(){
+          if(reviews.length == 1) { return '1 Result' } else { return reviews.length + ' Results' };
+        });
+        return reviews;
+      }
+      function renderReviews(array_reviews, array_reviewcomments, items_quantity, current_page, only_result = false) {
         let reviews = [];
         let reviewcomments = [];
         let item;
@@ -625,18 +816,27 @@ if (!empty($rating[0]['statistic'])) {
           </div>
         </div>
       </li>`;
-          if(
-            (index >= parseInt(items_quantity * (current_page - 1))) &&
-            (index < parseInt(current_page * items_quantity))
-          ) {
+
+          //переписать всю функцию, чтобы она только возвращала массив значений для рендера
+          if(!only_result) {
+            if (
+              (index >= parseInt(items_quantity * (current_page - 1))) &&
+              (index < parseInt(current_page * items_quantity))
+            ) {
+              reviews.push(item);
+            }
+          } else {
             reviews.push(item);
           }
           reviewcomments.length = 0;
         });
-        $('.custom-list-reviews').html(reviews);
-        $('.bv-control-bar-review-count-from').html(parseInt(1 + items_quantity * (current_page - 1)));
-        $('.bv-control-bar-review-count-to').html(parseInt((current_page - 1) * items_quantity + reviews.length));
-        $('.bv-control-bar-review-count-total').html(array_reviews.length);
+        if(!only_result) {
+          $('.custom-list-reviews').html(reviews);
+          $('.bv-control-bar-review-count-from').html(parseInt(1 + items_quantity * (current_page - 1)));
+          $('.bv-control-bar-review-count-to').html(parseInt((current_page - 1) * items_quantity + reviews.length));
+          $('.bv-control-bar-review-count-total').html(array_reviews.length);
+        }
+        return reviews;
       }
     });
   });
@@ -1133,9 +1333,10 @@ if (!empty($rating[0]['statistic'])) {
   </div>
 </div>
 
+<!-- popup with search results -->
 <div class="review_overlay_popup"></div>
 <div class="bv-custom-review-popup" id="review_search_results">
-  <div id="bv-mboxzone-lightbox" class="bv-mboxzone bv-cleanslate bv-cv2-cleanslate bv-mbox-lightbox bv-mbox-opened" style="height: auto !important;">
+  <div class="bv-mboxzone bv-cleanslate bv-cv2-cleanslate bv-mbox-lightbox bv-mbox-opened" style="height: auto !important;">
     <div class="bv-mbox-inner bv-core-container-103 bv-mbox-lightbox">
       <div class="bv-mbox-wrapper bv-mbox-narrow bv-mbox-search bv-mbox-narrow bv-mbox-box">
         <div id="bv-mbox-lightbox-list" class="bv-mbox" role="dialog" aria-modal="true" aria-describedby="bv-content-list-products-wrapper">
@@ -1146,7 +1347,111 @@ if (!empty($rating[0]['statistic'])) {
           <div class="bv-mbox-sidebar bv-sidebar-disabled"></div>
           <div class="bv-mbox-content-container">
             <div class="bv-mbox-injection-container" style="height: 927px !important;">
+              <div class="bv-mbox-injection-target bv-mbox-search-content bv-mbox-current">
 
+                <div class="bv-shared bv-core-container-103">
+                  <div class="bv-search-content">
+                    <div class="bv-header">
+                      <div class="bv-content-search">
+                        <div class="bv-searchbar" role="search" aria-label="Search">
+                          <div class="bv-masthead-search bv-submission">
+                            <div class="bv-fieldsets">
+                              <div class="bv-expand-filter-button-offset-off">
+                                <label for="bv-text-field-search-contentSearch1-lightboxSearch" class="bv-off-screen">Search topics and reviews</label>
+                                <span class="bv-search-control-icon" aria-hidden="true">ϙ</span>
+                                <input id="bv-text-field-search-contentSearch1-lightboxSearch" class="bv-text bv-focusable bv-search-text" type="text" name="bv-search" placeholder="Search topics and reviews">
+                                <button class="bv-focusable bv-search-clear-icon bv-hidden">
+                                  <span aria-hidden="true"> ✘ </span>
+                                  <span class="bv-off-screen">Close</span>
+                                </button>
+                                <button type="button" class="bv-content-btn bv-content-search-btn bv-focusable" rel="review_search_results">
+                                  <span class="bv-search-control-icon" aria-hidden="true">ϙ</span>
+                                  <span class="bv-off-screen">Search</span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="bv-action-bar">
+                        <h2 class="bv-action-bar-header"> Search Results </h2>
+                        <div class="bv-ask-question-container bv-write-container">
+
+                        </div>
+                      </div>
+                      <div class="bv-inline-form-container"></div>
+                      <div class="bv-control-bar">
+                        <div class="bv-control-bar-count">
+                          <div id="bv-search-results-count" class="bv-content-pagination-pages-current bv-focusable" tabindex="-1"> </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="bv-content-search-results bv-content-search-results__no-results bv-focusable" tabindex="-1"> Your search returned no results. </div>
+                    <div id="bv-content-list-products-wrapper">
+                      <ol class="bv-content-list bv-content-list-products popup-custom-search-results">
+
+                      </ol>
+                    </div>
+
+                  </div>
+                </div>
+                <div class="bv-submission bv-submission-image bv-fake-inline">
+                  <div class="bv-compat">
+                    <form target="bv-submission-target-default6156" action="#" accept-charset="utf-8" method="POST" class="bv-form"> <input type="hidden" name="passkey" value="b5xjo1fw42ctw528lazc88mz8" class="bv-noremember">
+                      <input type="hidden" name="action" value="submit" class="bv-noremember">
+                      <input type="hidden" name="apiversion" value="5.5" class="bv-noremember">
+                      <input type="hidden" name="callback" value="parent.rpc.returnSubmissionResponse" class="bv-noremember">
+                      <input type="hidden" name="productid" value="PKIT20010" class="bv-noremember">
+                      <input type="hidden" name="campaignid" value="BV_PRODUCT_DISPLAY" class="bv-noremember">
+                      <input type="hidden" name="fp" value="" class="bv-noremember">
+                      <input type="hidden" name="forceutf8" value="☠" class="bv-noremember">
+                      <input type="hidden" name="locale" value="en_US" class="bv-noremember">
+                      <input type="hidden" name="contextdatavalue_VerifiedPurchaser" value="False" class="bv-noremember">
+                      <input type="hidden" name="displaycode" value="18542-en_us" class="bv-noremember">
+                      <input type="hidden" name="hostedauthentication_callbackUrl" value="https://www.toppik.com/catalog/product/view/id/113/s/hair-perfecting-tool-kit-ae15889ee7ad82479638818618afa6e8/category/5/" class="bv-noremember">
+                      <input type="hidden" name="sendemailalertwhenpublished" class="bv-noremember bv-form-ignore" value="true">
+                      <input type="hidden" name="sendemailalertwhencommented" class="bv-noremember bv-form-ignore" value="true">
+                      <input type="hidden" name="sendemailalertwhenanswered" class="bv-noremember bv-form-ignore" value="true">
+                      <div class="bv-submission-section">
+                      <span id="bv-required-text">
+                          <p class="bv-required-fields-text">Required fields are marked with *</p>
+                      </span>
+                        <span class="bv-off-screen" id="bv-required-text-reader">Required field</span>
+                        <div class="bv-fieldsets bv-input-fieldsets">
+                          <fieldset class="bv-fieldset bv-fieldset-questionsummary bv-textarea-field bv-nocount">
+                            <div class="bv-fieldset-arrowicon"></div>
+                            <div class="bv-fieldset-inner"> <label for="bv-textarea-field-questionsummary" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Question* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation"></span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-sublabel"> Maximum of 255 characters. </span> <span class="bv-helper"> <span class="bv-helper-label"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <textarea id="bv-textarea-field-questionsummary" aria-describedby="bv-required-text" class="bv-text bv-focusable " name="questionsummary" maxlength="255" placeholder="Ask a question..." required="" aria-required="true" style="overflow-wrap: break-word; overflow: hidden !important; height: 90px !important;"></textarea> </div>
+                          </fieldset>
+                          <fieldset class="bv-fieldset bv-fieldset-usernickname bv-text-field bv-fieldset-small bv-mincount">
+                            <div class="bv-fieldset-arrowicon"></div>
+                            <div class="bv-fieldset-inner"> <label for="bv-text-field-usernickname" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Nickname* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation">0 out of a minimum 4 characters used</span> </span> <span class="bv-off-screen">Maximum of 25 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label" role="status" aria-live="polite">0 / 4</span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input autocomplete="nickname" id="bv-text-field-usernickname" class="bv-text bv-focusable " type="text" name="usernickname" maxlength="25" placeholder="Example: jackie27" value="" required="" aria-required="true"> </div>
+                          </fieldset>
+                          <fieldset class="bv-fieldset bv-fieldset-userlocation bv-text-field bv-nocount bv-fieldset-small">
+                            <div class="bv-fieldset-arrowicon"></div>
+                            <div class="bv-fieldset-inner"> <label for="bv-text-field-userlocation" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Location </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation"></span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input id="bv-text-field-userlocation" class="bv-text bv-focusable " type="text" name="userlocation" maxlength="255" placeholder="Example: New York, NY" value=""> </div>
+                          </fieldset>
+                          <fieldset class="bv-fieldset bv-fieldset-hostedauthentication_authenticationemail bv-email-field bv-nocount bv-fieldset-small-alone">
+                            <div class="bv-fieldset-arrowicon"></div>
+                            <div class="bv-fieldset-inner"> <label for="bv-email-field-hostedauthentication_authenticationemail" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Email* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation"></span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label" id="bv-invalid-email-for-aria-describedby"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input autocomplete="email" id="bv-email-field-hostedauthentication_authenticationemail" class="bv-text bv-focusable bv-email" type="email" name="hostedauthentication_authenticationemail" maxlength="255" placeholder="Example: youremail@example.com" value="" required="" aria-required="true" aria-describedby="bv-invalid-email-for-aria-describedby"> </div>
+                          </fieldset>
+                        </div>
+                        <div class="bv-fieldsets bv-fieldsets-actions">
+                          <div class="bv-form-actions bv-fieldset">
+                            <div class="bv-fieldset-arrowicon"></div>
+                            <div class="bv-fieldset-inner">
+                              <div class="bv-actions-container">
+                                <p id="bv-casltext-question" class="bv-fieldset-casltext">You may receive emails regarding this submission. Any emails will include the ability to opt-out of future communications.</p>
+                                <button id="bv-search-results-review__question-button" type="button" aria-label="Post Question" aria-describedby="bv-casltext-question" class="bv-form-actions-submit bv-submit bv-focusable bv-submission-button-submit" name="bv-submit-button">Post Question</button>
+                                <button type="button" class="bv-form-action bv-cancel bv-submission-button-submit">Cancel</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

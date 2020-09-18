@@ -7,7 +7,7 @@
                 '20504231' => 'FHS4B',
                 '20080136' => 'TTS',
                 '20080131' => 'TSA4C',
-                '20080311' => 'OPTE4',
+                '20080130' => 'OPTE4',
                 '20080164' => 'PKIT20010',
                 'STR-ca' => 'STR'
             );
@@ -22,6 +22,9 @@ $rating = $this->getMyCustomMethod2()->addFieldToFilter('sku', $sku)->addFieldTo
 if (!empty($rating[0]['statistic'])) {
   $statistic = json_decode($rating[0]['statistic'], true);
 }
+else{
+    $statistic['AverageOverallRating'] = 0;
+}
 ?>
 
 <script>
@@ -29,17 +32,11 @@ if (!empty($rating[0]['statistic'])) {
     $(document).ready( function() {
       let array_questions = <?php echo json_encode($array_questions); ?>;
       let array_answers = <?php echo json_encode($array_answers); ?>;
-
-      console.log(array_questions);
-
       var peremennaya = "color" ;
-var massiv = array_questions;
-var itog = massiv.filter(item => {
-  return item === peremennaya; // тут логика сравнения
-});
-
-console.log(itog);
-
+      var massiv = array_questions;
+      var itog = massiv.filter(item => {
+        return item === peremennaya; // тут логика сравнения
+      });
 
       let items_quantity = 10;
       let current_page = 1;
@@ -49,6 +46,48 @@ console.log(itog);
 
       renderQuestion(array_questions, array_answers, items_quantity, current_page);
 
+      $('.custom-link-prev').on('click', function(e){
+        e.preventDefault();
+        if(current_page > 1) {
+          current_page--;
+          renderQuestion(array_questions, array_answers, items_quantity, current_page);
+        }
+      });
+      $('.custom-link-next').on('click', function(e){
+        e.preventDefault();
+        if(items_quantity * current_page <= array_questions.length) {
+          current_page++;
+          renderQuestion(array_questions, array_answers, items_quantity, current_page);
+        }
+      });
+      $('#bv-dropdown-select-questions').parent().on('mouseenter',function(){
+        $('#questions-custom-sortby').removeClass('hide-custom-block').addClass('show-custom-block');
+      });
+      $('#bv-dropdown-select-questions, .bv-dropdown').on('mouseleave',function(){
+        $('#questions-custom-sortby').removeClass('show-custom-block').addClass('hide-custom-block');
+      });
+
+      $('button.bv-ask-question').on('click', function (e) {
+        e.preventDefault();
+        $('#question-custom-form-container').removeClass('hide').addClass('show');
+        var question = $('#question-custom-form-container');
+        if (question.length) {
+           setTimeout(function(){
+            $('html, body').animate({
+                scrollTop: $("#question-custom-form-container").offset().top
+            }, 1000);
+        }, 500);
+        }
+      });
+
+      $('#question-custom-form-container .bv-mbox-close').on('click', function(e){
+        e.preventDefault();
+        $('#question-custom-form-container').removeClass('show').addClass('hide');
+      });
+      $('#bv-dropdown-select-questions-sortby').children().on('click', function () {
+          console.log($(this).data('bv-dropdown-value'));
+      });
+      /****************** functions *********************/
       function timeShift(question_year, question_month) {
         let time_message = '';
         if(current_year === question_year) {
@@ -64,7 +103,6 @@ console.log(itog);
         }
         return time_message;
       }
-
       function renderQuestion(array_questions, array_answers, items_quantity, current_page) {
         let questions = [];
         let answers = [];
@@ -204,48 +242,6 @@ console.log(itog);
         $('.bv-control-bar-count-to').html(parseInt((current_page - 1) * items_quantity + questions.length));
       }
 
-      $('.custom-link-prev').on('click', function(e){
-        e.preventDefault();
-        if(current_page > 1) {
-          current_page--;
-          renderQuestion(array_questions, array_answers, items_quantity, current_page);
-        }
-      });
-      $('.custom-link-next').on('click', function(e){
-        e.preventDefault();
-        if(items_quantity * current_page <= array_questions.length) {
-          current_page++;
-          renderQuestion(array_questions, array_answers, items_quantity, current_page);
-        }
-      });
-      $('#bv-dropdown-select-questions').parent().on('mouseenter',function(){
-        $('#questions-custom-sortby').removeClass('hide-custom-block').addClass('show-custom-block');
-      });
-      $('#bv-dropdown-select-questions, .bv-dropdown').on('mouseleave',function(){
-        $('#questions-custom-sortby').removeClass('show-custom-block').addClass('hide-custom-block');
-      });
-
-        $('button.bv-ask-question').on('click', function (e) {
-        e.preventDefault();
-        $('#question-custom-form-container').removeClass('hide').addClass('show');
-        var question = $('#question-custom-form-container');
-        if (question.length) {
-           setTimeout(function(){
-            $('html, body').animate({
-                scrollTop: $("#question-custom-form-container").offset().top
-            }, 1000);
-        }, 500);
-        }
-        });
-
-      $('#question-custom-form-container .bv-mbox-close').on('click', function(e){
-        e.preventDefault();
-        $('#question-custom-form-container').removeClass('show').addClass('hide');
-      });
-
-      $('#bv-dropdown-select-questions-sortby').children().on('click', function () {
-          console.log($(this).data('bv-dropdown-value'));
-      })
     });
   });
 </script>
@@ -582,6 +578,130 @@ console.log(itog);
     </div>
   </div>
 </div>
+
+<div class="bv-custom-review-popup" id="question_search_results">
+  <div class="bv-mboxzone bv-cleanslate bv-cv2-cleanslate bv-mbox-lightbox bv-mbox-opened" style="height: auto !important;">
+    <div class="bv-mbox-inner bv-core-container-103 bv-mbox-lightbox">
+      <div class="bv-mbox-wrapper bv-mbox-narrow bv-mbox-search bv-mbox-narrow bv-mbox-box">
+        <div id="bv-mbox-lightbox-list" class="bv-mbox" role="dialog" aria-modal="true" aria-describedby="bv-content-list-products-wrapper">
+          <button type="button" name="Cancel" class="bv-mbox-close bv-focusable" tabindex="0" aria-labelledby="bv-mbox-close-label bv-mbox-breadcrumb-item">
+            <span aria-hidden="true"> ✘ </span>
+            <span id="bv-mbox-close-label" class="bv-off-screen">Close</span>
+          </button>
+          <div class="bv-mbox-sidebar bv-sidebar-disabled"></div>
+          <div class="bv-mbox-content-container">
+            <div class="bv-mbox-injection-container" style="height: 927px !important;">
+              <div class="bv-mbox-injection-target bv-mbox-search-content bv-mbox-current">
+
+                <div class="bv-shared bv-core-container-103">
+                  <div class="bv-search-content">
+                    <div class="bv-header">
+                      <div class="bv-content-search">
+                        <div class="bv-searchbar" role="search" aria-label="Search">
+                          <div class="bv-masthead-search bv-submission">
+                            <div class="bv-fieldsets">
+                              <div class="bv-expand-filter-button-offset-off">
+                                <label for="bv-text-field-search-contentSearch2-lightboxSearch" class="bv-off-screen">Search topics and reviews</label>
+                                <span class="bv-search-control-icon" aria-hidden="true">ϙ</span>
+                                <input id="bv-text-field-search-contentSearch2-lightboxSearch" class="bv-text bv-focusable bv-search-text" type="text" name="bv-search" placeholder="Search topics and reviews">
+                                <button class="bv-focusable bv-search-clear-icon bv-hidden">
+                                  <span aria-hidden="true"> ✘ </span>
+                                  <span class="bv-off-screen">Close</span>
+                                </button>
+                                <button type="button" class="bv-content-btn bv-content-search-btn bv-focusable" rel="review_search_results">
+                                  <span class="bv-search-control-icon" aria-hidden="true">ϙ</span>
+                                  <span class="bv-off-screen">Search</span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="bv-action-bar">
+                        <h2 class="bv-action-bar-header"> Search Results </h2>
+                        <div class="bv-ask-question-container bv-write-container">
+
+                        </div>
+                      </div>
+                      <div class="bv-inline-form-container"></div>
+                      <div class="bv-control-bar">
+                        <div class="bv-control-bar-count">
+                          <div id="bv-search-results-count" class="bv-content-pagination-pages-current bv-focusable" tabindex="-1"> </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="bv-content-search-results bv-content-search-results__no-results bv-focusable" tabindex="-1"> Your search returned no results. </div>
+                    <div id="bv-content-list-products-wrapper">
+                      <ol class="bv-content-list bv-content-list-products popup-custom-search-results">
+
+                      </ol>
+                    </div>
+
+                  </div>
+                </div>
+                <div class="bv-submission bv-submission-image bv-fake-inline">
+                  <div class="bv-compat">
+                    <form target="bv-submission-target-default6156" action="#" accept-charset="utf-8" method="POST" class="bv-form"> <input type="hidden" name="passkey" value="b5xjo1fw42ctw528lazc88mz8" class="bv-noremember">
+                      <input type="hidden" name="action" value="submit" class="bv-noremember">
+                      <input type="hidden" name="apiversion" value="5.5" class="bv-noremember">
+                      <input type="hidden" name="callback" value="parent.rpc.returnSubmissionResponse" class="bv-noremember">
+                      <input type="hidden" name="productid" value="PKIT20010" class="bv-noremember">
+                      <input type="hidden" name="campaignid" value="BV_PRODUCT_DISPLAY" class="bv-noremember">
+                      <input type="hidden" name="fp" value="" class="bv-noremember">
+                      <input type="hidden" name="forceutf8" value="☠" class="bv-noremember">
+                      <input type="hidden" name="locale" value="en_US" class="bv-noremember">
+                      <input type="hidden" name="contextdatavalue_VerifiedPurchaser" value="False" class="bv-noremember">
+                      <input type="hidden" name="displaycode" value="18542-en_us" class="bv-noremember">
+                      <input type="hidden" name="hostedauthentication_callbackUrl" value="https://www.toppik.com/catalog/product/view/id/113/s/hair-perfecting-tool-kit-ae15889ee7ad82479638818618afa6e8/category/5/" class="bv-noremember">
+                      <input type="hidden" name="sendemailalertwhenpublished" class="bv-noremember bv-form-ignore" value="true">
+                      <input type="hidden" name="sendemailalertwhencommented" class="bv-noremember bv-form-ignore" value="true">
+                      <input type="hidden" name="sendemailalertwhenanswered" class="bv-noremember bv-form-ignore" value="true">
+                      <div class="bv-submission-section">
+                      <span id="bv-required-text">
+                          <p class="bv-required-fields-text">Required fields are marked with *</p>
+                      </span>
+                        <span class="bv-off-screen" id="bv-required-text-reader">Required field</span>
+                        <div class="bv-fieldsets bv-input-fieldsets">
+                          <fieldset class="bv-fieldset bv-fieldset-questionsummary bv-textarea-field bv-nocount">
+                            <div class="bv-fieldset-arrowicon"></div>
+                            <div class="bv-fieldset-inner"> <label for="bv-textarea-field-questionsummary" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Question* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation"></span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-sublabel"> Maximum of 255 characters. </span> <span class="bv-helper"> <span class="bv-helper-label"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <textarea id="bv-textarea-field-questionsummary" aria-describedby="bv-required-text" class="bv-text bv-focusable " name="questionsummary" maxlength="255" placeholder="Ask a question..." required="" aria-required="true" style="overflow-wrap: break-word; overflow: hidden !important; height: 90px !important;"></textarea> </div>
+                          </fieldset>
+                          <fieldset class="bv-fieldset bv-fieldset-usernickname bv-text-field bv-fieldset-small bv-mincount">
+                            <div class="bv-fieldset-arrowicon"></div>
+                            <div class="bv-fieldset-inner"> <label for="bv-text-field-usernickname" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Nickname* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation">0 out of a minimum 4 characters used</span> </span> <span class="bv-off-screen">Maximum of 25 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label" role="status" aria-live="polite">0 / 4</span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input autocomplete="nickname" id="bv-text-field-usernickname" class="bv-text bv-focusable " type="text" name="usernickname" maxlength="25" placeholder="Example: jackie27" value="" required="" aria-required="true"> </div>
+                          </fieldset>
+                          <fieldset class="bv-fieldset bv-fieldset-userlocation bv-text-field bv-nocount bv-fieldset-small">
+                            <div class="bv-fieldset-arrowicon"></div>
+                            <div class="bv-fieldset-inner"> <label for="bv-text-field-userlocation" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Location </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation"></span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input id="bv-text-field-userlocation" class="bv-text bv-focusable " type="text" name="userlocation" maxlength="255" placeholder="Example: New York, NY" value=""> </div>
+                          </fieldset>
+                          <fieldset class="bv-fieldset bv-fieldset-hostedauthentication_authenticationemail bv-email-field bv-nocount bv-fieldset-small-alone">
+                            <div class="bv-fieldset-arrowicon"></div>
+                            <div class="bv-fieldset-inner"> <label for="bv-email-field-hostedauthentication_authenticationemail" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Email* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation"></span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label" id="bv-invalid-email-for-aria-describedby"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input autocomplete="email" id="bv-email-field-hostedauthentication_authenticationemail" class="bv-text bv-focusable bv-email" type="email" name="hostedauthentication_authenticationemail" maxlength="255" placeholder="Example: youremail@example.com" value="" required="" aria-required="true" aria-describedby="bv-invalid-email-for-aria-describedby"> </div>
+                          </fieldset>
+                        </div>
+                        <div class="bv-fieldsets bv-fieldsets-actions">
+                          <div class="bv-form-actions bv-fieldset">
+                            <div class="bv-fieldset-arrowicon"></div>
+                            <div class="bv-fieldset-inner">
+                              <div class="bv-actions-container">
+                                <p id="bv-casltext-question" class="bv-fieldset-casltext">You may receive emails regarding this submission. Any emails will include the ability to opt-out of future communications.</p> <button type="button" aria-label="Post Question" aria-describedby="bv-casltext-question" class="bv-form-actions-submit bv-submit bv-focusable bv-submission-button-submit" name="bv-submit-button">Post Question</button> <button type="button" class="bv-form-action bv-cancel bv-submission-button-submit">Cancel</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <script type="text/javascript">
     require([ 'jquery', 'jquery/ui'], function($){

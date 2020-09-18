@@ -8,7 +8,7 @@ if ($currentProduct = $this->getCurrentProduct()) {
                 '20504231' => 'FHS4B',
                 '20080136' => 'TTS',
                 '20080131' => 'TSA4C',
-                '20080311' => 'OPTE4',
+                '20080130' => 'OPTE4',
                 '20080164' => 'PKIT20010',
                 'STR-ca' => 'STR'
             );
@@ -59,36 +59,96 @@ foreach ($statistic['RatingDistribution'] as $value) {
 
   </div>
 </div> 
+-->
+<!-- <div data-bv-show="review_highlights" data-bv-product-id="<?php echo $sku ?>"></div>  -->
+<!-- <div data-bv-show="rating_summary" data-bv-product-id="<?php echo $sku ?>"></div> -->
+<div data-bv-show="rating_summary" data-bv-product-id="<?php echo  $sku ?>"></div>
+<div data-bv-show="review_highlights" data-bv-product-id="<?php echo $sku ?>"></div>
 
-<div data-bv-show="review_highlights" data-bv-product-id="<?php echo $sku ?>"></div>  -->
-<div data-bv-show="rating_summary" data-bv-product-id="<?php echo $sku ?>"></div>
 
 <!-- <script type="text/javascript">
     require([ 'jquery', 'jquery/ui'], function($){
         $(document).ready(function($) {
-            $("#WAR").click(function (e) {
-                e.preventDefault();
-                var id1 = "1";
-                var url = "<?php echo $block->getUrl('postjson/page/view', ['_secure' => false]) ?>";
-                jQuery.ajax({
-                    url: url,
-                    type: "POST",
-                    data: {
-                        id_1:id1
-                    },
-                    showLoader: true,
-                    cache: false,
-                    success: function(response){
-                        console.log(response);
-                        // $(".price").text("$"+response.price);
-                        $(".test2").text(response.message);
-                        console.log(response);
-                    },
-                    error:function (res) {
-                        console.log(res);
-                    }
-                });
-            })
+            $(document).mouseup(function (e){
+                console.log(e.target.outerHTML);
+                if (e.target.outerHTML == '<span aria-hidden="true"> ✘ </span>' ) {
+                    $("#bv-mbox-overlay-id").remove();
+                    $("#bv-mboxzone-lightbox").remove();
+                }
+            });
         });
     });
 </script> -->
+
+
+<script type="text/javascript">
+    require([ 'jquery', 'jquery/ui'], function($){
+        $(document).ready(function($) {
+            var sku = <?php echo json_encode($sku); ?>;
+            var typeJson = "submitquestion.json";
+            var pattern = /^[a-z0-9_-]+@[a-z0-9-]+\.([a-z]{1,6}\.)?[a-z]{2,6}$/i;
+            $("#bv-search-results-review__question-button").click(function (e) {
+                console.log(555);
+                if ($("#bv-textarea-question-field-questionsummary").val() === '' || $("#bv-textarea-question-field-questionsummary").val().length > 255 ){
+                    $('.bv-fieldset-questionsummary').addClass('bv-error');
+                    $('.bv-fieldset-questionsummary').removeClass('bv-valid');
+                    return;
+                }
+                else {
+                    $('.bv-fieldset-questionsummary').addClass('bv-valid');
+                    $('.bv-fieldset-questionsummary').removeClass('bv-error');
+                }
+                if($("#bv-text-question-field-usernickname").val() === ''){
+                    $('.bv-fieldset-usernickname').addClass('bv-error');
+                    $('.bv-fieldset-usernickname').removeClass('bv-valid');
+                    return;
+                }
+                else {
+                    $('.bv-fieldset-usernickname').addClass('bv-valid');
+                    $('.bv-fieldset-usernickname').removeClass('bv-error');
+                }
+                if($("#bv-email-question-field-hostedauthentication_authenticationemail").val() === ''  || $("#bv-email-question-field-hostedauthentication_authenticationemail").val().search(pattern) !== 0){
+                    $('.bv-fieldset-hostedauthentication_authenticationemail').addClass('bv-error');
+                    $('.bv-fieldset-hostedauthentication_authenticationemail').removeClass('bv-valid');
+                    return;
+                }
+                else {
+                    $('.bv-fieldset-hostedauthentication_authenticationemail').addClass('bv-valid');
+                    $('.bv-fieldset-hostedauthentication_authenticationemail').removeClass('bv-error');
+                    e.preventDefault();
+                    var comment = $("#bv-textarea-question-field-questionsummary").val();
+                    var nickname = $("#bv-text-question-field-usernickname").val();
+                    var location = $("#bv-text-question-field-userlocation").val();
+                    var email = $("#bv-email-question-field-hostedauthentication_authenticationemail").val();
+                    console.log(comment);
+                    console.log(nickname);
+                    console.log(location);
+                    console.log(email);
+                    console.log(sku);
+                    var url = "<?php echo $block->getUrl('postjson/page/view', ['_secure' => false]) ?>";
+                    // jQuery.ajax({
+                    //     url: url,
+                    //     type: "POST",
+                    //     data: {
+                    //         comment:comment,
+                    //         nickname:nickname,
+                    //         location:location,
+                    //         email:email,
+                    //         sku:sku,
+                    //         typeJson:typeJson
+                    //     },
+                    //     showLoader: true,
+                    //     cache: false,
+                    //     success: function(response){
+                    //         console.log(response);
+                    //     },
+                    //     error:function (res) {
+                    //         console.log(res);
+                    //     }
+                    // });
+                }
+            });
+
+        });
+    });
+</script>
