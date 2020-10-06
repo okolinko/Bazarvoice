@@ -29,9 +29,7 @@ class Display extends \Magento\Framework\View\Element\Template
 
 	public function getMyCustomMethod2()
 	{
-		// $this->AddProductDatabase->apibazaarvoice();
 		$post = $this->_postFactory->create();
-//		$collection = $post->getCollection()->getData();
 		$collection = $post->getCollection();
 		return $collection;
 	}

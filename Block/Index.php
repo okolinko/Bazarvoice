@@ -50,50 +50,15 @@ class Index extends \Magento\Framework\View\Element\Template
 		return $this;
     }
 
- //    public function getPagerHtml()
-	// {
-	// 	return $this->getChildHtml('pager');
-	// }
-
-	// Public function getRewardHistory()
-	// {
-	// 	//get values of current page
-	// 	$page=($this->getRequest()->getParam('p'))? $this->getRequest()->getParam('p') : 1;
-	// 	//get values of current limit
-	// 	$pageSize=($this->getRequest()->getParam('limit'))? $this->getRequest
-	// 	()->getParam('limit') : 5;
-	// 	$post = $this->_postFactory->create();
-	// 	$currentProduct = $this->getCurrentProduct();
-	// 	$sku = $currentProduct->getSku();
-	// 	$collection = $post->getCollection()->addFieldToFilter(
-	// 		'sku',
-	// 		$sku);
-	// 	$collection->setPageSize($pageSize);
-	// 	$collection->setCurPage($page);
-	// 	return $collection;
-	// }
-
-    // public function getCurrentCategory()
-    // {       
-    //     return $this->_registry->registry('current_category');
-    // }
-
     public function getCurrentProduct()
     {       
         return $this->_registry->registry('current_product');
     }  
 
-    
 	public function getMyCustomMethod()
 	{
 		// $this->AddProductDatabase->apibazaarvoice();
-		// file_put_contents('/var/www/html/toppik-us-us.huntersconsult.com/var/log/bazar.log',  json_encode("TEST") . "\n");
-		// $fd = fopen("/var/www/html/toppik-us-us.huntersconsult.com/var/log/bazar.log", 'w') or die("не удалось создать файл");
-		// $str = "Привет мир";
-		// fwrite($fd, $str);
-		// fclose($fd);
 		$post = $this->_postFactory->create();
-//		$collection = $post->getCollection()->getData();
 		$collection = $post->getCollection();
 		return $collection;
 	}

@@ -52,7 +52,7 @@
   right: 0!important;
   z-index: 1!important;
   top: 40px!important;
-  margin: -3px 0 0 0!important;
+  margin: -5px 0 0 0!important;
 }
 #reviews-custom-sortby.show-custom-block, #questions-custom-sortby.show-custom-block, #bv-custom-filters .show-custom-block, #question-custom-form-container.show {
   display: block!important;

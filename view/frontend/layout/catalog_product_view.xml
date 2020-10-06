@@ -6,7 +6,7 @@
 
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
   <head>
-    <css src="Hunters_Bazaarvoice::css/bazaarvoice_custom.min.css"/>
+    <css src="Hunters_Bazaarvoice::css/bazaarvoice_custom.css"/>
     <script src="https://apps.bazaarvoice.com/deployments/toppik/main_site/production/en_US/bv.js" src_type="url" />
   </head>
     <body>

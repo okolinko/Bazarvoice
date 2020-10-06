@@ -44,7 +44,7 @@ class View extends \Magento\Framework\App\Action\Action
 			$comment = $post['comment'];
             $nickname = $post['nickname'];
             if (empty($post['location'])){
-            	$location = "TYT";
+            	$location = " ";
             }
             else{
             	$location = $post['location'];
@@ -65,8 +65,6 @@ class View extends \Magento\Framework\App\Action\Action
 			return $result->setData($res);
             }
 		}
-		$data = ['message' => 'In development!'];
-		file_put_contents('/var/www/html/toppik-us-us.huntersconsult.com/var/log/bazar.log',  json_encode("TEST2") . "\n");
-		return $result->setData($data);
+		return $result;
 	}
 }

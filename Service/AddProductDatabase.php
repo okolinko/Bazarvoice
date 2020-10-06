@@ -110,7 +110,7 @@ class AddProductDatabase
 					}
 					$com_arr[$i]['advice_use'] = '';
 					$com_arr[$i]['address'] = $result[$p]['UserLocation'];
-					$com_arr[$i]['age'] = '';
+					$com_arr[$i]['recommend'] = '';
 					$com_arr[$i]['rating'] = '';
 					$i++;
 				}
@@ -180,7 +180,11 @@ class AddProductDatabase
 					}
 					$com_arr[$i]['advice_use'] = '';
 					$com_arr[$i]['address'] = $result[$p]['UserLocation'];
-					$com_arr[$i]['age'] = '';
+					$res = array();
+    				$positive = array('yes' => $result[$p]['TotalPositiveFeedbackCount']);
+    				$negative = array('no' => $result[$p]['TotalNegativeFeedbackCount']);
+    				$res = array_merge($res, $negative, $positive);
+					$com_arr[$i]['recommend'] = json_encode($res);
 					$com_arr[$i]['rating'] = '';
 					$i++;
 				}
@@ -265,7 +269,39 @@ class AddProductDatabase
 						$com_arr[$i]['advice_use'] = '';
 					}
 					$com_arr[$i]['address'] = $result[$p]['UserLocation'];
-					$com_arr[$i]['age'] = '';
+
+					$res = array();
+    				if (!empty($result[$p]['TagDimensions'])){
+						$res = $result[$p]['TagDimensions'];
+					}
+    				if (!empty($result[$p]['AdditionalFields'])){
+    					$res = array_merge($res, $result[$p]['AdditionalFields']);
+					}
+    				if ($result[$p]['IsRecommended'] == 1){
+    					$recomend = array('recomend' => 'I recommend this product.');
+    					$res = array_merge($res, $recomend);
+					}
+    				else {
+						$recomend = array('recomend' => 'I do not recommend this product.');
+						$res = array_merge($res, $recomend);
+					}
+    				if (!empty($result[$p]['TotalNegativeFeedbackCount'])){
+    					$negative = array('negative' => $result[$p]['TotalNegativeFeedbackCount']);
+						$res = array_merge($res, $negative);
+					}
+    				else {
+						$negative = array('negative' => '0');
+						$res = array_merge($res, $negative);
+					}
+					if (!empty($result[$p]['TotalPositiveFeedbackCount'])){
+						$positive = array('positive' => $result[$p]['TotalPositiveFeedbackCount']);
+						$res = array_merge($res, $positive);
+					}
+					else {
+						$positive = array('positive' => '0');
+						$res = array_merge($res, $positive);
+					}				
+					$com_arr[$i]['recommend'] = json_encode($res);
 					$com_arr[$i]['rating'] = $result[$p]['Rating'];
 					$i++;
 				}
@@ -340,7 +376,7 @@ class AddProductDatabase
 					}
 					$com_arr[$i]['advice_use'] = '';
 					$com_arr[$i]['address'] = $result[$p]['UserLocation'];
-					$com_arr[$i]['age'] = '';
+					$com_arr[$i]['recommend'] = '';
 					$com_arr[$i]['rating'] = '';
 					$i++;
 				}
@@ -393,7 +429,7 @@ class AddProductDatabase
 		$com_arr[$i]['photo'] = '';
 		$com_arr[$i]['advice_use'] = '';
 		$com_arr[$i]['address'] = '';
-		$com_arr[$i]['age'] = '';
+		$com_arr[$i]['recommend'] = '';
 		$com_arr[$i]['rating'] = '';
 
 		$connection = $this->connection->getConnection();

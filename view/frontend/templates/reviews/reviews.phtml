@@ -17,6 +17,7 @@ if ($currentProduct = $this->getCurrentProduct()) {
 }
 $array_reviews = $this->getMyCustomMethod()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'reviews')->getData();
 $array_reviewcomments = $this->getMyCustomMethod()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'reviewcomments')->getData();
+
 $rating = $this->getMyCustomMethod()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'product')->getData();
 
 $questions_sum = count($this->getMyCustomMethod()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'questions')->getData());
@@ -622,6 +623,36 @@ else {
           });
 
           let context_data_values = JSON.parse(value.context_data_values);
+          let recommend = JSON.parse(value.recommend);
+          let recommend_products = [];
+          if(recommend.OtherProducts) {
+            if(recommend.OtherProducts.Values) {
+              for(var i = 0; i < recommend.OtherProducts.Values.length; i++) {
+                recommend_products.push(recommend.OtherProducts.Values[i]);
+              }
+            }
+          }
+          let recommend_solution;
+          if(recommend.recomend == 'I recommend this product.') {
+            recommend_solution =
+              `<dl class="bv-content-data-recommend-yes">
+                <dt class="bv-content-data-label-container">
+                  <span class="bv-content-data-icon" aria-hidden="true">✔</span>
+                  <span class="bv-content-data-label">Yes</span>,
+                </dt>
+                <dd class="bv-content-data-value"> I recommend this product. </dd>
+              </dl>`;
+          } else {
+            recommend_solution =
+              `<dl class="bv-content-data-recommend-no">
+                <dt class="bv-content-data-label-container">
+                  <span class="bv-content-data-icon" aria-hidden="true">✘</span>
+                  <span class="bv-content-data-label">No</span>,
+                </dt>
+                <dd class="bv-content-data-value">  I do not recommend this product. </dd>
+              </dl>`;
+          }
+          console.log(recommend);
           let reviews_statistic = JSON.parse(value.statistic);
           gender = (typeof(context_data_values.Gender) !== 'undefined') ? context_data_values.Gender.Value : 'Male';
           gender_symbol = (gender == 'Male') ? '♂' : '♀';
@@ -745,18 +776,40 @@ else {
               <div class="bv-content-details-offset-on">
                 <div class="bv-content-summary">
                   <div class="bv-content-summary-body" itemprop="reviewBody">
-                    <div class="bv-content-summary-body-text">\t
+                    <div class="bv-content-summary-body-text">
                       <p>${value.text ? value.text : ''}</p>
                     </div>
                     <div class="bv-content-data">
                       <div class="bv-content-product-questions">
-                        <dl class="bv-content-data-product-questions">
-                          <dt class="bv-content-data-label-container"><span class="bv-content-data-label">${context_data_values.LengthOfUse ? context_data_values.LengthOfUse.DimensionLabel : ''}</span> </dt>
+                        <dl class="bv-content-data-product-questions" style="display: ${context_data_values.LengthOfUse ? 'inline!important' : 'none!important'}">
+                          <dt class="bv-content-data-label-container">
+                            <span class="bv-content-data-label">
+                                ${context_data_values.LengthOfUse ? context_data_values.LengthOfUse.DimensionLabel : ''}
+                            </span>
+                          </dt>
                           <dd class="bv-content-data-value">
                             ${context_data_values.LengthOfUse ? context_data_values.LengthOfUse.ValueLabel : ''}
                           </dd>
                         </dl>
+                        <dl class="bv-content-data-product-questions" style="display: ${value.advice_use ? 'inline!important' : 'none!important'}">
+                          <dt class="bv-content-data-label-container">
+                            <span class="bv-content-data-label">Advice on use:</span>
+                          </dt>
+                          <dd class="bv-content-data-value">${value.advice_use ? value.advice_use : ''}</dd>
+                        </dl>
                       </div>
+                      <div class="bv-content-tag-dimensions" style="display: ${recommend.OtherProducts ? 'block!important' : 'none!important'}">
+                        <dl class="bv-content-data-tag-dimensions">
+                          <dt class="bv-content-data-label-container">
+                            <span class="bv-content-data-icon" aria-hidden="true">#</span>
+                            <span class="bv-content-data-label">
+                              ${recommend.OtherProducts ? recommend.OtherProducts.Label : ''}
+                            </span>
+                          </dt>
+                          ${recommend_products}
+                        </dl>
+                      </div>
+                      ${recommend_solution ? recommend_solution : ''}
                     </div>
                   </div>
                 </div>
@@ -825,7 +878,26 @@ else {
               </div>
             </div>
           </div>
-          <div class="bv-content-actions-container bv-active-feedback"></div>
+          <div class="bv-content-actions-container bv-active-feedback">
+            <div class="bv-feedback-container">
+              <div class="bv-content-feedback-vote bv-content-feedback-vote-active" role="group" aria-label="Content helpfulness">
+               <div class="bv-content-feedback-vote-request">
+                 <p>Helpful?</p>
+               </div>
+                <div class="bv-content-feedback-btn-container">
+                  <button type="button" class="bv-content-btn bv-content-btn-feedback-yes bv-focusable">
+                    <span aria-hidden="true"> Yes · <span class="bv-content-btn-count" aria-hidden="true">${recommend.positive}</span> </span>
+                  </button>
+                  <button type="button" class="bv-content-btn bv-content-btn-feedback-no bv-focusable">
+                    <span aria-hidden="true"> No · <span class="bv-content-btn-count" aria-hidden="true">${recommend.negative}</span> </span>
+                  </button>
+                </div>
+                <div class="bv-content-feedback-vote bv-content-feedback-vote-active">
+                  <button type="button" class="bv-content-report-btn bv-focusable"> Report </button>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="bv-content-actions-container">
             <div class="bv-secondary-content-actions-container">
               <button type="button" aria-label="Comment on review by ${value.name}." class="bv-content-btn bv-content-secondary-btn bv-focusable custom-comment-button" data-review-id="${value.id}"> Comment </button>
@@ -1398,7 +1470,7 @@ else {
                       <div class="bv-action-bar">
                         <h2 class="bv-action-bar-header"> Search Results </h2>
                         <div class="bv-ask-question-container bv-write-container">
-
+                          <!--button type="button" class="bv-ask-question bv-focusable bv-submission-button"> Ask a question  </button-->
                         </div>
                       </div>
                       <div class="bv-inline-form-container"></div>

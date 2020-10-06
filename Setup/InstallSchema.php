@@ -117,13 +117,11 @@ class InstallSchema implements InstallSchemaInterface
 					'Address'
 				)
 				->addColumn(
-					'age',
-					Table::TYPE_INTEGER,
-					null,
-					[
-						'default' => 0
-					],
-					'Age'
+					'recommend',
+					Table::TYPE_TEXT,
+					1000000,
+					['nullable => false'],
+					'Recommend'
 				)
 				->addColumn(
 					'rating',

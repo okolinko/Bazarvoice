@@ -85,7 +85,8 @@ else{
         $('#question-custom-form-container').removeClass('show').addClass('hide');
       });
       $('#bv-dropdown-select-questions-sortby').children().on('click', function () {
-          console.log($(this).data('bv-dropdown-value'));
+        console.log($(this).data('bv-dropdown-value'));
+        sortQuestionBy(array_questions, array_answers, $(this).data('bv-dropdown-value'));
       });
 
       /****************** show/hide search results *********************/
@@ -261,10 +262,10 @@ else{
                                 </div>
                             </div>
                         </div>
-
                         <div class="bv-content-actions-container">
-                            <div class="bv-secondary-content-actions-container"> <button type="button" aria-label="Answer this question by ${value.name}." class="bv-content-btn bv-content-secondary-btn bv-focusable bv-custom-show_popup" rel="popup1" data-question-id="${value.id}"> Answer this Question </button> </div>
-                              </div>
+                            <div class="bv-secondary-content-actions-container">
+                                <button type="button" aria-label="Answer this question by ${value.name}." class="bv-content-btn bv-content-secondary-btn bv-focusable bv-custom-show_popup" rel="popup1" data-question-id="${value.id}"> Answer this Question </button>
+                            </div>
                         </div>
 
                         <div class="bv-secondary-content-list">
@@ -417,6 +418,34 @@ else{
         });
         return questions;
       }
+      function sortQuestionBy(array_questions, array_answers, sort_parameter) {
+        array_questions_sort = array_questions.sort(function(a, b){
+          if(sort_parameter == 'recentQuestionsFirst') {
+            return a.data - b.data;
+          }
+          if(sort_parameter == 'recentAnswersFirst') {
+            a.answers = array_answers.filter(function(el){
+              if(a.id == el.id) {
+                return el;
+              }
+            });
+            b.answers = array_answers.filter(function(el){
+              if(b.id == el.id) {
+                return el;
+              }
+            });
+            ///console.log(a, b);
+            return b.data - a.data;
+          }
+          /*if(sort_parameter == 'negative') {
+            return a.rating - b.rating;
+          }
+          if(sort_parameter == 'mostRecent') {
+            return b.data.slice(0, 4) - a.data.slice(0, 4);
+          }*/
+        });
+        renderQuestion(array_questions_sort, array_answers, items_quantity, current_page);
+      };
       function searchQuestionBy(search_text = ''){
         search_text = search_text.toLowerCase();
         $('.bv-content-search-results').addClass('bv-content-search-results__no-results');
