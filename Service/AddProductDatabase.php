@@ -376,7 +376,11 @@ class AddProductDatabase
 					}
 					$com_arr[$i]['advice_use'] = '';
 					$com_arr[$i]['address'] = $result[$p]['UserLocation'];
-					$com_arr[$i]['recommend'] = '';
+					$res = array();
+    				$positive = array('yes' => $result[$p]['TotalPositiveFeedbackCount']);
+    				$negative = array('no' => $result[$p]['TotalNegativeFeedbackCount']);
+    				$res = array_merge($res, $negative, $positive);
+					$com_arr[$i]['recommend'] = json_encode($res);
 					$com_arr[$i]['rating'] = '';
 					$i++;
 				}

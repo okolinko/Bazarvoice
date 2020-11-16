@@ -41,6 +41,7 @@ else {
 ?>
 <script>
   require(['jquery', 'jquery/ui'], function($){
+
     $(document).ready( function() {
       let array_reviews = <?php echo json_encode($array_reviews); ?>;
       let array_reviewcomments = <?php echo json_encode($array_reviewcomments); ?>;
@@ -52,85 +53,85 @@ else {
       renderReviews(array_reviews, array_reviewcomments, items_quantity, current_page);
 
       let comment_form = `<div class="bv-inline-form-container">
-    <div id="bv-mboxzone-commentSubmission1_inline" class="bv-mboxzone bv-mbox-opened" style="top: 2506.38px !important; left: 382px !important; height: auto !important;">
-        <div class="bv-mbox-inner bv-core-container-103 bv-mbox-commentSubmission1_inline" role="region" aria-label="">
-            <div class="bv-mbox-wrapper bv-mbox-secondary-content bv-mbox-content-submission-comment bv-mbox-narrow bv-mbox-over bv-mbox-inline">
-                <div id="bv-mbox-commentSubmission1_inline-list" class="bv-mbox">
-                    <button type="button" name="Cancel" class="bv-mbox-close bv-focusable custom-commentform-close" tabindex="0" >
-                        <span aria-hidden="true"> ✘ </span>
-                        <span id="bv-mbox-close-label" class="bv-off-screen">Close</span>
-                    </button>
-                    <div class="bv-mbox-sidebar"></div>
-                    <div class="bv-mbox-content-container">
-                        <h2 class="bv-mbox-breadcrumb">
-                            <span class="bv-mbox-breadcrumb-item" id="bv-mbox-breadcrumb-item">
-                                <span>Post Comment</span>
-                            </span>
-                        </h2>
+        <div id="bv-mboxzone-commentSubmission1_inline" class="bv-mboxzone bv-mbox-opened" style="top: 2506.38px !important; left: 382px !important; height: auto !important;">
+            <div class="bv-mbox-inner bv-core-container-103 bv-mbox-commentSubmission1_inline" role="region" aria-label="">
+                <div class="bv-mbox-wrapper bv-mbox-secondary-content bv-mbox-content-submission-comment bv-mbox-narrow bv-mbox-over bv-mbox-inline">
+                    <div id="bv-mbox-commentSubmission1_inline-list" class="bv-mbox">
+                        <button type="button" name="Cancel" class="bv-mbox-close bv-focusable custom-commentform-close" tabindex="0" >
+                            <span aria-hidden="true"> ✘ </span>
+                            <span id="bv-mbox-close-label" class="bv-off-screen">Close</span>
+                        </button>
+                        <div class="bv-mbox-sidebar"></div>
+                        <div class="bv-mbox-content-container">
+                            <h2 class="bv-mbox-breadcrumb">
+                                <span class="bv-mbox-breadcrumb-item" id="bv-mbox-breadcrumb-item">
+                                    <span>Post Comment</span>
+                                </span>
+                            </h2>
 
-                        <div class="bv-mbox-injection-container" style="height: 551px !important;">
-                            <div class="bv-mbox-injection-target bv-mbox-current">
-                                <div class="bv-submission bv-submission-noimage bv-fake-inline">
-                                    <div class="bv-compat">
-                                        <form id="bv-submitcomment-review" action="" accept-charset="utf-8" method="POST" class="bv-form">
-                                        <input type="hidden" name="passkey" value="b5xjo1fw42ctw528lazc88mz8" class="bv-noremember">
-                                        <input type="hidden" name="action" value="submit" class="bv-noremember"> <input type="hidden" name="apiversion" value="5.5" class="bv-noremember"> <input type="hidden" name="callback" value="parent.rpc.returnSubmissionResponse" class="bv-noremember">
-                                        <input type="hidden" name="reviewid" value="212089419" class="bv-noremember">
-                                        <input type="hidden" name="campaignid" value="BV_REVIEW_DISPLAY" class="bv-noremember">
-                                        <input type="hidden" name="fp" value="" class="bv-noremember">
-                                        <input type="hidden" name="forceutf8" value="☠" class="bv-noremember"> <input type="hidden" name="locale" value="en_US" class="bv-noremember"> <input type="hidden" name="contextdatavalue_VerifiedPurchaser" value="False" class="bv-noremember">
-                                        <input type="hidden" name="displaycode" value="18542-en_us" class="bv-noremember">
-                                        <input type="hidden" name="hostedauthentication_callbackUrl" value="https://www.toppik.com/shop/hair-perfecting-tool-kit/" class="bv-noremember"> <input type="hidden" name="sendemailalertwhenpublished" class="bv-noremember bv-form-ignore" value="true">
-                                        <input type="hidden" name="sendemailalertwhencommented" class="bv-noremember bv-form-ignore" value="true">
-                                        <input type="hidden" name="sendemailalertwhenanswered" class="bv-noremember bv-form-ignore" value="true">
-                                            <div class="bv-submission-section">
-                                                 <span id="bv-required-text">
-                                                    <p class="bv-required-fields-text">Required fields are marked with *</p>
-                                                </span>
-                                                <span class="bv-off-screen" id="bv-required-text-reader">Required field</span>
-                                                <div class="bv-fieldsets bv-input-fieldsets">
-                                                    <fieldset class="bv-fieldset bv-fieldset-commenttext bv-textarea-field bv-mincount">
-                                                        <div class="bv-fieldset-arrowicon"></div>
-                                                        <div class="bv-fieldset-inner"> <label for="bv-textarea-field-commenttext" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Comment* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation">Error: Required.</span> </span> <span class="bv-off-screen">Maximum of 10000 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label">Required</span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <textarea id="bv-textarea-field-commenttext" aria-describedby="bv-required-text" class="bv-text bv-focusable " name="commenttext" maxlength="10000" placeholder="Write a comment..." required="" aria-required="true" tabindex="0" style="overflow-wrap: break-word; overflow: hidden !important; height: 90px !important;" aria-invalid="true"></textarea> </div>
-                                                    </fieldset>
-                                                    <fieldset class="bv-fieldset bv-fieldset-usernickname bv-text-field bv-fieldset-small bv-mincount">
-                                                        <div class="bv-fieldset-arrowicon"></div>
-                                                        <div class="bv-fieldset-inner"> <label for="bv-text-field-usernickname" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Nickname* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation">Error: Required.</span> </span> <span class="bv-off-screen">Maximum of 25 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label" role="status" aria-live="polite">Required</span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input autocomplete="nickname" id="bv-text-field-usernickname" class="bv-text bv-focusable " type="text" name="usernickname" maxlength="25" placeholder="Example: jackie27" value="" required="" aria-required="true" tabindex="0" aria-invalid="true"> </div>
-                                                    </fieldset>
-                                                    <fieldset class="bv-fieldset bv-fieldset-userlocation bv-text-field bv-nocount bv-fieldset-small">
-                                                        <div class="bv-fieldset-arrowicon"></div>
-                                                        <div class="bv-fieldset-inner"> <label for="bv-text-field-userlocation" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Location </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation">Field input is valid.</span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input id="bv-text-field-userlocation" class="bv-text bv-focusable " type="text" name="userlocation" maxlength="255" placeholder="Example: New York, NY" value="" tabindex="0"> </div>
-                                                    </fieldset>
-                                                    <fieldset class="bv-fieldset bv-fieldset-hostedauthentication_authenticationemail bv-email-field bv-fieldset-small-alone ">
-                                                        <div class="bv-fieldset-arrowicon"></div>
-                                                        <div class="bv-fieldset-inner"> <label for="bv-email-field-hostedauthentication_authenticationemail" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Email* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation">Error: Required.</span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label" id="bv-invalid-email-for-aria-describedby">Required</span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input autocomplete="email" id="bv-email-field-hostedauthentication_authenticationemail" class="bv-text bv-focusable bv-email" type="email" name="hostedauthentication_authenticationemail" maxlength="255" placeholder="Example: youremail@example.com" value="" required="" aria-required="true" aria-describedby="bv-invalid-email-for-aria-describedby" tabindex="0" aria-invalid="true"> </div>
-                                                    </fieldset>
-                                                </div>
-                                                <div class="bv-fieldsets bv-fieldsets-actions">
-                                                    <div class="bv-form-actions bv-fieldset">
-                                                        <div class="bv-fieldset-arrowicon"></div>
-                                                        <div class="bv-fieldset-inner">
-                                                            <div class="bv-actions-container">
-                                                                <p id="bv-casltext-comment" class="bv-fieldset-casltext">You may receive emails regarding this submission. Any emails will include the ability to opt-out of future communications.</p>
-                                                                <button type="button" aria-label="Post Comment" aria-describedby="bv-casltext-comment" class="bv-form-actions-submit bv-submit bv-focusable bv-submission-button-submit" name="bv-submit-button" tabindex="0" id="post-comment">Post Comment</button>
-                                                                <button type="button" class="bv-form-action bv-cancel bv-submission-button-submit">Cancel</button>
+                            <div class="bv-mbox-injection-container" style="height: 551px !important;">
+                                <div class="bv-mbox-injection-target bv-mbox-current">
+                                    <div class="bv-submission bv-submission-noimage bv-fake-inline">
+                                        <div class="bv-compat">
+                                            <form id="bv-submitcomment-review" action="" accept-charset="utf-8" method="POST" class="bv-form">
+                                            <input type="hidden" name="passkey" value="b5xjo1fw42ctw528lazc88mz8" class="bv-noremember">
+                                            <input type="hidden" name="action" value="submit" class="bv-noremember"> <input type="hidden" name="apiversion" value="5.5" class="bv-noremember"> <input type="hidden" name="callback" value="parent.rpc.returnSubmissionResponse" class="bv-noremember">
+                                            <input type="hidden" name="reviewid" value="212089419" class="bv-noremember">
+                                            <input type="hidden" name="campaignid" value="BV_REVIEW_DISPLAY" class="bv-noremember">
+                                            <input type="hidden" name="fp" value="" class="bv-noremember">
+                                            <input type="hidden" name="forceutf8" value="☠" class="bv-noremember"> <input type="hidden" name="locale" value="en_US" class="bv-noremember"> <input type="hidden" name="contextdatavalue_VerifiedPurchaser" value="False" class="bv-noremember">
+                                            <input type="hidden" name="displaycode" value="18542-en_us" class="bv-noremember">
+                                            <input type="hidden" name="hostedauthentication_callbackUrl" value="https://www.toppik.com/shop/hair-perfecting-tool-kit/" class="bv-noremember"> <input type="hidden" name="sendemailalertwhenpublished" class="bv-noremember bv-form-ignore" value="true">
+                                            <input type="hidden" name="sendemailalertwhencommented" class="bv-noremember bv-form-ignore" value="true">
+                                            <input type="hidden" name="sendemailalertwhenanswered" class="bv-noremember bv-form-ignore" value="true">
+                                                <div class="bv-submission-section">
+                                                     <span id="bv-required-text">
+                                                        <p class="bv-required-fields-text">Required fields are marked with *</p>
+                                                    </span>
+                                                    <span class="bv-off-screen" id="bv-required-text-reader">Required field</span>
+                                                    <div class="bv-fieldsets bv-input-fieldsets">
+                                                        <fieldset class="bv-fieldset bv-fieldset-commenttext bv-textarea-field bv-mincount">
+                                                            <div class="bv-fieldset-arrowicon"></div>
+                                                            <div class="bv-fieldset-inner"> <label for="bv-textarea-field-commenttext" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Comment* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation">Error: Required.</span> </span> <span class="bv-off-screen">Maximum of 10000 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label">Required</span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <textarea id="bv-textarea-field-commenttext" aria-describedby="bv-required-text" class="bv-text bv-focusable " name="commenttext" maxlength="10000" placeholder="Write a comment..." required="" aria-required="true" tabindex="0" style="overflow-wrap: break-word; overflow: hidden !important; height: 90px !important;" aria-invalid="true"></textarea> </div>
+                                                        </fieldset>
+                                                        <fieldset class="bv-fieldset bv-fieldset-usernickname bv-text-field bv-fieldset-small bv-mincount">
+                                                            <div class="bv-fieldset-arrowicon"></div>
+                                                            <div class="bv-fieldset-inner"> <label for="bv-text-field-usernickname" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Nickname* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation">Error: Required.</span> </span> <span class="bv-off-screen">Maximum of 25 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label" role="status" aria-live="polite">Required</span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input autocomplete="nickname" id="bv-text-field-usernickname" class="bv-text bv-focusable " type="text" name="usernickname" maxlength="25" placeholder="Example: jackie27" value="" required="" aria-required="true" tabindex="0" aria-invalid="true"> </div>
+                                                        </fieldset>
+                                                        <fieldset class="bv-fieldset bv-fieldset-userlocation bv-text-field bv-nocount bv-fieldset-small">
+                                                            <div class="bv-fieldset-arrowicon"></div>
+                                                            <div class="bv-fieldset-inner"> <label for="bv-text-field-userlocation" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Location </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation">Field input is valid.</span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label"></span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input id="bv-text-field-userlocation" class="bv-text bv-focusable " type="text" name="userlocation" maxlength="255" placeholder="Example: New York, NY" value="" tabindex="0"> </div>
+                                                        </fieldset>
+                                                        <fieldset class="bv-fieldset bv-fieldset-hostedauthentication_authenticationemail bv-email-field bv-fieldset-small-alone ">
+                                                            <div class="bv-fieldset-arrowicon"></div>
+                                                            <div class="bv-fieldset-inner"> <label for="bv-email-field-hostedauthentication_authenticationemail" class="bv-fieldset-label-wrapper"> <span class="bv-fieldset-label"> <span class="bv-fieldset-label-text"> Email* </span> <span aria-hidden="false" class="bv-off-screen bv-field-aria-validation">Error: Required.</span> </span> <span class="bv-off-screen">Maximum of 255 characters.</span> </label> <span class="bv-helper"> <span class="bv-helper-label" id="bv-invalid-email-for-aria-describedby">Required</span> <span class="bv-helper-icon" aria-hidden="true"> <span class="bv-helper-icon-positive"> ✔ </span> <span class="bv-helper-icon-negative"> ✘ </span> </span> </span> <input autocomplete="email" id="bv-email-field-hostedauthentication_authenticationemail" class="bv-text bv-focusable bv-email" type="email" name="hostedauthentication_authenticationemail" maxlength="255" placeholder="Example: youremail@example.com" value="" required="" aria-required="true" aria-describedby="bv-invalid-email-for-aria-describedby" tabindex="0" aria-invalid="true"> </div>
+                                                        </fieldset>
+                                                    </div>
+                                                    <div class="bv-fieldsets bv-fieldsets-actions">
+                                                        <div class="bv-form-actions bv-fieldset">
+                                                            <div class="bv-fieldset-arrowicon"></div>
+                                                            <div class="bv-fieldset-inner">
+                                                                <div class="bv-actions-container">
+                                                                    <p id="bv-casltext-comment" class="bv-fieldset-casltext">You may receive emails regarding this submission. Any emails will include the ability to opt-out of future communications.</p>
+                                                                    <button type="button" aria-label="Post Comment" aria-describedby="bv-casltext-comment" class="bv-form-actions-submit bv-submit bv-focusable bv-submission-button-submit" name="bv-submit-button" tabindex="0" id="post-comment">Post Comment</button>
+                                                                    <button type="button" class="bv-form-action bv-cancel bv-submission-button-submit">Cancel</button>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </form>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>`;
+    </div>`;
 
       /****************** handlers *********************/
 
@@ -222,6 +223,49 @@ else {
       });
 
       /****************** filters from drop down menu *********************/
+
+        $(document).click(function(event) {
+            if($(event.target).closest('.bv-inline-histogram-ratings-bar').length) {
+                let ratings = [];
+                let severities = [];
+                let professionality = [];
+                if ($('#castom-filtres').length > 0){
+                  $('#castom-filtres').remove();
+                }
+                $('#bv-custom-filters .bv-dropdown-container li').removeClass('bv-dropdown-item-selected');
+                $('#bv-custom-filters .bv-active-filters-list li').not(':last-child').addClass('bv-hidden');
+                filterBy(array_reviews);
+                var parent = $(event.target).closest("div");
+                var rating = parent.attr("data-bv-histogram-rating-value");
+                ratings.push(rating);
+                $(".bv-active-filters-list").append("<li data-bv-filter-headerid='Rating' class='bv-active-filters-list-item' id='castom-filtres'><button type='button' data-bv-filter-option='"+ rating + "' class='bv-active-filter-button bv-focusable' title='Rating'> "+ rating + " star <span class='bv-close-icon' aria-hidden='true'> ✘ </span> <span class='bv-off-screen'>Remove Filter</span> </button> </li>");
+                array_reviews_filtered = filterBy(array_reviews, ratings, severities, professionality);
+                if ($('.bv-filter-control-icon').attr("active") == 1){
+                    setTimeout(function(){
+                        $(".bv-filter-control-icon").click();
+                    }, 500);
+                }
+            }
+        });
+
+        $(document).click(function(event) {
+            if($(event.target).closest('.bv-close-icon').length) {
+                if ($('#castom-filtres').length > 0){
+                  $('#castom-filtres').remove();
+                }
+            }
+        });
+        $(document).click(function(event) {
+            if($(event.target).closest('.bv-filter-control-icon').length) {
+                if ($('.bv-filter-control-icon').attr("active") == 1){
+                    $('.bv-filter-control-icon').attr('active', '0');
+                }
+                else{
+                   $('.bv-filter-control-icon').attr('active', '1'); 
+                }
+            }
+        });
+
       $('#bv-custom-filters .bv-dropdown-container li').on('click', function(){
         let ratings = [];
         let severities = [];
@@ -357,11 +401,14 @@ else {
       };
       function filterBy(array_reviews, ratings = [], severities = [], professionality = []) {
         const array_reviews_filtered = array_reviews.filter(function(item){
-          if(ratings.length > 0) {
-            for (var i = 0; i < ratings.length; i++) {
-              if (item.rating == ratings[i]) return item;
+            if(ratings.length > 0) {
+                for (var i = 0; i < ratings.length; i++) {
+                    if (item.rating == ratings[i]) return item;
+                }
             }
-          } else return item;
+            else {
+                return item;
+            } 
         }).filter(function(item){
           if(severities.length > 0) {
             let context_data_values = JSON.parse(item.context_data_values);
@@ -373,7 +420,10 @@ else {
                 } else return false;
               }
             } else return false;
-          } else return item;
+          }
+          else{
+            return item;
+           }
         }).filter(function(item){
           if(professionality.length > 0) {
             let context_data_values = JSON.parse(item.context_data_values);
@@ -616,6 +666,26 @@ else {
                         </div>
                       </div>
                     </div>
+                    <div class="bv-content-actions-container bv-active-feedback">
+                      <div class="bv-feedback-container">
+                        <div class="bv-content-feedback-vote bv-content-feedback-vote-active" role="group">
+                          <div class="bv-content-feedback-vote-request">
+                            <p>Helpful?</p>
+                          </div>
+                          <div class="bv-content-feedback-btn-container">
+                            <button type="button" class="bv-content-btn bv-content-btn-feedback-yes bv-focusable">
+                              <span aria-hidden="true"> Yes · <span class="bv-content-btn-count" aria-hidden="true">${JSON.parse(el.recommend).yes}</span> </span>
+                            </button>
+                            <button type="button" class="bv-content-btn bv-content-btn-feedback-no bv-focusable">
+                              <span aria-hidden="true"> No · <span class="bv-content-btn-count" aria-hidden="true">${JSON.parse(el.recommend).no}</span> </span>
+                            </button>
+                          </div>
+                          <div class="bv-content-feedback-vote bv-content-feedback-vote-active">
+                            <!--button type="button" class="bv-content-report-btn bv-focusable" aria-label="Mark this comment by Bardia as inappropriate.  "> Report </button-->
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
               </li>`;
               reviewcomments.push(item);
@@ -652,11 +722,34 @@ else {
                 <dd class="bv-content-data-value">  I do not recommend this product. </dd>
               </dl>`;
           }
-          console.log(recommend);
           let reviews_statistic = JSON.parse(value.statistic);
           gender = (typeof(context_data_values.Gender) !== 'undefined') ? context_data_values.Gender.Value : 'Male';
           gender_symbol = (gender == 'Male') ? '♂' : '♀';
           let years_ago = (current_year - value.data.slice(0, 4) > 1) ? current_year - value.data.slice(0, 4) + ' years ago' : 'a year ago';
+
+          let photos = [];
+          if(value.photo) {
+            let photo = ``;
+            JSON.parse(value.photo).forEach(function (item) {
+              photo =
+                `<li role="presentation" class="bv-media-item bv-media-item-photo bv-focusable bv-media-item-show bv-media-item-landscape" itemprop="image" itemscope="" itemtype="http://schema.org/ImageObject">
+                  <div class="bv-media-item-wrapper">
+                    <div class="bv-media-item-spinner-container">
+                      <div class="bv-media-item-spinner"></div>
+                    </div>
+                    <a class="bv-image-wrapper bv-focusable" tabindex="0" href="#">
+                      <meta itemprop="image" content="${item.Sizes.normal.Url}">
+                      <meta itemprop="thumbnail" content="${item.Sizes.thumbnail.Url}">
+                      <meta itemprop="description" content="${item.Caption}"> <span class="bv-off-screen">${item.Caption}</span>
+                      <span class="bv-off-screen"> Photo This action will open a modal dialog. </span>
+                      <img src="${item.Sizes.normal.Url}" alt="${item.Caption}" title="${item.Caption}">
+                    </a>
+                  </div>
+                  <span class="bv-media-item-border" role="presentation"></span>
+                </li>`;
+              photos.push(photo);
+            })
+          }
 
           item =
             `<li class="bv-content-item bv-content-top-review bv-content-review" itemprop="review" itemscope="" itemtype="http://schema.org/Review" >
@@ -810,6 +903,9 @@ else {
                         </dl>
                       </div>
                       ${recommend_solution ? recommend_solution : ''}
+                      <ul class="bv-content-media-container" role="presentation" style="display: ${value.photo ? 'block!important' : 'none!important'}">
+                        ${value.photo ? photos : ''}
+                      </ul>
                     </div>
                   </div>
                 </div>
@@ -893,7 +989,7 @@ else {
                   </button>
                 </div>
                 <div class="bv-content-feedback-vote bv-content-feedback-vote-active">
-                  <button type="button" class="bv-content-report-btn bv-focusable"> Report </button>
+                  <!--button type="button" class="bv-content-report-btn bv-focusable"> Report </button-->
                 </div>
               </div>
             </div>
@@ -932,6 +1028,14 @@ else {
         }
         return reviews;
       }
+
+      // $('a[href^="#"]').on('click', function(event) {
+      //   event.preventDefault();
+      //   var id  = $(this).attr('href'),
+      //   getTop = $(id).offset().top;
+      //   $('body,html').animate({scrollTop: getTop}, 1500);
+      // });
+
     });
   });
 </script>
@@ -984,18 +1088,18 @@ else {
                 </div>
                 <ul class="bv-content-product-stats">
                   <li class="bv-content-product-stats-item bv-content-product-stats-item-first bv-content-product-stats-item-reviews">
-                    <a href="#" class="bv-content-data-count bv-focusable" data-content-type="review">
+                    <a href="#custom-reviews" class="bv-content-data-count bv-focusable" data-content-type="review">
                       <span class="bv-content-title"><?php echo $reviews_sum; ?></span>
                       <span class="bv-content-data-label">Reviews</span>
                     </a>
                   </li>
                   <li class="bv-content-product-stats-item bv-content-product-stats-item-questions">
-                    <a href="#" class="bv-content-data-count bv-focusable" data-content-type="question">
+                    <a href="#custom-questions" class="bv-content-data-count bv-focusable" data-content-type="question">
                       <span class="bv-content-title"><?php echo $questions_sum; ?></span> <span class="bv-content-data-label">Questions</span>
                     </a>
                   </li>
                   <li class="bv-content-product-stats-item bv-content-product-stats-item-last bv-content-product-stats-item-answers">
-                    <a href="#" class="bv-content-data-count bv-focusable" data-content-type="question">
+                    <a href="#custom-questions" class="bv-content-data-count bv-focusable" data-content-type="question">
                       <span class="bv-content-title"><?php echo $answers_sum; ?></span>
                       <span class="bv-content-data-label">Answers</span>
                     </a>
@@ -1028,7 +1132,7 @@ else {
                     <div class="bv-flex-container-column">
                       <div class="bv-inline-histogram-ratings-star-container bv-flex-container" aria-labelledby="bv-inline-histogram-ratings-star-label-5" role="button">
                         <div class="bv-inline-histogram-ratings-star" data-bv-histogram-rating-value="5"> 5<span class="bv-glyph" aria-hidden="true">★</span> <span class="bv-off-screen">stars</span> </div>
-                        <div class="bv-inline-histogram-ratings-bar" data-bv-histogram-rating-value="5" role="presentation" data-bv-histogram-rating-count="<?php echo $rating_general[5]; ?>"> <span class="bv-content-secondary-ratings-container"> <span class="bv-content-secondary-ratings-value bv-width-from-rating-stats-<?php echo $rating_general[5] * 4; ?>"></span> </span> </div>
+                        <div class="bv-inline-histogram-ratings-bar" data-bv-histogram-rating-value="5" role="presentation" data-bv-histogram-rating-count="<?php echo $rating_general[5]; ?>"> <span class="bv-content-secondary-ratings-container"> <span class="bv-content-secondary-ratings-value bv-width-from-rating-stats-<?php echo round($rating_general[5] / 2); ?>"></span> </span> </div>
                         <div class="bv-inline-histogram-ratings-score">
                           <span aria-hidden="true"> <?php echo $rating_general[5]; ?> </span>
                           <span class="bv-off-screen">  <?php echo $rating_general[5]; ?> reviews with 5 stars. </span>
@@ -1037,7 +1141,7 @@ else {
                       </div>
                       <div class="bv-inline-histogram-ratings-star-container bv-flex-container" aria-labelledby="bv-inline-histogram-ratings-star-label-4" role="button">
                         <div class="bv-inline-histogram-ratings-star" data-bv-histogram-rating-value="4"> 4<span class="bv-glyph" aria-hidden="true">★</span> <span class="bv-off-screen">stars</span> </div>
-                        <div class="bv-inline-histogram-ratings-bar" data-bv-histogram-rating-value="4" role="presentation" data-bv-histogram-rating-count="<?php echo $rating_general[4]; ?>"> <span class="bv-content-secondary-ratings-container"> <span class="bv-content-secondary-ratings-value bv-width-from-rating-stats-<?php echo $rating_general[4] * 4; ?>"></span> </span> </div>
+                        <div class="bv-inline-histogram-ratings-bar" data-bv-histogram-rating-value="4" role="presentation" data-bv-histogram-rating-count="<?php echo $rating_general[4]; ?>"> <span class="bv-content-secondary-ratings-container"> <span class="bv-content-secondary-ratings-value bv-width-from-rating-stats-<?php echo round($rating_general[4] / 2); ?>"></span> </span> </div>
                         <div class="bv-inline-histogram-ratings-score">
                           <span aria-hidden="true"> <?php echo $rating_general[4]; ?> </span>
                           <span class="bv-off-screen"> <?php echo $rating_general[4]; ?> reviews with 4 stars. </span>
@@ -1046,7 +1150,7 @@ else {
                       </div>
                       <div class="bv-inline-histogram-ratings-star-container bv-flex-container" aria-labelledby="bv-inline-histogram-ratings-star-label-3" role="button">
                         <div class="bv-inline-histogram-ratings-star" data-bv-histogram-rating-value="3"> 3<span class="bv-glyph" aria-hidden="true">★</span> <span class="bv-off-screen">stars</span> </div>
-                        <div class="bv-inline-histogram-ratings-bar" data-bv-histogram-rating-value="3" role="presentation" data-bv-histogram-rating-count="<?php echo $rating_general[3]; ?>"> <span class="bv-content-secondary-ratings-container"> <span class="bv-content-secondary-ratings-value bv-width-from-rating-stats-<?php echo $rating_general[3] * 4; ?>"></span> </span> </div>
+                        <div class="bv-inline-histogram-ratings-bar" data-bv-histogram-rating-value="3" role="presentation" data-bv-histogram-rating-count="<?php echo $rating_general[3]; ?>"> <span class="bv-content-secondary-ratings-container"> <span class="bv-content-secondary-ratings-value bv-width-from-rating-stats-<?php echo round($rating_general[3] / 2); ?>"></span> </span> </div>
                         <div class="bv-inline-histogram-ratings-score">
                           <span aria-hidden="true"> <?php echo $rating_general[3]; ?> </span>
                           <span class="bv-off-screen"> <?php echo $rating_general[3]; ?> reviews with 3 stars. </span>
@@ -1055,7 +1159,7 @@ else {
                       </div>
                       <div class="bv-inline-histogram-ratings-star-container bv-flex-container" aria-labelledby="bv-inline-histogram-ratings-star-label-2" role="button">
                         <div class="bv-inline-histogram-ratings-star" data-bv-histogram-rating-value="2"> 2<span class="bv-glyph" aria-hidden="true">★</span> <span class="bv-off-screen">stars</span> </div>
-                        <div class="bv-inline-histogram-ratings-bar" data-bv-histogram-rating-value="2" role="presentation" data-bv-histogram-rating-count="<?php echo $rating_general[2]; ?>"> <span class="bv-content-secondary-ratings-container"> <span class="bv-content-secondary-ratings-value bv-width-from-rating-stats-<?php echo $rating_general[2] * 4; ?>"></span> </span> </div>
+                        <div class="bv-inline-histogram-ratings-bar" data-bv-histogram-rating-value="2" role="presentation" data-bv-histogram-rating-count="<?php echo $rating_general[2]; ?>"> <span class="bv-content-secondary-ratings-container"> <span class="bv-content-secondary-ratings-value bv-width-from-rating-stats-<?php echo round($rating_general[2] / 2); ?>"></span> </span> </div>
                         <div class="bv-inline-histogram-ratings-score">
                           <span aria-hidden="true"> <?php echo $rating_general[2]; ?> </span>
                           <span class="bv-off-screen"> <?php echo $rating_general[2]; ?> review with 2 stars. </span>
@@ -1064,7 +1168,7 @@ else {
                       </div>
                       <div class="bv-inline-histogram-ratings-star-container bv-flex-container" aria-labelledby="bv-inline-histogram-ratings-star-label-1" role="button">
                         <div class="bv-inline-histogram-ratings-star" data-bv-histogram-rating-value="1"> 1<span class="bv-glyph" aria-hidden="true">★</span> <span class="bv-off-screen">stars</span> </div>
-                        <div class="bv-inline-histogram-ratings-bar" data-bv-histogram-rating-value="1" role="presentation" data-bv-histogram-rating-count="<?php echo $rating_general[1]; ?>"> <span class="bv-content-secondary-ratings-container"> <span class="bv-content-secondary-ratings-value bv-width-from-rating-stats-<?php echo $rating_general[1] * 4; ?>"></span> </span> </div>
+                        <div class="bv-inline-histogram-ratings-bar" data-bv-histogram-rating-value="1" role="presentation" data-bv-histogram-rating-count="<?php echo $rating_general[1]; ?>"> <span class="bv-content-secondary-ratings-container"> <span class="bv-content-secondary-ratings-value bv-width-from-rating-stats-<?php echo round($rating_general[1] / 2); ?>"></span> </span> </div>
                         <div class="bv-inline-histogram-ratings-score">
                           <span aria-hidden="true"> <?php echo $rating_general[1]; ?> </span>
                           <span class="bv-off-screen"> <?php echo $rating_general[1]; ?> reviews with 1 star. </span>
@@ -1200,7 +1304,7 @@ else {
               </div>
             </div>
             <button class="bv-content-btn bv-filter-control bv-expand-filter-button bv-focusable bv-filter-control-custom" type="button" tabindex="0">
-              <span class="bv-filter-control-icon" aria-hidden="true">≡</span> <span class="bv-filter-control-text">Filter Reviews</span> <span class="bv-off-screen">Clicking on the following button will update the content below</span>
+              <span class="bv-filter-control-icon" aria-hidden="true" active=1>≡</span> <span class="bv-filter-control-text">Filter Reviews</span> <span class="bv-off-screen">Clicking on the following button will update the content below</span>
             </button>
           </div>
         </div>
@@ -1440,7 +1544,7 @@ else {
           </button>
           <div class="bv-mbox-sidebar bv-sidebar-disabled"></div>
           <div class="bv-mbox-content-container">
-            <div class="bv-mbox-injection-container" style="height: 927px !important;">
+            <div class="bv-mbox-injection-container">
               <div class="bv-mbox-injection-target bv-mbox-search-content bv-mbox-current">
 
                 <div class="bv-shared bv-core-container-103">
@@ -1470,7 +1574,7 @@ else {
                       <div class="bv-action-bar">
                         <h2 class="bv-action-bar-header"> Search Results </h2>
                         <div class="bv-ask-question-container bv-write-container">
-                          <!--button type="button" class="bv-ask-question bv-focusable bv-submission-button"> Ask a question  </button-->
+                          <a class="bv-ask-question bv-focusable bv-submission-button" href="#bv-required-text">Ask a question</button>
                         </div>
                       </div>
                       <div class="bv-inline-form-container"></div>

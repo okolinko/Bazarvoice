@@ -52,15 +52,15 @@ class View extends \Magento\Framework\App\Action\Action
             $email = $post['email'];
             $sku = $post['sku'];
             $jsonType = $post['typeJson'];
-            if ($jsonType = "submitreviewcomment.json"){
+            if ($jsonType == "submitreviewcomment.json"){
             	$res = $this->AddProductDatabase->submitreviewcomment($sku, $idComment, $comment, $nickname, $location, $email);
 			return $result->setData($res);
             }
-            if ($jsonType = "submitquestion.json"){
+            if ($jsonType == "submitquestion.json"){
             	$res = $this->AddProductDatabase->submitquestion($sku, $comment, $nickname, $location, $email);
 			return $result->setData($res);
             }
-            if ($jsonType = "submitanswer.json"){
+            if ($jsonType == "submitanswer.json"){
             	$res = $this->AddProductDatabase->submitanswer($sku, $idComment, $comment, $nickname, $location, $email);
 			return $result->setData($res);
             }

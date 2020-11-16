@@ -14,10 +14,23 @@
 
             $sku = isset($sku_array[$sku]) ? $sku_array[$sku] : $sku;
  }
-  $reviews_sum = count($this->getMyCustomMethod2()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'reviews')->getData());
-  $array_questions = $this->getMyCustomMethod2()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'questions')->getData();
-  $array_answers = $this->getMyCustomMethod2()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'answers')->getData();
+$reviews_sum = count($this->getMyCustomMethod2()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'reviews')->getData());
+$array_questions = $this->getMyCustomMethod2()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'questions')->getData();
+$array_answers = $this->getMyCustomMethod2()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'answers')->getData();
 
+$value = [];
+$i = count($array_answers);
+for ($row = 0; $row < $i; $row++) {
+    array_push($value, $array_answers[$row]['id']);
+}
+$count = array_count_values($value);
+$value2 = [];
+$t = count($array_questions);
+for ($row2 = 0; $row2 < $t; $row2++) {
+    if (array_key_exists($array_questions[$row2]['id'], $count)) {
+        $array_questions[$row2]['rating'] = $count[$array_questions[$row2]['id']];
+    }
+}
 $rating = $this->getMyCustomMethod2()->addFieldToFilter('sku', $sku)->addFieldToFilter('type_text', 'product')->getData();
 if (!empty($rating[0]['statistic'])) {
   $statistic = json_decode($rating[0]['statistic'], true);
@@ -37,7 +50,7 @@ else{
       var itog = massiv.filter(item => {
         return item === peremennaya; // тут логика сравнения
       });
-
+// console.log(array_questions);
       let items_quantity = 10;
       let current_page = 1;
 
@@ -46,20 +59,28 @@ else{
 
       renderQuestion(array_questions, array_answers, items_quantity, current_page);
 
-      $('.custom-link-prev').on('click', function(e){
-        e.preventDefault();
-        if(current_page > 1) {
-          current_page--;
-          renderQuestion(array_questions, array_answers, items_quantity, current_page);
-        }
-      });
-      $('.custom-link-next').on('click', function(e){
-        e.preventDefault();
-        if(items_quantity * current_page <= array_questions.length) {
-          current_page++;
-          renderQuestion(array_questions, array_answers, items_quantity, current_page);
-        }
-      });
+        $(document).click(function(event) {
+            if($(event.target).closest('.custom-link-prev').length) {
+                if(current_page > 1) {
+                    current_page--;
+                    renderQuestion(array_questions, array_answers, items_quantity, current_page);
+                    $('html, body').animate({
+                        scrollTop: $("#custom-questions").offset().top
+                    }, 1000);
+                }
+            }
+        });
+        $(document).click(function(event) {
+            if($(event.target).closest('.custom-link-next').length) {
+                if(items_quantity * current_page <= array_questions.length) {
+                    current_page++;
+                    renderQuestion(array_questions, array_answers, items_quantity, current_page);
+                    $('html, body').animate({
+                        scrollTop: $("#custom-questions").offset().top
+                    }, 1000);
+                }
+            }
+        });
       $('#bv-dropdown-select-questions').parent().on('mouseenter',function(){
         $('#questions-custom-sortby').removeClass('hide-custom-block').addClass('show-custom-block');
       });
@@ -80,12 +101,19 @@ else{
         }
       });
 
+
+        $(document).click(function(event) {
+            if($(event.target).closest('.bv_modal_component_container').length) {
+        $('html, body').animate({
+            scrollTop: $("#custom-reviews").offset().top
+            }, 500);
+        }});
       $('#question-custom-form-container .bv-mbox-close').on('click', function(e){
         e.preventDefault();
         $('#question-custom-form-container').removeClass('show').addClass('hide');
       });
       $('#bv-dropdown-select-questions-sortby').children().on('click', function () {
-        console.log($(this).data('bv-dropdown-value'));
+        // console.log($(this).data('bv-dropdown-value'));
         sortQuestionBy(array_questions, array_answers, $(this).data('bv-dropdown-value'));
       });
 
@@ -160,7 +188,7 @@ else{
           array_answers.filter(function(el){      //Find all answers for current question
             if(value.id == el.id) {
               let time_message = timeShift(parseInt(el.data.slice(0,4)), parseInt(el.data.slice(5,7)));
-              item =
+                item =
                 `<li class="bv-content-item bv-secondary-content-answer bv-secondary-content-item" itemprop="suggestedAnswer" itemscope="" itemtype="http://schema.org/Answer">
                             <div class="bv-content-item-avatar-offset bv-content-item-avatar-offset-on">
                                 <div class="bv-content-container">
@@ -193,9 +221,20 @@ else{
                                         <div class="bv-content-details-offset-off">
                                             <div class="bv-content-summary">
                                                 <div class="bv-content-summary-body" itemprop="text">
-                                                    <div class="bv-content-summary-body-text">
-                                                        <p>${el.text}</p>
-                                                    </div>
+                                                    <div class="bv-content-summary-body-text">`;
+                                                    var str = el.text.split('\n');
+                                                    var length = str.length;
+                                                    var s = [];
+                                                    var i = 0;
+                                                    while(length != 0){
+                                                        if (str[i] != ""  ){
+                                                            s[i] = (`<span>${str[i]}</span><br>`);
+                                                        }
+                                                        length--;
+                                                        i++;
+                                                    }
+                                                     t =  s.join('');
+                                                    var item2 =   `</div>
                                                     <div class="bv-content-data">
                                                         <div class="bv-content-product-questions"> </div>
                                                     </div>
@@ -204,9 +243,29 @@ else{
                                         </div>
                                     </div>
                                 </div>
+                                <div class="bv-content-actions-container bv-active-feedback">
+                      <div class="bv-feedback-container">
+                        <div class="bv-content-feedback-vote bv-content-feedback-vote-active" role="group">
+                          <div class="bv-content-feedback-vote-request">
+                            <p>Helpful?</p>
+                          </div>
+                          <div class="bv-content-feedback-btn-container">
+                            <button type="button" class="bv-content-btn bv-content-btn-feedback-yes bv-focusable">
+                              <span aria-hidden="true"> Yes · <span class="bv-content-btn-count" aria-hidden="true">${JSON.parse(el.recommend).yes}</span> </span>
+                            </button>
+                            <button type="button" class="bv-content-btn bv-content-btn-feedback-no bv-focusable">
+                              <span aria-hidden="true"> No · <span class="bv-content-btn-count" aria-hidden="true">${JSON.parse(el.recommend).no}</span> </span>
+                            </button>
+                          </div>
+                          <div class="bv-content-feedback-vote bv-content-feedback-vote-active">
+                            <!--button type="button" class="bv-content-report-btn bv-focusable" aria-label="Mark this comment by Bardia as inappropriate.  "> Report </button-->
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                             </div>
                         </li>`;
-              answers.push(item);
+              answers.push(item + t + item2);
             }
           });
           answers.answers_quantity_title = (answers.length !== 1) ? 'answers' : 'answer';
@@ -418,34 +477,32 @@ else{
         });
         return questions;
       }
+
       function sortQuestionBy(array_questions, array_answers, sort_parameter) {
         array_questions_sort = array_questions.sort(function(a, b){
           if(sort_parameter == 'recentQuestionsFirst') {
-            return a.data - b.data;
+            return b.data.slice(0, 4) - a.data.slice(0, 4);
           }
-          if(sort_parameter == 'recentAnswersFirst') {
-            a.answers = array_answers.filter(function(el){
-              if(a.id == el.id) {
-                return el;
-              }
-            });
-            b.answers = array_answers.filter(function(el){
-              if(b.id == el.id) {
-                return el;
-              }
-            });
-            ///console.log(a, b);
-            return b.data - a.data;
+          if(sort_parameter == 'oldQuestions') {
+             return a.data.slice(0, 4) - b.data.slice(0, 4);
           }
-          /*if(sort_parameter == 'negative') {
+          if(sort_parameter == 'mostAnsweredQuestionsFirst') {
+            return b.rating - a.rating;
+          }
+          if(sort_parameter == 'mostAnsweredQuestionsLast') {
             return a.rating - b.rating;
           }
-          if(sort_parameter == 'mostRecent') {
-            return b.data.slice(0, 4) - a.data.slice(0, 4);
-          }*/
         });
         renderQuestion(array_questions_sort, array_answers, items_quantity, current_page);
       };
+
+      $('#questions-custom-sortby').click(function (event) {
+      if ($("li").children(".bv-dropdown-item")){
+          var type = $(event.target).text();
+          $('#castom-filtres-question').remove();
+          $("#bv-dropdown-select-questions").append("<span id='castom-filtres-question'>"+ type + "</span>");
+      }
+      });
       function searchQuestionBy(search_text = ''){
         search_text = search_text.toLowerCase();
         $('.bv-content-search-results').addClass('bv-content-search-results__no-results');
@@ -528,18 +585,18 @@ else{
               </div>
               <ul class="bv-content-product-stats">
                 <li class="bv-content-product-stats-item bv-content-product-stats-item-first bv-content-product-stats-item-reviews">
-                  <a href="#" class="bv-content-data-count bv-focusable" data-content-type="review">
+                  <a href="#custom-reviews" class="bv-content-data-count bv-focusable" data-content-type="review">
                     <span class="bv-content-title"><?php echo $reviews_sum; ?></span>
                     <span class="bv-content-data-label">Reviews</span>
                   </a>
                 </li>
                 <li class="bv-content-product-stats-item bv-content-product-stats-item-questions">
-                  <a href="#" class="bv-content-data-count bv-focusable" data-content-type="question">
+                  <a href="#custom-questions" class="bv-content-data-count bv-focusable" data-content-type="question">
                     <span class="bv-content-title"><?php echo count($array_questions) ?></span> <span class="bv-content-data-label">Questions</span>
                   </a>
                 </li>
                 <li class="bv-content-product-stats-item bv-content-product-stats-item-last bv-content-product-stats-item-answers">
-                  <a href="#" class="bv-content-data-count bv-focusable" data-content-type="question">
+                  <a href="#custom-questions" class="bv-content-data-count bv-focusable" data-content-type="question">
                     <span class="bv-content-title"><?php echo count($array_questions) ?></span>
                     <span class="bv-content-data-label">Answers</span>
                   </a>
@@ -560,7 +617,7 @@ else{
           <meta name="bvDateModified" content="2020-08-21">
           <div class="bv-content-list-container">
             <!-- start header block -->
-            <div class="bv-header">
+            <div class="bv-header" id="bv-header-custom-id">
               <div class="bv-action-bar">
                 <h2 class="bv-action-bar-header bv-focusable" tabindex="-1">Questions</h2>
                 <div class="bv-ask-question-container bv-write-container">
@@ -589,10 +646,10 @@ else{
                             <div class="bv-dropdown">
                               <ul id="bv-dropdown-select-questions-sortby" role="menu" class="bv-dropdown-active">
                                 <li class="bv-dropdown-item bv-focusable" data-bv-dropdown-value="recentQuestionsFirst" tabindex="0" role="menuitem"> Newest questions </li>
-                                <li class="bv-dropdown-item bv-focusable" data-bv-dropdown-value="recentAnswersFirst" tabindex="0" role="menuitem"> Newest answers </li>
+                                <li class="bv-dropdown-item bv-focusable" data-bv-dropdown-value="oldQuestions" tabindex="0" role="menuitem"> Old questions </li>
                                 <li class="bv-dropdown-item bv-focusable" data-bv-dropdown-value="mostAnsweredQuestionsFirst" tabindex="0" role="menuitem"> Most answered </li>
                                 <li class="bv-dropdown-item bv-focusable" data-bv-dropdown-value="mostAnsweredQuestionsLast" tabindex="0" role="menuitem"> Answers needed </li>
-                                <!--li class="bv-dropdown-item bv-focusable" data-bv-dropdown-value="helpfulnessAnswersFirst" tabindex="0" role="menuitem"> Most helpful answers </li-->
+                                
                               </ul>
                             </div>
                           </div>
@@ -747,7 +804,7 @@ else{
                 <span>Post Answer</span>
               </span>
             </h1>
-            <div class="bv-mbox-injection-container" style="height: 838px !important;">
+            <div class="bv-mbox-injection-container">
               <div class="bv-mbox-injection-target bv-mbox-current">
 
 
@@ -814,7 +871,7 @@ else{
   </div>
 </div>
 <div class="bv-custom-review-popup" id="question_search_results">
-  <div class="bv-mboxzone bv-cleanslate bv-cv2-cleanslate bv-mbox-lightbox bv-mbox-opened" style="height: auto !important;">
+  <div class="bv-mboxzone bv-cleanslate bv-cv2-cleanslate bv-mbox-lightbox bv-mbox-opened">
     <div class="bv-mbox-inner bv-core-container-103 bv-mbox-lightbox">
       <div class="bv-mbox-wrapper bv-mbox-narrow bv-mbox-search bv-mbox-narrow bv-mbox-box">
         <div id="bv-mbox-lightbox-list" class="bv-mbox" role="dialog" aria-modal="true" aria-describedby="bv-content-list-products-wrapper">
@@ -824,7 +881,7 @@ else{
           </button>
           <div class="bv-mbox-sidebar bv-sidebar-disabled"></div>
           <div class="bv-mbox-content-container">
-            <div class="bv-mbox-injection-container" style="height: 927px !important;">
+            <div class="bv-mbox-injection-container">
               <div class="bv-mbox-injection-target bv-mbox-search-content bv-mbox-current">
 
                 <div class="bv-shared bv-core-container-103">
@@ -854,7 +911,7 @@ else{
                       <div class="bv-action-bar">
                         <h2 class="bv-action-bar-header"> Search Results </h2>
                         <div class="bv-ask-question-container bv-write-container">
-
+                          <a class="bv-ask-question bv-focusable bv-submission-button" href="#bv-textarea-question-search-field-questionsummary">Ask a question</a>
                         </div>
                       </div>
                       <div class="bv-inline-form-container"></div>
@@ -943,11 +1000,14 @@ else{
     require([ 'jquery', 'jquery/ui'], function($){
         $(document).ready(function($) {
 
-		$('.bv-custom-show_popup').click(function() { // Вызываем функцию по нажатию на кнопку
-    	var popup_id = $('#' + $(this).attr("rel")); // Связываем rel и popup_id
-   		$(popup_id).show(); // Открываем окно
-      $(popup_id).css('top', $(window).scrollTop());
- 	   	$('.overlay_popup').show(); // Открываем блок заднего фона
+
+        $(document).click(function(event) {
+            if($(event.target).closest('.bv-custom-show_popup').length) {
+                var popup_id = $('#' + $('.bv-custom-show_popup').attr("rel"));
+                $(popup_id).show();
+                $(popup_id).css('top', $(window).scrollTop());
+                $('.overlay_popup').show();
+            }
 		});
 		$('.overlay_popup, #bv-mbox-lightbox-list .bv-mbox-close').click(function() {
     	$('.overlay_popup, .bv-custom-question-popup, #question_search_results').hide();
@@ -1007,6 +1067,7 @@ else{
                     console.log(location);
                     console.log(email);
                     console.log(sku);
+                    console.log(id_comment);
                     var url = "<?php echo $block->getUrl('postjson/page/view', ['_secure' => false]) ?>";
                     // jQuery.ajax({
                     //     url: url,
@@ -1118,15 +1179,14 @@ else{
 
 
 
-
-
-
 <script type="text/javascript">
     require([ 'jquery', 'jquery/ui'], function($){
         $(document).ready(function($) {
-
-        $("button[data-question-id]").click(function(e){
-            var id_comment = ($(this).attr('data-question-id'));
+            $(document).click(function(event) {
+            if($(event.target).closest('button[data-question-id]').length) {
+                var id_comment = ($('button[data-question-id]').attr('data-question-id'));
+            
+            }
             var sku = <?php echo json_encode($sku); ?>;
             var typeJson = "submitanswer.json";
             var pattern = /^[a-z0-9_-]+@[a-z0-9-]+\.([a-z]{1,6}\.)?[a-z]{2,6}$/i;
@@ -1172,7 +1232,8 @@ else{
                     	console.log(location);
                     	console.log(email);
                     	console.log(sku);
-                    // var url = "<?php echo $block->getUrl('postjson/page/view', ['_secure' => false]) ?>";
+                      console.log(typeJson);
+                    var url = "<?php echo $block->getUrl('postjson/page/view', ['_secure' => false]) ?>";
                     // jQuery.ajax({
                     //     url: url,
                     //     type: "POST",

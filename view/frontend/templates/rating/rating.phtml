@@ -31,7 +31,7 @@ foreach ($statistic['RatingDistribution'] as $value) {
 <div data-bv-show="rating_summary" data-bv-product-id="<?php echo  $sku ?>"></div>
 <div data-bv-show="review_highlights" data-bv-product-id="<?php echo $sku ?>"></div>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
     require([ 'jquery', 'jquery/ui'], function($){
         $(document).ready(function($) {
             var sku = <?php echo json_encode($sku); ?>;
@@ -75,26 +75,26 @@ foreach ($statistic['RatingDistribution'] as $value) {
                     console.log(email);
                     console.log(sku);
                     var url = "<?php echo $block->getUrl('postjson/page/view', ['_secure' => false]) ?>";
-                    // jQuery.ajax({
-                    //     url: url,
-                    //     type: "POST",
-                    //     data: {
-                    //         comment:comment,
-                    //         nickname:nickname,
-                    //         location:location,
-                    //         email:email,
-                    //         sku:sku,
-                    //         typeJson:typeJson
-                    //     },
-                    //     showLoader: true,
-                    //     cache: false,
-                    //     success: function(response){
-                    //         console.log(response);
-                    //     },
-                    //     error:function (res) {
-                    //         console.log(res);
-                    //     }
-                    // });
+                    jQuery.ajax({
+                        url: url,
+                        type: "POST",
+                        data: {
+                            comment:comment,
+                            nickname:nickname,
+                            location:location,
+                            email:email,
+                            sku:sku,
+                            typeJson:typeJson
+                        },
+                        showLoader: true,
+                        cache: false,
+                        success: function(response){
+                            console.log(response);
+                        },
+                        error:function (res) {
+                            console.log(res);
+                        }
+                    });
                 }
             });
 
@@ -136,28 +136,28 @@ foreach ($statistic['RatingDistribution'] as $value) {
                     console.log(email);
                     console.log(sku);
                     var url = "<?php echo $block->getUrl('postjson/page/view', ['_secure' => false]) ?>";
-                    // jQuery.ajax({
-                    //     url: url,
-                    //     type: "POST",
-                    //     data: {
-                    //         comment:comment,
-                    //         nickname:nickname,
-                    //         location:location,
-                    //         email:email,
-                    //         sku:sku,
-                    //         typeJson:typeJson
-                    //     },
-                    //     showLoader: true,
-                    //     cache: false,
-                    //     success: function(response){
-                    //         console.log(response);
-                    //     },
-                    //     error:function (res) {
-                    //         console.log(res);
-                    //     }
-                    // });
+                    jQuery.ajax({
+                        url: url,
+                        type: "POST",
+                        data: {
+                            comment:comment,
+                            nickname:nickname,
+                            location:location,
+                            email:email,
+                            sku:sku,
+                            typeJson:typeJson
+                        },
+                        showLoader: true,
+                        cache: false,
+                        success: function(response){
+                            console.log(response);
+                        },
+                        error:function (res) {
+                            console.log(res);
+                        }
+                    });
                 }
             });
         });
     });
-</script>
+</script> -->
