@@ -1,4 +1,4 @@
-<?php
+а <?php
   if ($currentProduct = $this->getCurrentProduct()) {
     $sku = $currentProduct->getSku();
     $sku_array = array(
@@ -276,7 +276,7 @@ else{
 
           item =
             `<li class="bv-content-item bv-content-top-question bv-content-question" itemscope="" itemtype="http://schema.org/Question" data-content-id="Questions-${value.id}">
-                    <div class="bv-content-item-avatar-offset bv-content-item-avatar-offset-on">
+                    <div class="bv-content-item-avatar-offset bv-content-item-avatar-offset-on" id="questions-content">
                         <div class="bv-content-container">
                             <div class="bv-content-core bv-content-core-float">
                                 <div class="bv-content-header">
@@ -299,7 +299,7 @@ else{
                                         </div>
                                         <div class="bv-content-title-container">
                                             <h3 class="bv-content-title" itemprop="headline">
-                                                <a class="bv-secondary-content-link bv-focusable" href="#" data-contentid="${value.id}">
+                                                <a class="bv-secondary-content-link bv-focusable" data-contentid="${value.id}">
                                                     ${value.text}
                                                 </a>
                                             </h3>
@@ -559,7 +559,7 @@ else{
                       <span class="bv-rating"><span aria-hidden="true"><?php echo round($statistic['AverageOverallRating'], 1); ?></span></span>
                     </dd>
                     <dd class="bv-rating-ratio-count">
-                      <a href="#" class="bv-rating-label bv-text-link bv-focusable"> <?php echo count($array_questions) ?> Questions <span class="bv-off-screen">This action will navigate to reviews.</span>
+                      <a href="#custom-questions" class="bv-rating-label bv-text-link bv-focusable"> <?php echo count($array_questions) ?> Questions <span class="bv-off-screen">This action will navigate to reviews.</span>
                       </a> </dd>
                   </dl>
                 </div>
@@ -804,10 +804,11 @@ else{
                 <span>Post Answer</span>
               </span>
             </h1>
+
             <div class="bv-mbox-injection-container">
               <div class="bv-mbox-injection-target bv-mbox-current">
 
-
+                <div class="bv-content-item bv-content-question" id="copied-content"></div>
 
                 <div class="bv-submission bv-submission-noimage bv-fake-inline">
                   <div class="bv-compat">
@@ -1000,17 +1001,21 @@ else{
     require([ 'jquery', 'jquery/ui'], function($){
         $(document).ready(function($) {
 
-
-        $(document).click(function(event) {
+          $(document).click(function(event) {
             if($(event.target).closest('.bv-custom-show_popup').length) {
-                var popup_id = $('#' + $('.bv-custom-show_popup').attr("rel"));
-                $(popup_id).show();
-                $(popup_id).css('top', $(window).scrollTop());
-                $('.overlay_popup').show();
+              var popup_id = $('#' + $('.bv-custom-show_popup').attr("rel"));
+              $(popup_id).show();
+              $(popup_id).css('top', $(window).scrollTop());
+              $('.overlay_popup').show();
+
+              $("#questions-content").clone().appendTo("#copied-content");
+
             }
-		});
+          });
+
 		$('.overlay_popup, #bv-mbox-lightbox-list .bv-mbox-close').click(function() {
     	$('.overlay_popup, .bv-custom-question-popup, #question_search_results').hide();
+      $("#copied-content #questions-content").hide();
 		});
 
 		$(document).mouseup(function (e){
@@ -1185,7 +1190,7 @@ else{
             $(document).click(function(event) {
             if($(event.target).closest('button[data-question-id]').length) {
                 var id_comment = ($('button[data-question-id]').attr('data-question-id'));
-            
+            // alert(1);
             }
             var sku = <?php echo json_encode($sku); ?>;
             var typeJson = "submitanswer.json";

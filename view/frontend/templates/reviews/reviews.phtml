@@ -1062,7 +1062,7 @@ else {
                         <span class="bv-rating"><span aria-hidden="true"><?php echo round($statistic['AverageOverallRating'], 1); ?></span></span>
                       </dd>
                       <dd class="bv-rating-ratio-count">
-                        <a href="#" class="bv-rating-label bv-text-link bv-focusable"> <?php echo $reviews_sum; ?> Reviews <span class="bv-off-screen">This action will navigate to reviews.</span>
+                        <a href="#custom-reviews" class="bv-rating-label bv-text-link bv-focusable"> <?php echo $reviews_sum; ?> Reviews <span class="bv-off-screen">This action will navigate to reviews.</span>
                         </a> </dd>
                     </dl>
                   </div>
@@ -1574,7 +1574,7 @@ else {
                       <div class="bv-action-bar">
                         <h2 class="bv-action-bar-header"> Search Results </h2>
                         <div class="bv-ask-question-container bv-write-container">
-                          <a class="bv-ask-question bv-focusable bv-submission-button" href="#bv-required-text">Ask a question</button>
+                          <a class="bv-ask-question bv-focusable bv-submission-button" href="#bv-required-text">Ask a question</a>
                         </div>
                       </div>
                       <div class="bv-inline-form-container"></div>
@@ -1595,7 +1595,8 @@ else {
                 </div>
                 <div class="bv-submission bv-submission-image bv-fake-inline">
                   <div class="bv-compat">
-                    <form target="bv-submission-target-default6156" action="#" accept-charset="utf-8" method="POST" class="bv-form"> <input type="hidden" name="passkey" value="b5xjo1fw42ctw528lazc88mz8" class="bv-noremember">
+                    <form target="bv-submission-target-default6156" action="#" accept-charset="utf-8" method="POST" class="bv-form"> 
+                      <input type="hidden" name="passkey" value="b5xjo1fw42ctw528lazc88mz8" class="bv-noremember">
                       <input type="hidden" name="action" value="submit" class="bv-noremember">
                       <input type="hidden" name="apiversion" value="5.5" class="bv-noremember">
                       <input type="hidden" name="callback" value="parent.rpc.returnSubmissionResponse" class="bv-noremember">
